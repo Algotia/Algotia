@@ -25,32 +25,32 @@ const mkStrategyDir: InitStep = (configurer) => {
 };
 
 const npmInit: InitStep = async (configurer) => {
-    const dir = getRootDir(configurer);
-    const pathToPkgJson = getPkgJsonPath(dir);
+    const rootDir = getRootDir(configurer);
+    const pathToPkgJson = getPkgJsonPath(rootDir);
     if (!fs.existsSync(pathToPkgJson)) {
         const initialPkgJson = JSON.stringify({ name: "algotia-strategies" });
         fs.writeFileSync(pathToPkgJson, initialPkgJson, { encoding: "utf8" });
-        await execa("npm", ["init", "-y"]);
+        await execa("npm", ["init", "-y"], { cwd: rootDir });
     }
 };
 
 const gitInit: InitStep = async (configurer) => {
-    const dir = getootDir(configurer);
-    const pathToGitDir = getGitDirPath(dir);
+    const rootDir = getRootDir(configurer);
+    const pathToGitDir = getGitDirPath(rootDir);
     if (!fs.existsSync(pathToGitDir)) {
         await execa("git", ["init"], {
-            cwd: dir,
+            cwd: rootDir,
         });
     }
 };
 
 const verify = (configurer: Configurer): boolean => {
-    const dir = getRootDir(configurer);
-    const pkgJson = getPkgJsonPath(dir);
-    const gitDir = getGitDirPath(dir);
+    const rootDir = getRootDir(configurer);
+    const pkgJson = getPkgJsonPath(rootDir);
+    const gitDir = getGitDirPath(rootDir);
     let bool: boolean;
 
-    bool = fs.existsSync(dir);
+    bool = fs.existsSync(rootDir);
     bool = fs.existsSync(pkgJson);
     bool = fs.existsSync(gitDir);
 

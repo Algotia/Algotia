@@ -9,12 +9,9 @@ class Configurer extends OPCache<ConfigOptions> {
         super({
             path: node_path.join(pkgDir.sync(), ".internal/cache/config.json"),
         });
-        if (!this.has("port")) {
-            this.set("port", this.default.port, true);
-        }
     }
 
-    private default: ConfigOptions = {
+    default: ConfigOptions = {
         port: 2008,
     } as const;
 

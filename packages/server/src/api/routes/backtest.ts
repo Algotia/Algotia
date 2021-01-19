@@ -11,8 +11,11 @@ import {
 import { body, validationResult } from "express-validator";
 import { IRequest, IResponse } from "../../types/";
 import { getExchange } from "../../utils";
+import importFresh from "import-fresh";
 import node_path from "path";
 import fs from "fs";
+
+require("@babel/register");
 
 interface ReqBody {
     strategyPath: string;
@@ -82,9 +85,13 @@ const validatePostBacktest = [
             }
             return true;
         }),
-    body("to")
-        .isInt({ lt: Date.now() })
-        .withMessage('"to" cannot be a date in the future'),
+    body("to").custom((to) => {
+        if (to > Date.now()) {
+			console.log(to, Date.now())
+            throw `'to' cannot be a date in the future`;
+        }
+        return true;
+    }),
     body("from")
         .isInt()
         .bail()
@@ -153,26 +160,32 @@ const postBacktest = async (
         initialBalance,
     });
 
-    const strategy = require(strategyPath);
+    try {
+        const strategy: any = importFresh(strategyPath);
 
-    const candles = await backfill({
-        from,
-        to,
-        pair,
-        period,
-        exchange: simulatedExchange.exchange,
-    });
+        const candles = await backfill({
+            from,
+            to,
+            pair,
+            period,
+            exchange: simulatedExchange.exchange,
+        });
 
-    const results = await backtest({
-        data: candles,
-        strategy,
-        simulatedExchange,
-    });
+        const results = await backtest({
+            data: candles,
+            strategy,
+            simulatedExchange,
+        });
 
-    return res.status(200).json({
-        candles,
-        results,
-    });
+        return res.status(200).json({
+            candles,
+            results,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            errors: [err],
+        });
+    }
 };
 
 export { postBacktest, validatePostBacktest };

@@ -25,13 +25,15 @@
     "unexpected-express": "^13.0.1"
   },
   "dependencies": {
-    "@algotia/core": "^0.0.4-29",
+    "@algotia/core": "^0.0.4-32",
+    "@babel/register": "^7.12.10",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "env-paths": "^2.2.0",
     "execa": "^4.1.0",
     "express": "^4.17.1",
     "express-validator": "^6.9.1",
+    "import-fresh": "^3.3.0",
     "joi": "^17.3.0",
     "mock-fs": "^4.13.0",
     "node-graceful": "^3.0.1",

@@ -1,12 +1,20 @@
 import { ConfigOptions, IRequest, IResponse } from "../../../types";
 import { Configurer } from "../../../utils";
 import { verify, initSteps } from "./steps";
-import { param, query, body, validationResult } from "express-validator";
+import {
+    param,
+    query,
+    body,
+    validationResult,
+    ValidationChain,
+} from "express-validator";
 import node_path from "path";
 import fs from "fs";
+import { homedir } from "os";
 
 interface GetInitResponseBody {
     init: boolean;
+    initialConfig?: string;
 }
 
 const validateGetInit = [
@@ -23,15 +31,35 @@ const getInit = (configurer: Configurer) => {
                 return res.status(400).json({ errors: errors.array() });
             }
 
+            const getInitialConfig = () => {
+                return JSON.stringify(
+                    {
+                        port: 2008,
+                        strategyDir: node_path.join(homedir(), "algotia/"),
+                    },
+                    null,
+                    2
+                );
+            };
+
+            const getFalseBody = () => {
+                const initialConfig = getInitialConfig();
+                return {
+                    init: false,
+                    initialConfig,
+                };
+            };
+
             const hasStrategytDir = configurer.has("strategyDir");
             const strategyDir = configurer.get("strategyDir");
 
-            if (!hasStrategytDir) return res.status(200).json({ init: false });
-            if (strategyDir && !fs.existsSync(strategyDir)) {
-                return res.status(200).json({ init: false });
+            if (!hasStrategytDir) return res.status(200).json(getFalseBody());
+            if (hasStrategytDir && !fs.existsSync(strategyDir)) {
+                configurer.clear(true);
+                return res.status(200).json(getFalseBody());
             } else {
                 const init = verify(configurer);
-                return res.status(200).json({ init });
+                return res.status(200).json(init ? { init } : getFalseBody());
             }
         } catch (err) {
             const error = err;
@@ -42,11 +70,25 @@ const getInit = (configurer: Configurer) => {
 
 interface PostInitRequestBody extends ConfigOptions {}
 
-interface PostInitResponseBody extends GetInitResponseBody {}
+interface PostInitResponseBody {
+    results: true;
+}
 
-const validatePostInit = [
-    body("port").isInt().isPort().optional(),
-    body("strategyDir").isString().bail(),
+const validatePostInit = (configurer: Configurer): ValidationChain[] => [
+    body("port").isInt().isPort(),
+    body("strategyDir")
+        .isString()
+        .bail()
+        .custom((strategyDir) => {
+            if (configurer.has("strategyDir") && fs.existsSync(strategyDir)) {
+                throw new Error(
+                    `Strategy dir already exists at ${configurer.get(
+                        "strategyDir"
+                    )}`
+                );
+            }
+            return true;
+        }),
 ];
 
 const postInit = (configurer: Configurer) => {
@@ -58,9 +100,11 @@ const postInit = (configurer: Configurer) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+
         const options = req.body;
 
         configurer.set("strategyDir", options.strategyDir, true);
+        configurer.set("port", options.port, true);
 
         for (const step of initSteps) {
             try {
@@ -69,7 +113,7 @@ const postInit = (configurer: Configurer) => {
                 return res.status(500).json({ errors: [err["message"]] });
             }
         }
-        return res.status(200).json({ init: true });
+        return res.status(200).json({ results: true });
     };
 };
 

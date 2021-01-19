@@ -4,7 +4,7 @@ import { ValidationError } from "express-validator";
 export { Request as IRequest };
 
 export interface ErrorRes {
-    errors?: ValidationError[];
+    errors?: (ValidationError | string)[];
 }
 
 export type IResponse<ResBody = any> = IRes<ResBody | ErrorRes>;
