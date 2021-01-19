@@ -8,6 +8,7 @@ import Footer from "./Footer";
 const Wrapper = styled(Row)`
     height: 100%;
     width: 100%;
+	overflow: hidden;
 `;
 
 const MainCol = styled(Column)`

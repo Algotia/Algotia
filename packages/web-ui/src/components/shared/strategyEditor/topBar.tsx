@@ -1,6 +1,6 @@
 import { MenuItem, Select, Button, FormControl } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { StrictMode } from "react"
+import { StrictMode } from "react";
 import { FC, useState } from "react";
 import styled from "styled-components";
 import { Row } from "../utils";
@@ -44,7 +44,7 @@ const TopBar: FC<{
     selectStrategy: (data: StrategyMeta) => void;
 }> = (props) => {
     const { allStrategies, selectStrategy } = props;
-const [selectVal, setSelectVal] = useState("");
+    const [selectVal, setSelectVal] = useState("");
 
     const buttonClasses = useButtonStyles();
     const selectClasses = useSelectStyles();
@@ -56,7 +56,7 @@ const [selectVal, setSelectVal] = useState("");
                     id="strategy-selector"
                     displayEmpty
                     classes={selectClasses}
-                    style={{ height: "35px" }}
+                    style={{ height: "25px" }}
                     value={selectVal}
                     variant="filled"
                 >

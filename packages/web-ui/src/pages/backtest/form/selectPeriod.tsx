@@ -10,7 +10,7 @@ interface SelectPeriodProps {
 const SelectPeriod: FC<SelectPeriodProps> = (props) => {
     const { periodList, period, setPeriod } = props;
     return (
-        <FormControl style={{ width: "45%" }}>
+        <FormControl fullWidth={true}>
             <InputLabel htmlFor="period-select" disabled={!periodList}>
                 Select a period
             </InputLabel>

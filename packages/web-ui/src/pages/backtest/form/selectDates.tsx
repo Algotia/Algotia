@@ -1,5 +1,5 @@
 import { Dispatch, FC, SetStateAction } from "react";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnUtils from "@date-io/date-fns";
 
 interface SelectDatesProps {
@@ -23,9 +23,11 @@ const SelectDate: FC<SelectDatesProps> = (props) => {
 
     return (
             <MuiPickersUtilsProvider utils={DateFnUtils}>
-                <DateTimePicker
+                <KeyboardDateTimePicker
+					fullWidth={true}
                     error={isTimeError}
                     label={label}
+					disableFuture={true}
                     disabled={!exchangeId}
                     value={date}
                     onChange={(d) => d && setDate(d)}

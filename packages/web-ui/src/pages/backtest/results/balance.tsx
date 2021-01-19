@@ -1,63 +1,26 @@
 import { BacktestResults, OHLCV, parsePair } from "@algotia/core";
 import { FC } from "react";
-import { Options } from "../backtest";
-import styled from "styled-components";
-import { Column } from "../../../components";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-} from "@material-ui/core";
+import { Options } from "../context";
+import { ColDef, DataGrid } from "@material-ui/data-grid";
 
-const Wrapper = styled(Column)`
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-`;
+const getPercentage = (
+    initial: number,
+    final: number,
+    currency: string
+): string => {
+    if (initial === 0) {
+        if (final === 0) return 0 + "%";
+        return "+ " + final.toFixed(4) + " " + currency;
+    }
+    const percentage = ((final - initial) / initial) * 100;
 
-const Balance: FC<{
-    results: BacktestResults;
-    options: Options;
-    candles: OHLCV[];
-}> = (props) => {
-    const { results, options, candles } = props;
-
-    const getPercentage = (
-        initial: number,
-        final: number,
-        currency: string
-    ): string => {
-        if (initial === 0) {
-            if (final === 0) return 0 + "%";
-            return "+ " + final.toFixed(4) + " " + currency;
-        }
-        const percentage = ((final - initial) / initial) * 100;
-
-        return percentage.toFixed(4) + " %";
-    };
-
-    const rows = Object.keys(options.initialBalance).map((currency) => {
-        const initialAmount = options.initialBalance[currency];
-        const finalAmount = results.balance[currency].total;
-
-        const percentage = getPercentage(initialAmount, finalAmount, currency);
-
-        const gains = finalAmount > initialAmount && percentage;
-
-        const losses = finalAmount < initialAmount && percentage;
-
-        return {
-            currency,
-            change: gains || losses || 0,
-            color: gains ? "green" : losses ? "red" : "yellow",
-            initial: initialAmount.toFixed(4),
-            final: finalAmount.toFixed(4),
-        };
-    });
-
+    return percentage.toFixed(4) + " %";
+};
+const getTotalRow = (
+    candles: OHLCV[],
+    options: Options,
+    results: BacktestResults
+) => {
     const [base, quote] = parsePair(options.pair);
 
     const firstCandleOpen = candles[0].open;
@@ -71,6 +34,7 @@ const Balance: FC<{
     const finalQuoteValue = results.balance[quote].total;
 
     const totalInitialValue = initialBaseValueInQuote + initialQuoteValue;
+
     const totalFinalValue = finalBaseValueInQuote + finalQuoteValue;
 
     const totalPercentChange = getPercentage(
@@ -83,55 +47,72 @@ const Balance: FC<{
 
     const losses = totalFinalValue < totalInitialValue && totalPercentChange;
 
+    const totalRow = {
+        id: "total",
+        currency: "Total",
+        change: gains || losses || 0,
+        initial: totalInitialValue.toFixed(4),
+        final: totalFinalValue.toFixed(4),
+    };
+    return totalRow;
+};
+
+const getCurrencyRows = (options: Options, results: BacktestResults) => {
+    return Object.keys(options.initialBalance).map((currency) => {
+        const initialAmount = options.initialBalance[currency];
+        const finalAmount = results.balance[currency].total;
+
+        const percentage = getPercentage(initialAmount, finalAmount, currency);
+
+        const gains = finalAmount > initialAmount && percentage;
+
+        const losses = finalAmount < initialAmount && percentage;
+
+        return {
+            id: currency,
+            currency,
+            change: gains || losses || 0,
+            initial: initialAmount.toFixed(4),
+            final: finalAmount.toFixed(4),
+        };
+    });
+};
+
+const getRows = (
+    options: Options,
+    results: BacktestResults,
+    candles: OHLCV[]
+) => {
+    return [
+        ...getCurrencyRows(options, results),
+        getTotalRow(candles, options, results),
+    ];
+};
+
+const columns: ColDef[] = [
+    { field: "currency", headerName: "Currency", flex: 1, },
+    { field: "initial", headerName: "Initial", flex: 1 },
+    { field: "change", headerName: "Change", flex: 1 },
+    { field: "final", headerName: "Final", flex: 1 },
+];
+
+const Balance: FC<{
+    results: BacktestResults | undefined;
+    options: Options | undefined;
+    candles: OHLCV[] | undefined;
+}> = (props) => {
+    const { results, options, candles } = props;
+
+    const rows =
+        results && candles && options && getRows(options, results, candles);
+
     return (
-        <Wrapper>
-            <TableContainer component="div">
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Currency</TableCell>
-                            <TableCell>Initial</TableCell>
-                            <TableCell>Final</TableCell>
-                            <TableCell>% Changed</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.currency}>
-                                <TableCell component="th" scope="row">
-                                    {row.currency}
-                                </TableCell>
-                                <TableCell>{row.initial}</TableCell>
-                                <TableCell>{row.final}</TableCell>
-                                <TableCell style={{ color: row.color }}>
-                                    {row.change}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        <TableRow key="total">
-                            <TableCell component="th" scope="row">
-                                Total ({quote})
-                            </TableCell>
-                            <TableCell>
-                                {totalInitialValue.toFixed(4)}
-                            </TableCell>
-                            <TableCell>{totalFinalValue.toFixed(4)}</TableCell>
-                            <TableCell
-                                style={{
-                                    color: losses
-                                        ? "red"
-                                        : gains
-                                        ? "green"
-                                        : "yellow",
-                                }}
-                            >
-                                {totalPercentChange}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Wrapper>
+        <DataGrid
+            columns={columns}
+            rows={rows || []}
+            hideFooter={true}
+            density="compact"
+        />
     );
 };
 

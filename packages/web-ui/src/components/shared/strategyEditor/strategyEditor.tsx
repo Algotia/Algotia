@@ -18,7 +18,7 @@ export interface StrategyData extends StrategyMeta {
 let KEY_S: number;
 let CtrlCmd: number;
 
-monaco.init().then((m) => {
+monaco.init().then((m ) => {
     m.languages.typescript.typescriptDefaults.setCompilerOptions({
         target: m.languages.typescript.ScriptTarget.ES2016,
         allowNonTsExtensions: true,
@@ -31,6 +31,11 @@ monaco.init().then((m) => {
     Object.keys(editorTypes).forEach((key) => {
         if (editorTypes.hasOwnProperty(key)) {
             m.languages.typescript.typescriptDefaults.addExtraLib(
+                //@ts-ignore
+                editorTypes[key],
+                `node_modules/${key}`
+            );
+            m.languages.typescript.javascriptDefaults.addExtraLib(
                 //@ts-ignore
                 editorTypes[key],
                 `node_modules/${key}`

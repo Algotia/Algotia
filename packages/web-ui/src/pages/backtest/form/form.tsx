@@ -1,12 +1,19 @@
-import { useEffect, useState, FC, Dispatch, SetStateAction } from "react";
+import {
+    useEffect,
+    useState,
+    FC,
+    Dispatch,
+    SetStateAction,
+    useContext,
+} from "react";
 import styled from "styled-components";
 import { ExchangeID, parsePair, parsePeriod } from "@algotia/core";
-import { Button } from "@material-ui/core";
+import { Button, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Alert } from "@material-ui/lab";
 import { Column, Row } from "../../../components/shared";
 import moment from "moment";
-import { Options } from "../backtest";
+import { BacktestContext, Options } from "../context";
 import SelectExchange from "./selectExchange";
 import SelectDate from "./selectDates";
 import SelectInitialBalance from "./selectInitialBalance";
@@ -18,26 +25,29 @@ const FormWrapper = styled.div`
     width: 100%;
     height: 100%;
     background-color: #ffffff;
-    padding: 15px;
     position: relative;
     box-sizing: border-box;
 `;
 
-const FormBody = styled(Column)`
+const FormBody = styled.div`
     width: 100%;
     height: 100%;
-    padding: 15px;
+    padding: 0 15px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
 `;
 
 const FormItem = styled(Row)`
+    width: 45%;
     align-items: center;
+    justify-content: center;
 `;
 
 const RowItem = styled(FormItem)`
-    width: 100%;
+    width: 80%;
     justify-content: space-between;
 `;
 
@@ -58,7 +68,6 @@ const useStyles = makeStyles({
 
 const Form: FC<{
     setOptions: Dispatch<SetStateAction<Options | undefined>>;
-    strategy: string | undefined;
 }> = (props) => {
     const [pairList, setPairList] = useState<string[]>();
     const [periodList, setTimeframeList] = useState<string[]>();
@@ -67,13 +76,14 @@ const Form: FC<{
         ReturnType<typeof parsePeriod>
     >();
 
-    let now = new Date();
+	let now = new Date()
 
-    now = moment(now).subtract(now.getTimezoneOffset(), "minutes").toDate();
     now.setHours(0, 0, 0);
+
     now.setMilliseconds(0);
 
     const initialTo = new Date(now);
+
     now.setMonth(now.getMonth() - 1);
 
     const initialFrom = new Date(now);
@@ -166,7 +176,6 @@ const Form: FC<{
             <FormBody>
                 <FormItem>
                     <SelectExchange
-                        strategy={props.strategy}
                         exchangeId={exchangeId}
                         setExchangeId={setExchangeId}
                     />
@@ -181,35 +190,44 @@ const Form: FC<{
                     </Alert>
                 )}
                 <RowItem>
-                    <SelectDate
-                        exchangeId={exchangeId}
-                        isTimeError={isTimeError}
-                        setDate={setFrom}
-                        date={from}
-                        label="From"
-                        minDate={new Date("01/01/2015")}
-                    />
+                    <FormItem>
+                        <SelectDate
+                            exchangeId={exchangeId}
+                            isTimeError={isTimeError}
+                            setDate={setFrom}
+                            date={from}
+                            label="From"
+                            minDate={new Date("01/01/2015")}
+                        />
+                    </FormItem>
 
-                    <SelectDate
-                        exchangeId={exchangeId}
-                        isTimeError={isTimeError}
-                        setDate={setTo}
-                        date={to}
-                        label="To"
-                        minDate={new Date(from ? from : "01/01/2015")}
-                    />
+                    <FormItem>
+                        <SelectDate
+                            exchangeId={exchangeId}
+                            isTimeError={isTimeError}
+                            setDate={setTo}
+                            date={to}
+                            label="To"
+                            minDate={new Date(from ? from : "01/01/2015")}
+                        />
+                    </FormItem>
                 </RowItem>
                 <RowItem>
-                    <SelectPair pairList={pairList} setPair={setPair} />
-                    <SelectPeriod
-                        period={period}
-                        setPeriod={setPeriod}
-                        periodList={periodList}
-                    />
+                    <FormItem>
+                        <SelectPair pairList={pairList} setPair={setPair} />
+                    </FormItem>
+                    <FormItem>
+                        <SelectPeriod
+                            period={period}
+                            setPeriod={setPeriod}
+                            periodList={periodList}
+                        />
+                    </FormItem>
                 </RowItem>
-                <RowItem style={{ width: "60%" }}>
+                <RowItem>
                     <SelectInitialBalance
                         id="base"
+                        FormItem={FormItem}
                         initialCurrency={pair.split("/")[0]}
                         currencyList={currencyList}
                         onChange={({ amount, currency }) => {
@@ -224,8 +242,9 @@ const Form: FC<{
                         }}
                     />
                 </RowItem>
-                <RowItem style={{ width: "60%" }}>
+                <RowItem>
                     <SelectInitialBalance
+                        FormItem={FormItem}
                         id="quote"
                         initialCurrency={pair.split("/")[1]}
                         currencyList={currencyList}

@@ -11,10 +11,10 @@ const SelectPair: FC<SelectPairProps> = (props) => {
     const { pairList, setPair } = props;
     return (
         <Autocomplete
+			fullWidth={true}
             disabled={!pairList}
             options={pairList || []}
             getOptionLabel={(symbol) => symbol}
-            style={{ width: "45%" }}
             onInputChange={(_, val) => {
                 if (val) {
                     setPair(val.toUpperCase());

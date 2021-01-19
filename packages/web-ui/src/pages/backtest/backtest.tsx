@@ -1,55 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState, createContext } from "react";
 import styled from "styled-components";
 import Editor from "./editor";
 import Form from "./form";
 import Results from "./results/";
 import Chart from "./chart";
-import { Paper } from "@material-ui/core";
+import { Backdrop, CircularProgress, Paper } from "@material-ui/core";
 import { BacktestResults, OHLCV } from "@algotia/core";
+import { Options, Strategy, BacktestContext } from "./context";
 
 const Wrapper = styled(Paper)`
     width: 100%;
     height: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
 `;
 
-const Left = styled.div`
-    height: 100%;
-    width: 65%;
+const TopLeft = styled.div`
+    grid-area: 1 / 1 / 3 / 4;
 `;
 
-const Right = styled.div`
-    height: 100%;
-    width: 35%;
+const BottomLeft = styled.div`
+    grid-area: 3 / 1 / 6 / 4;
 `;
 
-const Top = styled.div`
-    width: 100%;
-    height: 40%;
-`;
-const Bottom = styled.div`
-    width: 100%;
-    height: 60%;
+const TopRight = styled.div`
+    grid-area: 1 / 4 / 3 / 6;
 `;
 
-export interface Options {
-    exchange: string;
-    period: string;
-    pair: string;
-    to: number;
-    from: number;
-    initialBalance: Record<string, number>;
-}
+const BottomRight = styled.div`
+    grid-area: 3 / 4 / 6 / 6;
+`;
 
-type Strategy = { strategyPath: string };
-
-const BacktestPage: React.FC = () => {
+const BacktestPage: FC = () => {
     const [candles, setCandles] = useState<OHLCV[]>();
     const [results, setResults] = useState<BacktestResults>();
     const [options, setOptions] = useState<Options>();
     const [strategyPath, setStraegyPath] = useState<string>();
+    const [loading, setLoading] = useState(false);
 
     const run = (body: Options & Strategy) => {
+        setLoading(true);
         fetch("/api/backtest", {
             method: "POST",
             headers: {
@@ -61,12 +52,17 @@ const BacktestPage: React.FC = () => {
                 return res.json();
             })
             .then((res) => {
+                if (res.errors) {
+                    return alert(JSON.stringify(res.errors));
+                }
                 setCandles(res.candles);
                 setResults(res.results);
-                console.log(res);
             })
             .catch((err) => {
                 alert(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -81,28 +77,33 @@ const BacktestPage: React.FC = () => {
     }, [options]);
 
     return (
-        <Wrapper>
-            <Left id="chart-parent">
-                <Top>
-                    <Chart candles={candles} />
-                </Top>
-                <Bottom>
+        <BacktestContext.Provider
+            value={{
+                candles,
+                results,
+                options,
+                strategyPath,
+                loading,
+            }}
+        >
+            <Wrapper>
+                <Backdrop style={{ zIndex: 1000 }} open={loading}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                <TopLeft>
+                    <Chart />
+                </TopLeft>
+                <TopRight>
+                    <Results />
+                </TopRight>
+                <BottomLeft>
                     <Editor setStraegyPath={setStraegyPath} />
-                </Bottom>
-            </Left>
-            <Right>
-                <Top>
-                    <Results
-                        results={results}
-                        candles={candles}
-                        options={options}
-                    />
-                </Top>
-                <Bottom>
-                    <Form setOptions={setOptions} strategy={strategyPath} />
-                </Bottom>
-            </Right>
-        </Wrapper>
+                </BottomLeft>
+                <BottomRight>
+                    <Form setOptions={setOptions} />
+                </BottomRight>
+            </Wrapper>
+        </BacktestContext.Provider>
     );
 };
 
