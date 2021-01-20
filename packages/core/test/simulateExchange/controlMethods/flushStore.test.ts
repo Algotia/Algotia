@@ -1,6 +1,6 @@
-import { simulatedExchange } from "../../test-utils";
+import { simulatedExchanges } from "../../test-utils";
 
-describe("flushStore", () => {
+describe.each(simulatedExchanges)("flushStore", (simulatedExchange) => {
 	it("should flush store with 1 open order", async () => {
 		const {
 			exchange,

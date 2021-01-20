@@ -1,6 +1,6 @@
 import { OHLCV, SimulatedExchangeStore } from "../../../src/types";
 import { parsePair } from "../../../src/utils";
-import { simulatedExchange, initialBalance, reset } from "../../test-utils";
+import { simulatedExchanges, initialBalance, reset } from "../../test-utils";
 
 const orderTypes = ["market", "limit"] as const;
 const orderSides = ["buy", "sell"] as const;
@@ -37,7 +37,7 @@ const checkAfterBalance = (store: SimulatedExchangeStore) => {
 	}
 };
 
-describe("fillOrders", () => {
+describe.each(simulatedExchanges)("fillOrders", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});

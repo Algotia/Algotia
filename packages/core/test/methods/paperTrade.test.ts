@@ -1,6 +1,6 @@
 import { paperTrade } from "../../src/algotia";
 import { Exchange, Strategy, PaperTradeOptions } from "../../src/types";
-import { simulatedExchange, reset, initialBalance } from "../test-utils";
+import { reset, initialBalance, simulatedExchanges } from "../test-utils";
 import sinon from "sinon";
 import { EventEmitter } from "events";
 
@@ -16,7 +16,7 @@ jest.mock("../../src/exchangeHelpers/getLiveCandle", () => {
 		};
 	});
 });
-describe("paperTrade", () => {
+describe.each(simulatedExchanges)("paperTrade", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});
@@ -122,7 +122,8 @@ describe("paperTrade", () => {
 		const results = doneFn.mock.calls[0][0];
 
 		const strategyCalls = strategy.getCalls().length;
-		const exchangeFees = simulatedExchange.exchange.fees.trading.taker;
+		const exchangeFees =
+			simulatedExchange.exchange.fees["trading"]["taker"];
 		// Multiplying by 1 is obviously redundant here, but in general
 		// should multiply by order cost
 

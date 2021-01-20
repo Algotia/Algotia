@@ -1,15 +1,15 @@
 import Decimal from "decimal.js";
 import { parsePair } from "../../../src/utils";
 import {
-	simulatedExchange,
 	initialBalance,
 	reset,
 	initialBalanceSymbol,
+	simulatedExchanges,
 } from "../../test-utils";
 
 const [base, quote] = parsePair(initialBalanceSymbol);
 
-describe("edit order", () => {
+describe.each(simulatedExchanges)("edit order", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});

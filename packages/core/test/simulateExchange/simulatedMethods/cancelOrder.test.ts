@@ -1,5 +1,5 @@
 import {
-	simulatedExchange,
+	simulatedExchanges,
 	initialBalance,
 	reset,
 	initialBalanceSymbol,
@@ -7,7 +7,7 @@ import {
 import Decimal from "decimal.js";
 import { parsePair } from "../../../src/utils";
 
-describe("cancelOrder", () => {
+describe.each(simulatedExchanges)("cancelOrder", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});

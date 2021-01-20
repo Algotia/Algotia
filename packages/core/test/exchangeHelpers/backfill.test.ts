@@ -1,6 +1,6 @@
 import { parsePeriod } from "../../src/utils";
 import { backfill } from "../../src/exchangeHelpers";
-import { simulatedExchange } from "../test-utils";
+import { initialBalanceSymbol, simulatedExchanges } from "../test-utils";
 import { OHLCV } from "ccxt";
 
 jest.mock("../../src/exchangeHelpers/fillEmptyCandles", () => {
@@ -89,22 +89,24 @@ const backfillArgs = [
 ];
 
 describe("backfill", () => {
-	for (const args of backfillArgs) {
-		test(args.title, async () => {
-			const { from, to, timeframe } = args;
-			const candles = await backfill({
-				from,
-				to,
-				pair: "ETH/BTC",
-				period: timeframe,
-				exchange: simulatedExchange.exchange,
+	for (const exchange of simulatedExchanges) {
+		for (const args of backfillArgs) {
+			test(args.title + " - " + exchange.exchange.name, async () => {
+				const { from, to, timeframe } = args;
+				const candles = await backfill({
+					from,
+					to,
+					exchange: exchange.exchange,
+					pair: initialBalanceSymbol,
+					period: timeframe,
+				});
+
+				expect(
+					require("../../src/exchangeHelpers/fillEmptyCandles")
+				).toHaveBeenCalled();
+
+				checkCandlesAreContinuous(candles, timeframe, from);
 			});
-
-			expect(
-				require("../../src/exchangeHelpers/fillEmptyCandles")
-			).toHaveBeenCalled();
-
-			checkCandlesAreContinuous(candles, timeframe, from);
-		});
+		}
 	}
 });

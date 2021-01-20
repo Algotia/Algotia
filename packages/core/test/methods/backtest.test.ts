@@ -1,9 +1,8 @@
-import { inspect } from "util";
 import { backtest } from "../../src/methods/";
-import { simulatedExchange, initialBalance, reset } from "../test-utils";
+import { simulatedExchanges, initialBalance, reset } from "../test-utils";
 import Decimal from "decimal.js";
 
-describe("backtest", () => {
+describe.each(simulatedExchanges)("backtest", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});

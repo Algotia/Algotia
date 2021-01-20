@@ -1,6 +1,6 @@
-import { simulatedExchange, reset } from "../../test-utils";
+import { reset, simulatedExchanges } from "../../test-utils";
 
-describe("updateContext", () => {
+describe.each(simulatedExchanges)("updateContext", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});

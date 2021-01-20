@@ -27,17 +27,12 @@ const backfill = async (args: BackfillArgs): Promise<OHLCV[]> => {
 			);
 		}
 
-		const limit =
-			recordsToFetch > exchange.OHLCVRecordLimit
-				? exchange.OHLCVRecordLimit
-				: recordsToFetch;
-
 		// Fetch records from exchange
 		const rawOHLCV = await exchange.fetchOHLCV(
 			pair,
 			period,
 			timeCursor,
-			limit
+			recordsToFetch
 		);
 
 		const ohlcv = reshapeOHLCV(rawOHLCV);

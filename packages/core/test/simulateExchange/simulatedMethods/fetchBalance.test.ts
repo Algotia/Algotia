@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { createInitialBalance, parsePair } from "../../../src/utils";
 import {
-	simulatedExchange,
+	simulatedExchanges,
 	initialBalance,
 	reset,
 	initialBalanceSymbol,
@@ -9,7 +9,7 @@ import {
 
 const [base, quote] = parsePair(initialBalanceSymbol);
 
-describe("fetch balance", () => {
+describe.each(simulatedExchanges)("fetch balance", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});

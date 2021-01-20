@@ -1,7 +1,7 @@
 import { BadSymbol, InsufficientFunds } from "ccxt";
 import { parsePair } from "../../../src/utils";
 import {
-	simulatedExchange,
+	simulatedExchanges,
 	initialBalance,
 	reset,
 	initialBalanceSymbol,
@@ -9,7 +9,7 @@ import {
 
 const [base, quote] = parsePair(initialBalanceSymbol);
 
-describe("create order", () => {
+describe.each(simulatedExchanges)("create order", (simulatedExchange) => {
 	afterEach(() => {
 		reset();
 	});
