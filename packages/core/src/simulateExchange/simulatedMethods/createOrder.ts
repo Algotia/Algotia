@@ -1,6 +1,7 @@
 import { BadRequest, BadSymbol, InsufficientFunds, Order } from "ccxt";
 import { Exchange, SimulatedExchangeStore } from "../../types";
 import { parsePair, uuid } from "../../utils";
+import Decimal from "decimal.js";
 
 type CreateOrder = Exchange["createOrder"];
 type Fees = Exchange["fees"];
@@ -17,10 +18,13 @@ const createCreateOrder = (
 		amount: number,
 		price?: number
 	): Promise<Order> => {
+		const decimalAmount = new Decimal(amount);
+		let decimalPrice: Decimal;
+
 		const { currentTime, balance } = store;
 
-		const makerFee = fees["trading"]["maker"];
-		const takerFee = fees["trading"]["taker"];
+		const makerFee = new Decimal(fees["trading"]["maker"]);
+		const takerFee = new Decimal(fees["trading"]["taker"]);
 
 		const [base, quote] = parsePair(symbol);
 
@@ -54,34 +58,38 @@ const createCreateOrder = (
 					"Order type is limit, but no price passed"
 				);
 			}
+			decimalPrice = new Decimal(price);
 		}
 
 		if (type === "market") {
-			price = store.currentPrice;
+			decimalPrice = new Decimal(store.currentPrice);
 		}
 
-		const costNoFee = price * amount;
-		const feeCost = costNoFee * (type === "market" ? takerFee : makerFee);
-		const costWithFees = costNoFee + feeCost;
+		const costNoFee = new Decimal(decimalPrice.mul(decimalAmount));
+		const feeCost = costNoFee.mul(type === "market" ? takerFee : makerFee);
+		const costWithFees = costNoFee.plus(feeCost);
+
+		const freeQuoteBalance = new Decimal(balance[quote].free);
+		const freeBaseBalance = new Decimal(balance[base].free);
 
 		const insufficientFundsMessage = `Insufficient balance for ${type} ${side} order costing ${
 			side === "buy" ? costWithFees : amount
 		} ${side === "buy" ? base : quote}`;
 
 		if (side === "buy") {
-			if (costNoFee > balance[quote]["free"]) {
+			if (costNoFee.gt(freeQuoteBalance)) {
 				throw new InsufficientFunds(insufficientFundsMessage);
 			}
-			if (costWithFees > balance[quote]["free"]) {
+			if (costWithFees.gt(freeQuoteBalance)) {
 				throw new InsufficientFunds(
 					`Insufficient balance for paying fees costing ${feeCost} ${quote}`
 				);
 			}
 		} else if (side === "sell") {
-			if (amount > balance[base]["free"]) {
+			if (decimalAmount.gt(freeBaseBalance)) {
 				throw new InsufficientFunds(insufficientFundsMessage);
 			}
-			if (feeCost > balance[quote]["free"]) {
+			if (feeCost.gt(freeQuoteBalance)) {
 				throw new InsufficientFunds(
 					`Insufficient balance for paying fees costing ${feeCost} ${quote}`
 				);
@@ -94,8 +102,8 @@ const createCreateOrder = (
 			symbol,
 			type,
 			side,
-			amount,
-			price,
+			amount: decimalAmount.toNumber(),
+			price: decimalPrice.toNumber(),
 			cost: 0,
 			datetime: new Date(currentTime).toISOString(),
 			timestamp: currentTime,
@@ -109,8 +117,11 @@ const createCreateOrder = (
 			fee: {
 				currency: quote,
 				type: type === "market" ? "taker" : "maker",
-				rate: type === "market" ? takerFee : makerFee,
-				cost: feeCost,
+				rate:
+					type === "market"
+						? takerFee.toNumber()
+						: makerFee.toNumber(),
+				cost: feeCost.toNumber(),
 			},
 		};
 
@@ -120,9 +131,14 @@ const createCreateOrder = (
 		if (side === "buy") {
 			store.balance = Object.assign(store.balance, {
 				[quote]: {
-					free: oldQuoteBalance.free - costWithFees,
-					used: oldQuoteBalance.used + costWithFees,
-					total: oldQuoteBalance.total,
+					free: new Decimal(oldQuoteBalance.free)
+						.minus(costWithFees)
+						.toNumber(),
+
+					used: new Decimal(oldQuoteBalance.used)
+						.plus(costWithFees)
+						.toNumber(),
+					total: new Decimal(oldQuoteBalance.total).toNumber(),
 				},
 			});
 			store.balance.info = { ...store.balance };
@@ -132,14 +148,22 @@ const createCreateOrder = (
 		if (side === "sell") {
 			store.balance = Object.assign(store.balance, {
 				[base]: {
-					free: oldBaseBalance.free - amount,
-					used: oldBaseBalance.used + amount,
-					total: oldBaseBalance.total,
+					free: new Decimal(oldBaseBalance.free)
+						.minus(decimalAmount)
+						.toNumber(),
+					used: new Decimal(oldBaseBalance.used)
+						.plus(decimalAmount)
+						.toNumber(),
+					total: new Decimal(oldBaseBalance.total).toNumber(),
 				},
 				[quote]: {
-					free: oldQuoteBalance.free - feeCost,
-					used: oldQuoteBalance.used + feeCost,
-					total: oldQuoteBalance.total,
+					free: new Decimal(oldQuoteBalance.free)
+						.minus(feeCost)
+						.toNumber(),
+					used: new Decimal(oldQuoteBalance.used)
+						.plus(feeCost)
+						.toNumber(),
+					total: new Decimal(oldQuoteBalance.total).toNumber(),
 				},
 			});
 			store.balance.info = { ...store.balance };

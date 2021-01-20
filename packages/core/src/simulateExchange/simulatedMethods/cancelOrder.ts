@@ -1,6 +1,7 @@
 import { Exchange as CCXT_Exchange, Params, Order } from "ccxt";
 import { SimulatedExchangeStore } from "../../types";
 import { parsePair } from "../../utils";
+import Decimal from "decimal.js";
 
 type CancelOrder = CCXT_Exchange["cancelOrder"];
 
@@ -25,26 +26,39 @@ const createCancelOrder = (store: SimulatedExchangeStore): CancelOrder => {
 		const oldQuoteBalance = store.balance[quote];
 		const oldBaseBalance = store.balance[base];
 
-		const filledCost = price * amount;
+		const filledCost = new Decimal(price).mul(amount);
 
 		if (side === "buy") {
 			store.balance[quote] = {
-				free: oldQuoteBalance.free + filledCost - fee.cost,
-				used: oldQuoteBalance.used - (filledCost + fee.cost),
-				total: oldQuoteBalance.total - fee.cost,
+				free: new Decimal(oldQuoteBalance.free)
+					.plus(filledCost)
+					.toNumber(),
+				used: new Decimal(oldQuoteBalance.used)
+					.minus(filledCost)
+					.minus(fee.cost)
+					.toNumber(),
+				total: new Decimal(oldQuoteBalance.total)
+					.minus(fee.cost)
+					.toNumber(),
 			};
 		}
 
 		if (side === "sell") {
 			store.balance[base] = {
-				free: oldBaseBalance.free + amount,
-				used: oldQuoteBalance.used - amount,
-				total: oldQuoteBalance.total,
+				free: new Decimal(oldBaseBalance.free).plus(amount).toNumber(),
+				used: new Decimal(oldQuoteBalance.used)
+					.minus(amount)
+					.toNumber(),
+				total: new Decimal(oldQuoteBalance.total).toNumber(),
 			};
 			store.balance[quote] = {
-				free: oldQuoteBalance.free - fee.cost,
-				used: oldQuoteBalance.used,
-				total: oldQuoteBalance.total - fee.cost,
+				free: new Decimal(oldQuoteBalance.free).toNumber(),
+				used: new Decimal(oldQuoteBalance.used)
+					.minus(fee.cost)
+					.toNumber(),
+				total: new Decimal(oldQuoteBalance.total)
+					.minus(fee.cost)
+					.toNumber(),
 			};
 		}
 

@@ -4,6 +4,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Column } from "../../components/shared";
 import MonacoEditor, { monaco, EditorDidMount } from "@monaco-editor/react";
 import { FC, useEffect, useState } from "react";
+import { InitRes } from "../../App";
 
 const Wrapper = styled(Column)`
     width: 100%;
@@ -86,16 +87,21 @@ monaco.init().then((monaco) => {
     });
 });
 
-const Init: FC<{ initalConfig: string; onInit: (config: any) => void }> = ({
-    initalConfig,
-    onInit,
-}) => {
+const Init: FC<{
+    init: InitRes;
+    onInit: (config: any) => void;
+}> = ({ init, onInit }) => {
     // const editorDidMount: EditorDidMount = (editor) => {
     //     editor.focus();
     // };
 
-    const [config, setConfig] = useState<string>(initalConfig);
+    const [config, setConfig] = useState<string>(init.initialConfig || "");
     const [runDisabled, setRunDisabled] = useState(false);
+
+    useEffect(() => {
+        console.log("INIT", init);
+        init.initialConfig && setConfig(init.initialConfig);
+    }, [init]);
 
     useEffect(() => {
         let json: any = {};
@@ -124,14 +130,12 @@ const Init: FC<{ initalConfig: string; onInit: (config: any) => void }> = ({
                     theme="vs-dark"
                     value={config}
                     language={"json"}
-                    // editorDidMount={editorDidMount}
                 />
                 <Button
                     classes={classes}
                     disabled={runDisabled}
                     onClick={() => {
-                        console.log(JSON.parse(config));
-                        !runDisabled && onInit(JSON.parse(config));
+                        !runDisabled && onInit(config);
                     }}
                 >
                     submit

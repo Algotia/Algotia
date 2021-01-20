@@ -65,6 +65,7 @@
     "devDependencies": {
         "@types/d3-array": "^2.8.0",
         "@types/react-router-dom": "^5.1.7",
-        "@types/styled-components": "^5.1.7"
+        "@types/styled-components": "^5.1.7",
+        "ccxt": "^1.40.80"
     }
 }

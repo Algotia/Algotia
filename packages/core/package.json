@@ -30,7 +30,8 @@
 		}
 	},
 	"dependencies": {
-		"ccxt": "^1.37.68"
+		"ccxt": "^1.37.68",
+		"decimal.js": "^10.2.1"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.10",

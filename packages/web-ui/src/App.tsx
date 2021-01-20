@@ -10,9 +10,9 @@ const About = () => <div>about</div>;
 const Users = () => <div>users</div>;
 const Home = () => <div>home</div>;
 
-interface InitRes {
+export interface InitRes {
     init: boolean;
-    initalConfig?: string;
+    initialConfig?: string;
 }
 
 function App() {
@@ -25,8 +25,10 @@ function App() {
                 return res.json();
             })
             .then((body) => {
-                setLoading(false);
                 setInit(body);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, []);
 
@@ -44,42 +46,43 @@ function App() {
             })
             .then((json) => {
                 if (json.errors) {
+                    alert(json.errors);
                 } else {
                     setInit(json);
                 }
             })
             .catch((err) => {
                 alert(`Something went wrong: ${err.message}`);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
     return (
-        <>
-            {loading && <div />}
-            <ThemeProvider theme={theme}>
-                <ResetCSS />
-                {init && init.init && (
-                    <Router>
-                        <Layout>
-                            <Switch>
-                                <Route path="/backtest">
-                                    <BacktestPage />
-                                </Route>
-                                <Route path="/users">
-                                    <Users />
-                                </Route>
-                                <Route path="/">
-                                    <Home />
-                                </Route>
-                            </Switch>
-                        </Layout>
-                    </Router>
-                )}
-                {init && !init.init && init.initalConfig && (
-                    <Init onInit={onInit} initalConfig={init.initalConfig} />
-                )}
-            </ThemeProvider>
-        </>
+        <ThemeProvider theme={theme}>
+            <ResetCSS />
+            {init && init.init && (
+                <Router>
+                    <Layout>
+                        <Switch>
+                            <Route path="/backtest">
+                                <BacktestPage />
+                            </Route>
+                            <Route path="/users">
+                                <Users />
+                            </Route>
+                            <Route path="/">
+                                <Home />
+                            </Route>
+                        </Switch>
+                    </Layout>
+                </Router>
+            )}
+            {init && !init.init && (
+                <Init onInit={onInit} init={init} />
+            )}
+        </ThemeProvider>
     );
 }
 

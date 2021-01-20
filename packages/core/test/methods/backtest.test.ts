@@ -1,6 +1,7 @@
 import { inspect } from "util";
 import { backtest } from "../../src/methods/";
 import { simulatedExchange, initialBalance, reset } from "../test-utils";
+import Decimal from "decimal.js";
 
 describe("backtest", () => {
 	afterEach(() => {
@@ -31,14 +32,14 @@ describe("backtest", () => {
 			0
 		);
 
-		expect(result.balance.BTC.free).toBeCloseTo(
+		expect(result.balance.BTC.free).toStrictEqual(
 			initialBalance.BTC - totalCost
 		);
 
 		expect(result.balance.BTC.used).toStrictEqual(0);
 
-		expect(result.balance.BTC.total).toBeCloseTo(
-			initialBalance.BTC - totalCost
+		expect(result.balance.BTC.total).toStrictEqual(
+			new Decimal(initialBalance.BTC).minus(totalCost).toNumber()
 		);
 
 		expect(result.balance.ETH.free).toStrictEqual(

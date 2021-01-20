@@ -1,4 +1,5 @@
 import { Exchange as CCXT_Exchange, Order } from "ccxt";
+import Decimal from "decimal.js";
 import { Exchange, SimulatedExchangeStore } from "../../types";
 import { parsePair } from "../../utils";
 
@@ -38,7 +39,7 @@ const createEditOrder = (
 
 	const [base, quote] = parsePair(symbol);
 
-	let cost: number;
+	let decimalCost: Decimal;
 
 	if (type === "limit") {
 		if (!price) {
@@ -46,20 +47,22 @@ const createEditOrder = (
 				"Error editing order: Order type is limit, but no price passed - order not edited"
 			);
 		}
-		cost = amount * price;
+		decimalCost = new Decimal(amount).mul(price);
 	}
 
 	if (type === "market") {
 		price = store.currentPrice;
-		cost = amount * price;
+		decimalCost = new Decimal(amount).mul(price);
 	}
 
 	const makerFee = fees["trading"]["maker"];
 	const takerFee = fees["trading"]["taker"];
 
-	const prevFillCost = foundOrder.price * foundOrder.amount;
+	const prevDecimalFillCost = new Decimal(foundOrder.price).mul(
+		foundOrder.amount
+	);
 
-	const fillCost = price * amount;
+	const fillCost = new Decimal(price).mul(amount);
 
 	const editedOrder: Order = {
 		...foundOrder,
@@ -83,7 +86,10 @@ const createEditOrder = (
 			currency: quote,
 			type: type === "market" ? "taker" : "maker",
 			rate: type === "market" ? takerFee : makerFee,
-			cost: type === "market" ? takerFee * fillCost : makerFee * fillCost,
+			cost:
+				type === "market"
+					? new Decimal(takerFee).mul(fillCost).toNumber()
+					: new Decimal(makerFee).mul(fillCost).toNumber(),
 		},
 	};
 
@@ -92,15 +98,18 @@ const createEditOrder = (
 
 	if (side === "buy") {
 		if (
-			editedOrder.cost >
-			oldQuoteBalance.free - (editedOrder.cost - foundOrder.cost)
+			new Decimal(editedOrder.cost).gt(
+				new Decimal(oldQuoteBalance.free)
+					.minus(editedOrder.cost)
+					.minus(foundOrder.cost)
+			)
 		) {
 			throw new Error(
 				`Error editing order: Insufficient balance - order not edited`
 			);
 		}
 	} else if (side === "sell") {
-		if (cost > balance[base]["free"]) {
+		if (decimalCost.gt(balance[base].free)) {
 			throw new Error(
 				`Error editing order: Insufficient balance - order not edited`
 			);
@@ -110,23 +119,20 @@ const createEditOrder = (
 	if (side === "buy") {
 		store.balance = Object.assign(store.balance, {
 			[quote]: {
-				free:
-					oldQuoteBalance.free +
-					prevFillCost -
-					fillCost -
-					editedOrder.fee.cost,
-				used:
-					oldQuoteBalance.used -
-					prevFillCost +
-					fillCost +
-					editedOrder.fee.cost -
-					foundOrder.fee.cost,
-				total:
-					oldQuoteBalance.total +
-					prevFillCost -
-					fillCost -
-					editedOrder.fee.cost -
-					foundOrder.fee.cost,
+				free: new Decimal(oldQuoteBalance.free)
+					.plus(prevDecimalFillCost)
+					.minus(fillCost)
+					.minus(editedOrder.fee.cost)
+					.toNumber(),
+				used: new Decimal(oldQuoteBalance.used)
+					.minus(prevDecimalFillCost)
+					.minus(foundOrder.fee.cost)
+					.plus(fillCost)
+					.plus(editedOrder.fee.cost)
+					.toNumber(),
+				total: new Decimal(oldQuoteBalance.total)
+					.minus(foundOrder.fee.cost)
+					.toNumber(),
 			},
 		});
 	}

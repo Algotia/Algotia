@@ -1,86 +1,71 @@
-import { simulatedExchange, initialBalance, reset } from "../../test-utils";
+import {
+	simulatedExchange,
+	initialBalance,
+	reset,
+	initialBalanceSymbol,
+} from "../../test-utils";
+import Decimal from "decimal.js";
+import { parsePair } from "../../../src/utils";
 
 describe("cancelOrder", () => {
 	afterEach(() => {
 		reset();
 	});
 
+	const quote = parsePair(initialBalanceSymbol)[1];
+	const orderSides = ["buy", "sell"] as const;
 	const orderTypes = ["limit", "market"] as const;
+
 	for (const orderType of orderTypes) {
-		it(`should cancel ${orderType} order`, async () => {
-			const { exchange, updateContext, store } = simulatedExchange;
+		for (const orderSide of orderSides) {
+			it(`should cancel ${orderType} ${orderSide} order`, async () => {
+				const { exchange, updateContext, store } = simulatedExchange;
 
-			updateContext(1000, 5);
+				updateContext(1000, 5);
 
-			const order = await exchange.createOrder(
-				"ETH/BTC",
-				orderType,
-				"buy",
-				1,
-				3
-			);
+				const order = await exchange.createOrder(
+					initialBalanceSymbol,
+					orderType,
+					orderSide,
+					1,
+					3
+				);
 
-			const totalCost = order.price * order.amount + order.fee.cost;
+				expect(store.openOrders.length).toStrictEqual(1);
+				expect(store.closedOrders.length).toStrictEqual(0);
 
-			expect(store.balance["BTC"].free).toStrictEqual(
-				initialBalance.BTC - totalCost
-			);
-			expect(store.balance["BTC"].used).toStrictEqual(totalCost);
-			expect(store.balance["BTC"].total).toStrictEqual(
-				initialBalance.BTC
-			);
+				await exchange.cancelOrder(order.id);
 
-			expect(store.openOrders.length).toStrictEqual(1);
-			expect(store.closedOrders.length).toStrictEqual(0);
+				expect(store.balance[quote].free).toStrictEqual(
+					new Decimal(initialBalance.BTC)
+						.minus(order.fee.cost)
+						.toNumber()
+				);
+				expect(store.balance[quote].used).toStrictEqual(0);
 
-			await exchange.cancelOrder(order.id);
+				expect(store.balance[quote].total).toStrictEqual(
+					initialBalance.BTC - order.fee.cost
+				);
 
-			expect(store.balance["BTC"].free).toBeCloseTo(
-				initialBalance.BTC - order.fee.cost
-			);
-
-			expect(store.balance["BTC"].used).toStrictEqual(0);
-
-			expect(store.balance["BTC"].total).toStrictEqual(
-				initialBalance.BTC - order.fee.cost
-			);
-
-			expect(store.openOrders.length).toStrictEqual(0);
-			expect(store.closedOrders.length).toStrictEqual(1);
-			expect(store.closedOrders[0].status).toStrictEqual("canceled");
-		});
+				expect(store.openOrders.length).toStrictEqual(0);
+				expect(store.closedOrders.length).toStrictEqual(1);
+				expect(store.closedOrders[0].status).toStrictEqual("canceled");
+			});
+		}
 	}
 
 	it(`should throw error if order is filled`, async () => {
-		const {
-			exchange,
-			updateContext,
-			fillOrders,
-			store,
-		} = simulatedExchange;
+		const { exchange, updateContext, fillOrders } = simulatedExchange;
 
 		updateContext(1000, 5);
 
 		const order = await exchange.createOrder(
-			"ETH/BTC",
+			initialBalanceSymbol,
 			"limit",
 			"buy",
 			1,
 			3
 		);
-
-		expect(store.balance["BTC"].free).toStrictEqual(
-			initialBalance.BTC - order.price * order.amount - order.fee.cost
-		);
-
-		expect(store.balance["BTC"].used).toStrictEqual(
-			order.price * order.amount + order.fee.cost
-		);
-
-		expect(store.balance["BTC"].total).toStrictEqual(initialBalance.BTC);
-
-		expect(store.openOrders.length).toStrictEqual(1);
-		expect(store.closedOrders.length).toStrictEqual(0);
 
 		fillOrders({
 			timestamp: 2000,

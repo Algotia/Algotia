@@ -89,7 +89,6 @@ const Footer = () => {
     };
 
     return (
-        <>
             <Wrapper>
                 <StatusWrapper onClick={onClick}>
                     <button>Status</button>
@@ -113,7 +112,6 @@ const Footer = () => {
                     </Menu>
                 )}
             </Wrapper>
-        </>
     );
 };
 

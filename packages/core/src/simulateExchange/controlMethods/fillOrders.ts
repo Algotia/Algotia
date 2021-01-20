@@ -1,6 +1,7 @@
 import { Trade, Order } from "ccxt";
 import { SimulatedExchangeStore, OHLCV } from "../../types";
 import { parsePair } from "../../utils";
+import Decimal from "decimal.js";
 
 const createFillOrders = (
 	store: SimulatedExchangeStore
@@ -70,7 +71,7 @@ const createTrade = (store: SimulatedExchangeStore, order: Order): Trade => {
 		type,
 		fee,
 		price,
-		cost: price * amount,
+		cost: new Decimal(price).mul(amount).toNumber(),
 		takerOrMaker: fee.type,
 	};
 
@@ -89,15 +90,23 @@ const updateBalance = (store: SimulatedExchangeStore, closedOrder: Order) => {
 
 		if (trade.side === "buy") {
 			const newBaseBalance = {
-				free: oldBaseBalance.free + trade.amount,
+				free: new Decimal(oldBaseBalance.free)
+					.plus(trade.amount)
+					.toNumber(),
 				used: oldBaseBalance.used,
-				total: oldBaseBalance.total + trade.amount,
+				total: new Decimal(oldBaseBalance.total)
+					.plus(trade.amount)
+					.toNumber(),
 			};
 
 			const newQuoteBalance = {
 				free: oldQuoteBalance.free,
-				used: oldQuoteBalance.used - (trade.cost + trade.fee.cost),
-				total: oldQuoteBalance.total - (trade.cost + trade.fee.cost),
+				used: new Decimal(oldQuoteBalance.used)
+					.minus(new Decimal(trade.cost).plus(trade.fee.cost))
+					.toNumber(),
+				total: new Decimal(oldQuoteBalance.total)
+					.minus(new Decimal(trade.cost).plus(trade.fee.cost))
+					.toNumber(),
 			};
 
 			const newBalance = Object.assign({}, store.balance, {
@@ -113,14 +122,24 @@ const updateBalance = (store: SimulatedExchangeStore, closedOrder: Order) => {
 		if (trade.side === "sell") {
 			const newBaseBalance = {
 				free: oldBaseBalance.free,
-				used: oldBaseBalance.used - trade.amount,
-				total: oldBaseBalance.total - trade.amount,
+				used: new Decimal(oldBaseBalance.used)
+					.minus(trade.amount)
+					.toNumber(),
+				total: new Decimal(oldBaseBalance.total)
+					.minus(trade.amount)
+					.toNumber(),
 			};
 
 			const newQuoteBalance = {
-				free: oldQuoteBalance.free + trade.cost,
-				used: oldQuoteBalance.used - trade.fee.cost,
-				total: oldQuoteBalance.total + trade.cost - trade.fee.cost,
+				free: new Decimal(oldQuoteBalance.free)
+					.plus(trade.cost)
+					.toNumber(),
+				used: new Decimal(oldQuoteBalance.used)
+					.minus(trade.fee.cost)
+					.toNumber(),
+				total: new Decimal(oldQuoteBalance.total)
+					.plus(new Decimal(trade.cost).minus(trade.fee.cost))
+					.toNumber(),
 			};
 
 			const newBalance = Object.assign({}, store.balance, {
