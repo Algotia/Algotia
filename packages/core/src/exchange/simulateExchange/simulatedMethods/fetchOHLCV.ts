@@ -1,5 +1,5 @@
 import { Exchange as CCXT_Exchange, OHLCV } from "ccxt";
-import { Exchange } from "../../types";
+import { Exchange } from "../../../types";
 
 type FetchOHLCV = CCXT_Exchange["fetchOHLCV"];
 

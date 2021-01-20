@@ -1,6 +1,6 @@
 import { BadRequest, BadSymbol, InsufficientFunds, Order } from "ccxt";
-import { Exchange, SimulatedExchangeStore } from "../../types";
-import { parsePair, uuid } from "../../utils";
+import { Exchange, SimulatedExchangeStore } from "../../../types";
+import { parsePair, uuid } from "../../../utils";
 import Decimal from "decimal.js";
 
 type CreateOrder = Exchange["createOrder"];

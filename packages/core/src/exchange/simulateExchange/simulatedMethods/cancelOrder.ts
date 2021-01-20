@@ -1,6 +1,6 @@
 import { Exchange as CCXT_Exchange, Params, Order } from "ccxt";
-import { SimulatedExchangeStore } from "../../types";
-import { parsePair } from "../../utils";
+import { SimulatedExchangeStore } from "../../../types";
+import { parsePair } from "../../../utils";
 import Decimal from "decimal.js";
 
 type CancelOrder = CCXT_Exchange["cancelOrder"];

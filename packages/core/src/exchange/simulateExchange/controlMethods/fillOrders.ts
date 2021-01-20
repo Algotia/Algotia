@@ -1,6 +1,6 @@
 import { Trade, Order } from "ccxt";
-import { SimulatedExchangeStore, OHLCV } from "../../types";
-import { parsePair } from "../../utils";
+import { SimulatedExchangeStore, OHLCV } from "../../../types";
+import { parsePair } from "../../../utils";
 import Decimal from "decimal.js";
 
 const createFillOrders = (

@@ -5,7 +5,7 @@ import {
 	createStrategyError,
 } from "../types";
 import { parsePeriod, roundTime } from "../utils";
-import { getLiveCandle } from "../exchangeHelpers";
+import { getLiveCandle } from "../exchange";
 import { EventEmitter } from "events";
 
 /** Paper trading is like live trading, but uses a simulated
@@ -70,7 +70,7 @@ const paperTrade = async (
 			const formattedErr = createStrategyError({
 				timestamp: candle.timestamp,
 				message: err.message,
-				balance: store.balance
+				balance: store.balance,
 			});
 			store.errors.push(formattedErr);
 		}

@@ -1,5 +1,5 @@
 import ccxt from "ccxt";
-import { ExchangeID, isExchangeID } from "../types";
+import { ExchangeID, isExchangeID } from "../../types";
 
 const createExchange = (
 	id: ExchangeID,

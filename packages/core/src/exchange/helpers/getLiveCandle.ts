@@ -1,5 +1,5 @@
-import { Exchange, OHLCV, SimulatedExchange } from "../types";
-import { parsePeriod, reshapeOHLCV, roundTime } from "../utils";
+import { Exchange, OHLCV, SimulatedExchange } from "../../types";
+import { parsePeriod, reshapeOHLCV, roundTime } from "../../utils";
 
 /** Get the last full live candle from the exchange.
  */

@@ -1,4 +1,4 @@
-import { OHLCV } from "../types";
+import { OHLCV } from "../../types";
 
 /** If no candles were returned (e.g.: downtime, no volume), fill period with last known candle prices, with timestamp value incremented to create continuous time series */
 const fillEmptyCandles = (candles: OHLCV[], periodMs: number): OHLCV[] => {

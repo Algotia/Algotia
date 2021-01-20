@@ -1,4 +1,4 @@
-import { createInitialBalance } from "../utils";
+import { createInitialBalance } from "../../utils";
 import {
 	SimulatedExchangeStore,
 	SimulatedExchangeResult,
@@ -6,7 +6,7 @@ import {
 	ExchangeID,
 	Exchange,
 	InitialBalance,
-} from "../types/";
+} from "../../types/";
 import {
 	createCancelOrder,
 	createCreateOrder,

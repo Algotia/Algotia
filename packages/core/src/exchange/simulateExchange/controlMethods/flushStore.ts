@@ -1,5 +1,5 @@
-import { InitialBalance, SimulatedExchangeStore } from "../../types";
-import { createInitialBalance } from "../../utils";
+import { InitialBalance, SimulatedExchangeStore } from "../../../types";
+import { createInitialBalance } from "../../../utils";
 
 const createFlushStore = (
 	store: SimulatedExchangeStore,

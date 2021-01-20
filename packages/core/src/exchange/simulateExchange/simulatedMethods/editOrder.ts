@@ -1,7 +1,7 @@
 import { Exchange as CCXT_Exchange, Order } from "ccxt";
 import Decimal from "decimal.js";
-import { Exchange, SimulatedExchangeStore } from "../../types";
-import { parsePair } from "../../utils";
+import { Exchange, SimulatedExchangeStore } from "../../../types";
+import { parsePair } from "../../../utils";
 
 type EditOrder = CCXT_Exchange["editOrder"];
 type Fees = Exchange["fees"];

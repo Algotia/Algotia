@@ -1,5 +1,5 @@
-import { Exchange, OHLCV, SimulatedExchange } from "../types";
-import { parsePeriod, reshapeOHLCV } from "../utils/";
+import { Exchange, OHLCV, SimulatedExchange } from "../../types";
+import { parsePeriod, reshapeOHLCV } from "../../utils/";
 import fillEmptyCandles from "./fillEmptyCandles";
 
 interface BackfillArgs {

@@ -12,9 +12,8 @@
 	},
 	"scripts": {
 		"test": "jest",
-		"build": "npx gulp build",
-		"clean": "npx gulp clean",
-		"dev": "npx gulp watch",
+		"build": "tsc",
+		"dev": "tsc -w",
 		"lint": "npx eslint --ext .ts",
 		"buildAndTest": "npm run build && npm t",
 		"get-version": "echo $npm_package_version",
