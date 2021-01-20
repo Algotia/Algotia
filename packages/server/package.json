@@ -1,51 +1,51 @@
 {
-  "name": "server-2",
-  "version": "1.0.0",
-  "main": "dist/server.js",
-  "scripts": {
-    "test": "jest",
-    "dev": "tsc && NODE_ENV='development' node dist/server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-typescript": "^7.12.7",
-    "@types/express": "^4.17.9",
-    "@types/jest": "^26.0.19",
-    "@types/mock-fs": "^4.13.0",
-    "@types/node": "^14.14.19",
-    "@types/supertest": "^2.0.10",
-    "babel-jest": "^26.6.3",
-    "jest": "^26.6.3",
-    "supertest": "^6.0.1",
-    "unexpected": "^12.0.0",
-    "unexpected-express": "^13.0.1"
-  },
-  "dependencies": {
-    "@algotia/core": "^0.0.4-32",
-    "@babel/register": "^7.12.10",
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "env-paths": "^2.2.0",
-    "execa": "^4.1.0",
-    "express": "^4.17.1",
-    "express-validator": "^6.9.1",
-    "import-fresh": "^3.3.0",
-    "joi": "^17.3.0",
-    "mock-fs": "^4.13.0",
-    "node-graceful": "^3.0.1",
-    "node-graceful-shutdown": "^1.1.0",
-    "op-cache": "^1.0.1",
-    "pkg-dir": "^5.0.0",
-    "socket.io": "^3.0.4",
-    "winston": "^3.3.3",
-    "yaml": "^1.10.0"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "description": ""
+    "name": "@algotia/server",
+    "version": "0.1.0",
+    "main": "dist/server.js",
+    "scripts": {
+        "test": "jest",
+        "dev": "tsc && NODE_ENV='development' node dist/server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.12.10",
+        "@babel/preset-env": "^7.12.11",
+        "@babel/preset-typescript": "^7.12.7",
+        "@types/express": "^4.17.9",
+        "@types/jest": "^26.0.19",
+        "@types/mock-fs": "^4.13.0",
+        "@types/node": "^14.14.19",
+        "@types/supertest": "^2.0.10",
+        "babel-jest": "^26.6.3",
+        "jest": "^26.6.3",
+        "supertest": "^6.0.1",
+        "unexpected": "^12.0.0",
+        "unexpected-express": "^13.0.1"
+    },
+    "dependencies": {
+        "@algotia/core": "^0.0.4-32",
+        "@babel/register": "^7.12.10",
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "env-paths": "^2.2.0",
+        "execa": "^4.1.0",
+        "express": "^4.17.1",
+        "express-validator": "^6.9.1",
+        "import-fresh": "^3.3.0",
+        "joi": "^17.3.0",
+        "mock-fs": "^4.13.0",
+        "node-graceful": "^3.0.1",
+        "node-graceful-shutdown": "^1.1.0",
+        "op-cache": "^1.0.1",
+        "pkg-dir": "^5.0.0",
+        "socket.io": "^3.0.4",
+        "winston": "^3.3.3",
+        "yaml": "^1.10.0"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "description": ""
 }
