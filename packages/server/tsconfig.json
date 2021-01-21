@@ -1,17 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        "module": "CommonJS",
-        "allowJs": true,
-        "outDir": "./dist",
-        "declaration": true,
-        "rootDir": "./src",
+	"compilerOptions": {
+		"target": "ES6",
+		"lib": ["ES2019"],
+		"module": "CommonJS",
+		"allowJs": true,
+		"outDir": "./dist",
+		"declaration": true,
+		"rootDir": "./src",
 		"sourceMap": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
-    },
-    "include": ["src/**/*.ts"],
-    "exclude": ["node_modules/"]
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules/"]
 }

@@ -18,7 +18,7 @@ export interface StrategyData extends StrategyMeta {
 let KEY_S: number;
 let CtrlCmd: number;
 
-monaco.init().then((m ) => {
+monaco.init().then((m) => {
     m.languages.typescript.typescriptDefaults.setCompilerOptions({
         target: m.languages.typescript.ScriptTarget.ES2016,
         allowNonTsExtensions: true,
@@ -64,7 +64,6 @@ const StrategyEditor: FC<{
     const { onStrategySelected, height, width } = props;
 
     const [editorValue, setEditorValue] = useState<string>(defaultValue);
-    const [allStrategies, setAllStrategies] = useState<StrategyMeta[]>();
 
     const [currentStrategy, setCurrentStrategy] = useState<StrategyData>();
 
@@ -76,16 +75,6 @@ const StrategyEditor: FC<{
                 setCurrentStrategy(data);
             });
     };
-
-    useEffect(() => {
-        fetch("/api/strategy")
-            .then((res) => res.json())
-            .then((json) => {
-                if (json.strategies) {
-                    setAllStrategies(json.strategies);
-                }
-            });
-    }, []);
 
     const editorRef = useRef<any>();
 
@@ -137,12 +126,7 @@ const StrategyEditor: FC<{
 
     return (
         <EditorWrapper height={height} width={width}>
-            {allStrategies && (
-                <TopBar
-                    allStrategies={allStrategies}
-                    selectStrategy={selectStrategy}
-                />
-            )}
+            <TopBar selectStrategy={selectStrategy} />
             <Editor
                 language={currentStrategy ? currentStrategy.language : "text"}
                 options={{

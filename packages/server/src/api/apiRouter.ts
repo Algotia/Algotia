@@ -14,6 +14,8 @@ import {
     requireInit,
     validateGetStrategy,
     getStrategy,
+    getConfig,
+    validateGetConfig,
 } from "./routes";
 import {
     postStrategy,
@@ -29,6 +31,18 @@ const createApiRouter = (configurer: Configurer): Router => {
         .post(...validatePostInit(configurer), postInit(configurer));
 
     router.use(requireInit(configurer));
+
+    router.get(
+        "/config/:key",
+        ...validateGetConfig(configurer, true),
+        getConfig(configurer)
+    );
+
+    router.get(
+        "/config",
+        ...validateGetConfig(configurer),
+        getConfig(configurer)
+    );
 
     router
         .route("/strategy/:fileName")

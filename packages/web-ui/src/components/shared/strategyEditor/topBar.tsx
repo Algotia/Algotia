@@ -1,9 +1,9 @@
 import { MenuItem, Select, Button, FormControl } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { StrictMode } from "react";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Row } from "../utils";
+import NewStrategyModal from "./newStrategyModal";
 import { StrategyMeta } from "./strategyEditor";
 
 const BarWrapper = styled(Row)`
@@ -17,13 +17,11 @@ const BarWrapper = styled(Row)`
     box-sizing: border-box;
 `;
 
-const NewButton = styled(Button)``;
-
 //TODO: import StrategyData from server types
 
 const useButtonStyles = makeStyles({
     root: {
-        height: "35px",
+        height: "30px",
         width: "45px",
         backgroundColor: "#72a56f",
         position: "absolute",
@@ -31,35 +29,71 @@ const useButtonStyles = makeStyles({
     },
 });
 
-const useSelectStyles = makeStyles({
-    root: {
-        maxHeight: "35px",
-        height: "35px",
-        minWidth: "100px",
-    },
-});
-
 const TopBar: FC<{
-    allStrategies: StrategyMeta[] | undefined;
     selectStrategy: (data: StrategyMeta) => void;
-}> = (props) => {
-    const { allStrategies, selectStrategy } = props;
+}> = ({ selectStrategy }) => {
+    const [allStrategies, setAllStrategies] = useState<StrategyMeta[]>();
     const [selectVal, setSelectVal] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
 
     const buttonClasses = useButtonStyles();
-    const selectClasses = useSelectStyles();
+
+    useEffect(() => {
+        fetch("/api/strategy")
+            .then((res) => res.json())
+            .then((json) => {
+                if (json.strategies) {
+                    setAllStrategies(json.strategies);
+                }
+            });
+    }, []);
+
+    const onNewStrategyClick = () => {
+        setModalOpen(true);
+    };
+
+    const onNewStrategy = (fileName: string) => {
+        fetch("/api/strategy", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                fileName,
+                value: "",
+            }),
+        })
+            .then((res) => res.json())
+            .then((json) => {
+                if (json && !json.errors) {
+                    fetch("/api/strategy")
+                        .then((res) => res.json())
+                        .then((json) => {
+                            if (json.strategies) {
+                                setAllStrategies(json.strategies);
+                                setModalOpen(false);
+                            }
+                        })
+                        .catch((err) => {
+                            alert(err.message);
+                        });
+                }
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
+    };
 
     return (
         <BarWrapper>
+            <NewStrategyModal
+                modalOpen={modalOpen}
+                setModalOpen={setModalOpen}
+                onNewStrategy={onNewStrategy}
+            />
             <FormControl margin="dense">
-                <Select
-                    id="strategy-selector"
-                    displayEmpty
-                    classes={selectClasses}
-                    style={{ height: "25px" }}
-                    value={selectVal}
-                    variant="filled"
-                >
+                <Select id="strategy-selector" displayEmpty value={selectVal}>
                     <MenuItem value="">Strategy</MenuItem>
                     {allStrategies &&
                         allStrategies.map((data) => {
@@ -78,7 +112,9 @@ const TopBar: FC<{
                         })}
                 </Select>
             </FormControl>
-            <NewButton classes={buttonClasses}>Hello</NewButton>
+            <Button className={buttonClasses.root} onClick={onNewStrategyClick}>
+                New
+            </Button>
         </BarWrapper>
     );
 };

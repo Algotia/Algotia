@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Column, Row } from "../shared";
-import Header from "./Header";
 import SideBar from "./SideBar";
 import Footer from "./Footer";
 
@@ -27,7 +26,6 @@ const Layout: React.FC = (props) => {
         <Wrapper>
             <SideBar />
             <MainCol>
-                <Header />
 				<ChildContainer>
                 {props.children}
 				</ChildContainer>

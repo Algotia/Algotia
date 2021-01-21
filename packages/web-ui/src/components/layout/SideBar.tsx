@@ -8,11 +8,6 @@ import { NavLink } from "react-router-dom";
 import { Paper } from "@material-ui/core";
 import { createStyles, withStyles, WithStyles, Theme, useTheme } from "@material-ui/core/styles";
 
-// const Wrapper = withStyles({
-//     root: {
-//     },
-// })(Paper);
-
 const styles = (theme: Theme) => {
     return createStyles({
         root: {
