@@ -1,24 +1,31 @@
 import { TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 
 interface SelectInitialBalanceProps {
     id: string;
+    pair: string;
+    currency: string;
+    setCurrency: Dispatch<SetStateAction<string>>;
+    amount: number;
+    setAmount: Dispatch<SetStateAction<number>>;
     currencyList: string[] | undefined;
-    initialCurrency: string;
     onChange: (value: { currency: string; amount: number }) => void;
     FormItem: FC;
 }
 
 const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
-    const { id, initialCurrency, currencyList, onChange, FormItem } = props;
-    const [currency, setCurrency] = useState<string>("");
-    const [amount, setAmount] = useState<number>(0);
+    const {
+        id,
+        pair,
+        currencyList,
+        FormItem,
+        currency,
+        setCurrency,
+        amount,
+        setAmount,
+    } = props;
     const [error, setError] = useState(false);
-
-    useEffect(() => {
-        onChange({ amount, currency: currency || initialCurrency });
-    }, [amount, currency]);
 
     return (
         <>
@@ -26,11 +33,10 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
                 <Autocomplete
                     id={id + "-autocomplete"}
                     fullWidth={true}
-                    disabled={!initialCurrency}
+                    disabled={!pair}
                     options={currencyList || []}
                     getOptionLabel={(c) => c}
-                    value={initialCurrency || currency}
-                    inputValue={initialCurrency || currency}
+                    value={currency}
                     onChange={(_, val) => {
                         console.log("V", val);
                         if (val) {
@@ -49,7 +55,7 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
             <FormItem>
                 <TextField
                     id={id + "-text-field"}
-                    disabled={!initialCurrency}
+                    disabled={!pair}
                     fullWidth={true}
                     label={"Amount"}
                     value={amount}

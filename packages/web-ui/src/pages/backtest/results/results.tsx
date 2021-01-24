@@ -1,7 +1,15 @@
 import { Dispatch, FC, SetStateAction, useContext, useState } from "react";
 import { Column } from "../../../components";
 import { BacktestResults, OHLCV } from "@algotia/core";
-import { makeStyles, Tab, Tabs, Toolbar } from "@material-ui/core";
+import {
+    Button,
+    ButtonGroup,
+    makeStyles,
+    Paper,
+    Tab,
+    Tabs,
+    Toolbar,
+} from "@material-ui/core";
 import styled from "styled-components";
 import { BacktestContext } from "../context";
 import Balance from "./balance";
@@ -9,24 +17,19 @@ import ClosedOrders from "./closedOrders";
 import Errors from "./errors";
 import OpenOrders from "./openOrders";
 
-const ResultsTableWrapper = styled.div`
+const ResultsTableWrapper = styled(Paper)`
     height: 100%;
     width: 100%;
 `;
 
 const Header = styled(Toolbar)`
     height: 50px;
-    max-width: 100%;
+    width: 100%;
     display: flex;
     box-sizing: border-box;
     padding: 5px 0;
     justify-content: center;
     align-items: space-around;
-`;
-
-const Body = styled.div`
-    height: calc(100% - 65px);
-    box-sizing: border-box;
 `;
 
 const useTabsStyles = makeStyles({
@@ -35,21 +38,14 @@ const useTabsStyles = makeStyles({
     },
 });
 
-const Wrapper = styled.div`
-    height: 100%;
-    width: 100%;
-    padding: 0px 15px;
-    box-sizing: border-box;
-`;
-
 const TableBody = styled(Column)`
     height: 100%;
-    width: 100%;
+    width: calc(100% - 30px);
     margin: 0 auto;
 `;
 
 const Results: FC = () => {
-    const { results, options, candles } = useContext(BacktestContext);
+    const { requestResult } = useContext(BacktestContext);
 
     const allGroups: [keyof BacktestResults, string][] = [
         ["balance", "balance"],
@@ -62,71 +58,59 @@ const Results: FC = () => {
         allGroups[0][0]
     );
 
-    const handleGroupChange = (_: any, groupName: keyof BacktestResults) => {
-        setActiveGroup(groupName);
-    };
-
     const tabClasses = useTabsStyles();
+
     return (
-        <Wrapper>
-            <Body>
-                <ResultsTableWrapper>
-                    <Header>
-                        <Tabs
-                            onChange={handleGroupChange}
-                            value={activeGroup}
-                            scrollButtons="auto"
-                        >
-                            {allGroups.map(([resultKey, label]) => {
-                                if (results) {
-                                    label =
-                                        resultKey === "balance"
-                                            ? resultKey
-                                            : label +
-                                              " (" +
-                                              results[resultKey].length +
-                                              ")";
-                                    return (
-                                        <Tab
-                                            className={tabClasses.root}
-                                            value={resultKey}
-                                            label={label}
-                                        />
-                                    );
-                                } else {
-                                    return (
-                                        <Tab
-                                            className={tabClasses.root}
-                                            value={resultKey}
-                                            label={label}
-                                        />
-                                    );
-                                }
-                            })}
-                        </Tabs>
-                    </Header>
-                    <TableBody>
-                        {activeGroup === "balance" && (
-                            <Balance
-                                options={options}
-                                results={results}
-                                candles={candles}
-                            />
-                        )}
-                        {activeGroup === "closedOrders" && (
-                            <ClosedOrders results={results} />
-                        )}
-                        {activeGroup === "openOrders" && (
-                            <OpenOrders results={results} candles={candles} />
-                        )}
-                        {activeGroup === "errors" && (
-                            <Errors results={results} />
-                        )}
-                    </TableBody>
-                </ResultsTableWrapper>
-            </Body>
-        </Wrapper>
+        <ResultsTableWrapper>
+            <Header>
+                <ButtonGroup>
+                    {allGroups.map(([resultKey, label]) => {
+                        if (requestResult?.results) {
+                            label =
+                                resultKey === "balance"
+                                    ? resultKey
+                                    : label +
+                                      " (" +
+                                      requestResult.results[resultKey].length +
+                                      ")";
+                            return (
+                                <Button
+                                    className={tabClasses.root}
+                                    onClick={() => {
+                                        setActiveGroup(resultKey);
+                                    }}
+                                >
+                                    {label}
+                                </Button>
+                            );
+                        } else {
+                            return (
+                                <Button
+                                    className={tabClasses.root}
+                                    onClick={() => {
+                                        setActiveGroup(resultKey);
+                                    }}
+                                >
+                                    {label}
+                                </Button>
+                            );
+                        }
+                    })}
+                </ButtonGroup>
+            </Header>
+            <TableBody>
+                {activeGroup === "balance" && <Balance />}
+                {activeGroup === "closedOrders" && <ClosedOrders />}
+                {activeGroup === "openOrders" && <OpenOrders />}
+                {activeGroup === "errors" && <Errors />}
+            </TableBody>
+        </ResultsTableWrapper>
     );
 };
 export default Results;
-
+// <Tabs
+//     onChange={handleGroupChange}
+//     value={activeGroup}
+//     scrollButtons="auto"
+// >
+// </Tabs>

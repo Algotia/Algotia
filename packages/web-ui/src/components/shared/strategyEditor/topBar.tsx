@@ -15,13 +15,15 @@ const BarWrapper = styled(Row)`
     position: relative;
     padding: 5px;
     box-sizing: border-box;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
 `;
 
 //TODO: import StrategyData from server types
 
 const useButtonStyles = makeStyles({
     root: {
-        height: "30px",
+        height: (props: { height: string }) => props.height,
         width: "45px",
         backgroundColor: "#72a56f",
         position: "absolute",
@@ -30,13 +32,14 @@ const useButtonStyles = makeStyles({
 });
 
 const TopBar: FC<{
+    height: string;
     selectStrategy: (data: StrategyMeta) => void;
-}> = ({ selectStrategy }) => {
+}> = ({ selectStrategy, height }) => {
     const [allStrategies, setAllStrategies] = useState<StrategyMeta[]>();
     const [selectVal, setSelectVal] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
 
-    const buttonClasses = useButtonStyles();
+    const buttonClasses = useButtonStyles({ height });
 
     useEffect(() => {
         fetch("/api/strategy")
@@ -112,7 +115,7 @@ const TopBar: FC<{
                         })}
                 </Select>
             </FormControl>
-            <Button className={buttonClasses.root} onClick={onNewStrategyClick}>
+            <Button classes={buttonClasses} onClick={onNewStrategyClick}>
                 New
             </Button>
         </BarWrapper>

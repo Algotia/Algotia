@@ -1,1 +1,1 @@
-export * from "./getStrategy";
+export * from "./route";

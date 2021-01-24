@@ -1,6 +1,6 @@
+import { Configurer } from "../../../../utils";
 import node_path from "path";
 import fs from "fs";
-import { Configurer } from "../../../utils";
 import execa from "execa";
 
 const getPkgJsonPath = (root: string): string => {

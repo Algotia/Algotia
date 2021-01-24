@@ -1,68 +1,31 @@
 import { Router } from "express";
 import { Configurer, validateImperatively } from "../utils";
+import { requireInit } from "./middleware/";
 import {
-    getInit,
-    getStatus,
-    getExchange,
-    postInit,
-    postBacktest,
-    validateGetInit,
-    validateGetStatus,
-    validateGetExchange,
-    validatePostBacktest,
-    validatePostInit,
-    requireInit,
-    validateGetStrategy,
-    getStrategy,
-    getConfig,
-    validateGetConfig,
+    configRoute,
+    initRoute,
+    strategyRoute,
+    statusRoute,
+	backtestRoute,
+	exchangeRoute
 } from "./routes";
-import {
-    postStrategy,
-    validatePostStrategy,
-} from "./routes/strategy/postStrategy";
 
 const createApiRouter = (configurer: Configurer): Router => {
     const router = Router();
 
-    router
-        .route("/init")
-        .get(...validateGetInit, getInit(configurer))
-        .post(...validatePostInit(configurer), postInit(configurer));
-
     router.use(requireInit(configurer));
 
-    router.get(
-        "/config/:key",
-        ...validateGetConfig(configurer, true),
-        getConfig(configurer)
-    );
+    configRoute(router, configurer);
 
-    router.get(
-        "/config",
-        ...validateGetConfig(configurer),
-        getConfig(configurer)
-    );
+    initRoute(router, configurer);
 
-    router
-        .route("/strategy/:fileName")
-        .get(...validateGetStrategy(true), getStrategy(configurer));
+    strategyRoute(router, configurer);
 
-    router
-        .route("/strategy")
-        .get(...validateGetStrategy(), getStrategy(configurer));
+    statusRoute(router);
 
-    router
-        .route("/strategy")
-        .post(...validatePostStrategy, postStrategy(configurer));
+    backtestRoute(router);
 
-    router.route("/status").get(...validateGetStatus, getStatus);
-
-    router.route("/exchange").get(...validateGetExchange, getExchange);
-
-    router
-        .route("/backtest")
-        .post(validateImperatively(validatePostBacktest), postBacktest);
+    exchangeRoute(router);
 
     return router;
 };

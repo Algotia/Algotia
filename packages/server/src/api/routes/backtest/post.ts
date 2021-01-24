@@ -9,13 +9,15 @@ import {
     simulateExchange,
 } from "@algotia/core";
 import { body, validationResult } from "express-validator";
-import { IRequest, IResponse } from "../../types/";
-import { getExchange } from "../../utils";
+import { IRequest, IResponse } from "../../../types/";
+import { getExchange, importStrategy } from "../../../utils";
 import importFresh from "import-fresh";
 import node_path from "path";
 import fs from "fs";
+import { register } from "ts-node";
 
 require("@babel/register");
+register();
 
 interface ReqBody {
     strategyPath: string;
@@ -87,7 +89,7 @@ const validatePostBacktest = [
         }),
     body("to").custom((to) => {
         if (to > Date.now()) {
-			console.log(to, Date.now())
+            console.log(to, Date.now());
             throw `'to' cannot be a date in the future`;
         }
         return true;
@@ -161,7 +163,12 @@ const postBacktest = async (
     });
 
     try {
-        const strategy: any = importFresh(strategyPath);
+
+        const strategy = importStrategy(strategyPath, {
+            exchangeId,
+            pair,
+            initialBalance,
+        });
 
         const candles = await backfill({
             from,
@@ -183,7 +190,7 @@ const postBacktest = async (
         });
     } catch (err) {
         return res.status(500).json({
-            errors: [err],
+            errors: [err.message],
         });
     }
 };

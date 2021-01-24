@@ -1,9 +1,11 @@
 import { Dispatch, FC, SetStateAction } from "react";
-import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {
+    KeyboardDateTimePicker,
+    MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import DateFnUtils from "@date-io/date-fns";
 
 interface SelectDatesProps {
-    isTimeError: boolean;
     exchangeId: string | undefined;
     setDate: Dispatch<SetStateAction<Date>>;
     date: Date;
@@ -12,28 +14,20 @@ interface SelectDatesProps {
 }
 
 const SelectDate: FC<SelectDatesProps> = (props) => {
-    const {
-        isTimeError,
-        setDate,
-        date,
-        label,
-        minDate,
-        exchangeId,
-    } = props;
+    const { setDate, date, label, minDate, exchangeId } = props;
 
     return (
-            <MuiPickersUtilsProvider utils={DateFnUtils}>
-                <KeyboardDateTimePicker
-					fullWidth={true}
-                    error={isTimeError}
-                    label={label}
-					disableFuture={true}
-                    disabled={!exchangeId}
-                    value={date}
-                    onChange={(d) => d && setDate(d)}
-                    minDate={minDate}
-                />
-            </MuiPickersUtilsProvider>
+        <MuiPickersUtilsProvider utils={DateFnUtils}>
+            <KeyboardDateTimePicker
+                fullWidth={true}
+                label={label}
+                disableFuture={true}
+                disabled={!exchangeId}
+                value={date}
+                onChange={(d) => d && setDate(d)}
+                minDate={minDate}
+            />
+        </MuiPickersUtilsProvider>
     );
 };
 

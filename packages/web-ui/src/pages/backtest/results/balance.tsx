@@ -1,7 +1,8 @@
-import { BacktestResults, OHLCV, parsePair } from "@algotia/core";
-import { FC } from "react";
-import { Options } from "../context";
+import { parsePair } from "@algotia/core";
+import { FC, useContext } from "react";
+import { BacktestContext, RequestResult } from "../context";
 import { ColDef, DataGrid } from "@material-ui/data-grid";
+import styled from "styled-components";
 
 const getPercentage = (
     initial: number,
@@ -16,11 +17,15 @@ const getPercentage = (
 
     return percentage.toFixed(4) + " %";
 };
-const getTotalRow = (
-    candles: OHLCV[],
-    options: Options,
-    results: BacktestResults
-) => {
+
+const Wrapper = styled.div`
+    height: calc(100% - 75px);
+`;
+
+const getTotalRow = (requestResult: RequestResult) => {
+    const { market, options, candles, results } = requestResult;
+
+    const precision = market.precision.quote || 2;
     const [base, quote] = parsePair(options.pair);
 
     const firstCandleOpen = candles[0].open;
@@ -51,14 +56,27 @@ const getTotalRow = (
         id: "total",
         currency: "Total",
         change: gains || losses || 0,
-        initial: totalInitialValue.toFixed(4),
-        final: totalFinalValue.toFixed(4),
+        initial: totalInitialValue.toFixed(precision),
+        final: totalFinalValue.toFixed(precision),
     };
     return totalRow;
 };
 
-const getCurrencyRows = (options: Options, results: BacktestResults) => {
+const getCurrencyRows = (requestResult: RequestResult) => {
+    const { options, market, results } = requestResult;
+    const [base, quote] = parsePair(options.pair);
+
     return Object.keys(options.initialBalance).map((currency) => {
+        let precision = 4;
+
+        if (currency === quote) {
+            precision = market.precision.quote || 2;
+        }
+
+        if (currency === base) {
+            precision = market.precision.base || 2;
+        }
+
         const initialAmount = options.initialBalance[currency];
         const finalAmount = results.balance[currency].total;
 
@@ -72,47 +90,37 @@ const getCurrencyRows = (options: Options, results: BacktestResults) => {
             id: currency,
             currency,
             change: gains || losses || 0,
-            initial: initialAmount.toFixed(4),
-            final: finalAmount.toFixed(4),
+            initial: initialAmount.toFixed(precision),
+            final: finalAmount.toFixed(precision),
         };
     });
 };
 
-const getRows = (
-    options: Options,
-    results: BacktestResults,
-    candles: OHLCV[]
-) => {
-    return [
-        ...getCurrencyRows(options, results),
-        getTotalRow(candles, options, results),
-    ];
+const getRows = (requestResult: RequestResult) => {
+    return [...getCurrencyRows(requestResult), getTotalRow(requestResult)];
 };
 
 const columns: ColDef[] = [
-    { field: "currency", headerName: "Currency", flex: 1, },
+    { field: "currency", headerName: "Currency", flex: 1 },
     { field: "initial", headerName: "Initial", flex: 1 },
     { field: "change", headerName: "Change", flex: 1 },
     { field: "final", headerName: "Final", flex: 1 },
 ];
 
-const Balance: FC<{
-    results: BacktestResults | undefined;
-    options: Options | undefined;
-    candles: OHLCV[] | undefined;
-}> = (props) => {
-    const { results, options, candles } = props;
+const Balance: FC = () => {
+    const { requestResult } = useContext(BacktestContext);
 
-    const rows =
-        results && candles && options && getRows(options, results, candles);
+    const rows = requestResult && getRows(requestResult);
 
     return (
-        <DataGrid
-            columns={columns}
-            rows={rows || []}
-            hideFooter={true}
-            density="compact"
-        />
+        <Wrapper>
+            <DataGrid
+                columns={columns}
+                rows={rows || []}
+                hideFooter={true}
+                density="compact"
+            />
+        </Wrapper>
     );
 };
 

@@ -1,6 +1,7 @@
 import { BacktestResults } from "@algotia/core";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { ColDef, DataGrid } from "@material-ui/data-grid";
+import { BacktestContext } from "../context";
 
 const columns: ColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
@@ -10,19 +11,20 @@ const columns: ColDef[] = [
     { field: "cost", headerName: "Cost", flex: 0.8 },
 ];
 
-const ClosedOrders: FC<{
-    results: BacktestResults | undefined;
-}> = (props) => {
-    const { results } = props;
+const ClosedOrders: FC = () => {
+    const { requestResult } = useContext(BacktestContext);
 
-    const rows = results?.closedOrders.map((order, i) => {
+    const quotePrecision = requestResult?.market.precision.quote || 2;
+    const basePrecision = requestResult?.market.precision.base || 2;
+
+    const rows = requestResult?.results.closedOrders.map((order, i) => {
         const { side, amount, price, cost, timestamp } = order;
         return {
             id: i,
             side,
-            cost,
-            price,
-            amount,
+            cost: parseFloat(cost.toFixed(quotePrecision)),
+            price: parseFloat(price.toFixed(quotePrecision)),
+            amount: parseFloat(amount.toFixed(basePrecision)),
             timestamp,
         };
     });

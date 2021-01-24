@@ -1,8 +1,8 @@
 import { NextFunction } from "express";
-import { IRequest, IResponse } from "../../../types";
-import { Configurer } from "../../../utils";
+import { IRequest, IResponse } from "../../types";
+import { Configurer } from "../../utils";
 
-const requireInit = (configurer: Configurer) => {
+export const requireInit = (configurer: Configurer) => {
     return (req: IRequest, res: IResponse, next: NextFunction) => {
         if (!configurer.has("strategyDir")) {
             //TODO: Document this status code
@@ -13,5 +13,3 @@ const requireInit = (configurer: Configurer) => {
         return next();
     };
 };
-
-export default requireInit;

@@ -7,31 +7,29 @@ const getStrategyMeta = (path: string): StrategyMetaData => {
         throw new Error(`Path ${path} does not exist`);
     }
 
-    try {
-        const stat = fs.statSync(path);
-        if (!stat.isFile()) {
-            throw new Error(`Path ${path} is not a file`);
-        }
-    } catch (err) {
-        throw err;
+    const stat = fs.statSync(path);
+    if (!stat.isFile()) {
+        throw new Error(`Path ${path} is not a file`);
     }
+    const modifiedAt = stat.mtime;
 
     const basename = node_path.basename(path);
 
     const ext = node_path.extname(path).replace(".", "");
 
-    let language: "javascript" | "typescript";
+    let language: StrategyMetaData["language"];
 
     switch (ext) {
         case "js":
         case "cjs":
         case "mjs":
-            language = "javascript";
+            language = "JavaScript";
             break;
         case "ts":
-            language = "typescript";
+            language = "TypeScript";
     }
     return {
+        modifiedAt,
         basename,
         language,
         path,

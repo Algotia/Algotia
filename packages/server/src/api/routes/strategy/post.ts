@@ -39,7 +39,6 @@ const postStrategy = (configurer: Configurer) => {
         req: IRequest<never, PostStrategyResponseBody, PostStrategyRequestBody>,
         res: IResponse<PostStrategyResponseBody>
     ) => {
-		console.log(req.body)
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {

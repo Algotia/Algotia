@@ -1,13 +1,14 @@
 import { AllowedExchangeIDs, ExchangeID } from "@algotia/core";
 import { query, validationResult } from "express-validator";
-import { IRequest, IResponse } from "../../types";
-import { getExchange as getCachedExchange } from "../../utils";
+import { IRequest, IResponse } from "../../../types";
+import { getExchange as getCachedExchange } from "../../../utils";
 
 interface GetExchangeParams {
     id: ExchangeID;
     timeframes?: boolean;
     symbols?: boolean;
     currencies?: boolean;
+    market?: string;
     markets?: boolean;
 }
 
@@ -16,6 +17,7 @@ interface GetExchangeResBody {
     symbols?: string[];
     currencies?: Record<string, any>;
     markets?: Record<string, any>;
+    market?: string;
 }
 
 const validateGetExchange = [
@@ -26,6 +28,15 @@ const validateGetExchange = [
     query("symbols").isBoolean().optional(),
     query("currencies").isBoolean().optional(),
     query("markets").isBoolean().optional(),
+    query("market")
+        .isString()
+        .bail()
+        .custom(async (marketStr, { req }) => {
+            const exchange = await getCachedExchange(req.query.id);
+            if (!exchange.symbols.includes(marketStr)) {
+                throw `${marketStr} is not a valid symbol for exchange ${exchange.id}`;
+            }
+        }).optional(),
 ];
 
 const getExchange = async (
@@ -42,7 +53,9 @@ const getExchange = async (
         timeframes,
         currencies,
         markets,
+        market,
     } = req.query;
+
     const exchange = await getCachedExchange(exchangeId as ExchangeID);
 
     let response: GetExchangeResBody;
@@ -67,7 +80,13 @@ const getExchange = async (
 
     if (markets) {
         response = Object.assign({}, response, {
-            currencies: exchange.markets,
+            markets: exchange.markets,
+        });
+    }
+
+    if (market && typeof market === "string") {
+        response = Object.assign({}, response, {
+            market: exchange.markets[market],
         });
     }
 

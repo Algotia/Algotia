@@ -1,6 +1,6 @@
 import { BacktestResults, OHLCV, parsePair } from "@algotia/core";
-import { FC } from "react";
-import { Options } from "../context";
+import { FC, useContext } from "react";
+import { BacktestContext, Options } from "../context";
 import { ColDef, DataGrid } from "@material-ui/data-grid";
 
 const columns: ColDef[] = [
@@ -11,13 +11,10 @@ const columns: ColDef[] = [
     { field: "cost", headerName: "Cost", flex: 0.8 },
 ];
 
-const OpenOrders: FC<{
-    results: BacktestResults | undefined;
-    candles: OHLCV[] | undefined;
-}> = (props) => {
-    const { results, candles } = props;
+const OpenOrders: FC = () => {
+    const { requestResult } = useContext(BacktestContext);
 
-    const rows = results?.openOrders.map((order, i) => {
+    const rows = requestResult?.results.openOrders.map((order, i) => {
         const { side, amount, price, cost } = order;
         return {
             id: i,

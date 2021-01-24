@@ -5,15 +5,17 @@ import { Dispatch, FC, SetStateAction } from "react";
 interface SelectPairProps {
     pairList: string[] | undefined;
     setPair: Dispatch<SetStateAction<string>>;
+    pair: string;
 }
 
 const SelectPair: FC<SelectPairProps> = (props) => {
-    const { pairList, setPair } = props;
+    const { pairList, setPair, pair } = props;
     return (
         <Autocomplete
-			fullWidth={true}
+            fullWidth={true}
             disabled={!pairList}
             options={pairList || []}
+            value={pair}
             getOptionLabel={(symbol) => symbol}
             onInputChange={(_, val) => {
                 if (val) {

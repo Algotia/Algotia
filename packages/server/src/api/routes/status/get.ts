@@ -1,8 +1,8 @@
 import { AllowedExchangeIDs, ExchangeID } from "@algotia/core";
 import { validationResult } from "express-validator";
 import { check } from "express-validator/src/middlewares/check";
-import { IRequest, IResponse } from "../../types";
-import { getExchange } from "../../utils";
+import { IRequest, IResponse } from "../../../types";
+import { getExchange } from "../../../utils";
 import OPCache from "op-cache";
 
 type ExchangeStatuses = Record<ExchangeID, boolean>;
@@ -22,8 +22,8 @@ const validateGetStatus = [check("*", ["body", "query", "params"]).isEmpty()];
 
 const fetchStatus = async (): Promise<ExchangeStatuses> => {
     const getSingleStatus = async (id: ExchangeID): Promise<boolean> => {
-        const exchange = await getExchange(id)
-		const { status } = await exchange.fetchStatus()
+        const exchange = await getExchange(id);
+        const { status } = await exchange.fetchStatus();
         return status === "ok";
     };
 

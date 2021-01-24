@@ -1,19 +1,21 @@
-import React, { FC, useEffect, useState, createContext } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import Editor from "./editor";
 import Form from "./form";
 import Results from "./results/";
 import Chart from "./chart";
-import { Backdrop, CircularProgress, Paper } from "@material-ui/core";
-import { BacktestResults, OHLCV } from "@algotia/core";
-import { Options, Strategy, BacktestContext } from "./context";
+import { Backdrop, CircularProgress } from "@material-ui/core";
+import { Options, BacktestContext, RequestResult } from "./context";
 
-const Wrapper = styled(Paper)`
-    width: 100%;
+const Wrapper = styled.div`
     height: 100%;
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 15px;
+    grid-row-gap: 15px;
+    box-sizing: border-box;
 `;
 
 const TopLeft = styled.div`
@@ -33,55 +35,79 @@ const BottomRight = styled.div`
 `;
 
 const BacktestPage: FC = () => {
-    const [candles, setCandles] = useState<OHLCV[]>();
-    const [results, setResults] = useState<BacktestResults>();
+    const [requestResult, setRequestResult] = useState<RequestResult>();
     const [options, setOptions] = useState<Options>();
     const [strategyPath, setStraegyPath] = useState<string>();
     const [loading, setLoading] = useState(false);
 
-    const run = (body: Options & Strategy) => {
-        setLoading(true);
-        fetch("/api/backtest", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8",
-            },
-            body: JSON.stringify(body),
-        })
-            .then((res) => {
-                return res.json();
-            })
-            .then((res) => {
-                if (res.errors) {
-                    return alert(JSON.stringify(res.errors));
-                }
-                setCandles(res.candles);
-                setResults(res.results);
-            })
-            .catch((err) => {
-                alert(err);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    };
-
     useEffect(() => {
-        if (options && strategyPath) {
+        if (options) {
+            let result: RequestResult;
+
             const body = {
                 ...options,
                 strategyPath,
             };
-            run(body);
+
+            setLoading(true);
+
+            fetch("/api/backtest", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                },
+                body: JSON.stringify(body),
+            })
+                .then((res) => {
+                    return res.json();
+                })
+                .then((res) => {
+                    if (res.errors) {
+                        alert(res.errors);
+                        console.log(res.errors);
+                    }
+                    result = {
+                        ...result,
+                        candles: res.candles,
+                        results: res.results,
+                        options,
+                    };
+                })
+                .catch((err) => {
+                    alert(err);
+                })
+                .then(() => {
+                    fetch(
+                        `/api/exchange?id=${options.exchange}&market=${options.pair}`
+                    )
+                        .then((res) => res.json())
+                        .then((json) => {
+                            if (json.market) {
+                                result = {
+                                    ...result,
+                                    market: json.market,
+                                };
+                            } else if (json.errors) {
+                                alert(json.errors);
+                            }
+                        })
+                        .catch((err) => {
+                            alert(err);
+                        })
+                        .then(() => {
+                            setRequestResult(result);
+                        });
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
         }
     }, [options]);
 
     return (
         <BacktestContext.Provider
             value={{
-                candles,
-                results,
-                options,
+                requestResult,
                 strategyPath,
                 loading,
             }}

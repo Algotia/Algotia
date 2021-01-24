@@ -10,9 +10,7 @@ import styled from "styled-components";
 import { ExchangeID, parsePair, parsePeriod } from "@algotia/core";
 import { Button, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Alert } from "@material-ui/lab";
-import { Column, Row } from "../../../components/shared";
-import moment from "moment";
+import { Row } from "../../../components/shared";
 import { BacktestContext, Options } from "../context";
 import SelectExchange from "./selectExchange";
 import SelectDate from "./selectDates";
@@ -29,15 +27,16 @@ const FormWrapper = styled.div`
     box-sizing: border-box;
 `;
 
-const FormBody = styled.div`
-    width: 100%;
-    height: 100%;
-    padding: 0 15px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
+const FormBody = styled(Paper)`
+    && {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+    }
 `;
 
 const FormItem = styled(Row)`
@@ -72,11 +71,8 @@ const Form: FC<{
     const [pairList, setPairList] = useState<string[]>();
     const [periodList, setTimeframeList] = useState<string[]>();
     const [currencyList, setCurrencyList] = useState<string[]>();
-    const [periodInfo, setPeriodInfo] = useState<
-        ReturnType<typeof parsePeriod>
-    >();
 
-	let now = new Date()
+    let now = new Date();
 
     now.setHours(0, 0, 0);
 
@@ -93,17 +89,25 @@ const Form: FC<{
     const [period, setPeriod] = useState<string>("");
     const [to, setTo] = useState<Date>(initialTo);
     const [from, setFrom] = useState<Date>(initialFrom);
-    const [initialBalance, setIntialBalance] = useState<Record<string, number>>(
-        {}
-    );
-
-    const [isTimeError, setTimeError] = useState(false);
+    const [baseCurrency, setBaseCurrency] = useState("");
+    const [quoteCurrency, setQuoteCurrency] = useState("");
+    const [baseAmount, setBaseAmount] = useState(0);
+    const [quoteAmount, setQuoteAmount] = useState(0);
 
     const [canRun, setCanRun] = useState(false);
 
     useEffect(() => {
+        if (pair) {
+            const [base, quote] = parsePair(pair);
+            setBaseCurrency(base);
+            setBaseAmount(0);
+            setQuoteCurrency(quote);
+            setQuoteAmount(0);
+        }
+    }, [pair]);
+
+    useEffect(() => {
         if (exchangeId) {
-            console.log(initialBalance);
             fetch(
                 `/api/exchange?id=${exchangeId}&symbols=true&timeframes=true&currencies=true`
             )
@@ -118,38 +122,16 @@ const Form: FC<{
                 .catch((err) => {
                     alert(err);
                 });
+            setPair("");
+            setPeriod("");
         }
     }, [exchangeId]);
 
     useEffect(() => {
-        setTimeError(
-            Boolean(
-                period &&
-                    to &&
-                    from &&
-                    to.getTime() - from.getTime() < parsePeriod(period).periodMs
-            )
-        );
-        if (period) {
-            setPeriodInfo(parsePeriod(period));
-        }
-    }, [to, from, period]);
-
-    useEffect(() => {
-        if (pair) {
-            const [base, quote] = parsePair(pair);
-            setIntialBalance({
-                [base]: 0,
-                [quote]: 0,
-            });
-        }
-    }, [pair]);
-
-    useEffect(() => {
-        if (to && from && pair && period && initialBalance) {
+        if (to && from && pair && period) {
             setCanRun(true);
         }
-    }, [to, from, pair, period, initialBalance]);
+    }, [to, from, pair, period]);
 
     const classes = useStyles();
 
@@ -165,7 +147,10 @@ const Form: FC<{
                 from: new Date(from.toUTCString()).getTime(),
                 pair: pair,
                 period,
-                initialBalance,
+                initialBalance: {
+                    [baseCurrency]: baseAmount,
+                    [quoteCurrency]: quoteAmount,
+                },
             };
             props.setOptions(body);
         }
@@ -180,20 +165,10 @@ const Form: FC<{
                         setExchangeId={setExchangeId}
                     />
                 </FormItem>
-                {isTimeError && periodInfo && (
-                    <Alert
-                        severity="warning"
-                        style={{ width: "95%", margin: "10px 0" }}
-                    >
-                        Parameter "From" must be at least {periodInfo.amount}{" "}
-                        {periodInfo.unitLabel} behind "To"
-                    </Alert>
-                )}
                 <RowItem>
                     <FormItem>
                         <SelectDate
                             exchangeId={exchangeId}
-                            isTimeError={isTimeError}
                             setDate={setFrom}
                             date={from}
                             label="From"
@@ -204,7 +179,6 @@ const Form: FC<{
                     <FormItem>
                         <SelectDate
                             exchangeId={exchangeId}
-                            isTimeError={isTimeError}
                             setDate={setTo}
                             date={to}
                             label="To"
@@ -214,7 +188,11 @@ const Form: FC<{
                 </RowItem>
                 <RowItem>
                     <FormItem>
-                        <SelectPair pairList={pairList} setPair={setPair} />
+                        <SelectPair
+                            pairList={pairList}
+                            setPair={setPair}
+                            pair={pair}
+                        />
                     </FormItem>
                     <FormItem>
                         <SelectPeriod
@@ -227,18 +205,15 @@ const Form: FC<{
                 <RowItem>
                     <SelectInitialBalance
                         id="base"
+                        currency={baseCurrency}
+                        setCurrency={setBaseCurrency}
+                        amount={baseAmount}
+                        setAmount={setBaseAmount}
+                        pair={pair}
                         FormItem={FormItem}
-                        initialCurrency={pair.split("/")[0]}
                         currencyList={currencyList}
-                        onChange={({ amount, currency }) => {
-                            console.log("am", amount);
-                            console.log("cu", currency);
-                            setIntialBalance(
-                                Object.assign(initialBalance, {
-                                    [currency]: amount,
-                                })
-                            );
-                            console.log(initialBalance);
+                        onChange={({ amount }) => {
+                            setBaseAmount(amount);
                         }}
                     />
                 </RowItem>
@@ -246,14 +221,14 @@ const Form: FC<{
                     <SelectInitialBalance
                         FormItem={FormItem}
                         id="quote"
-                        initialCurrency={pair.split("/")[1]}
+                        currency={quoteCurrency}
+                        setCurrency={setQuoteCurrency}
+                        amount={quoteAmount}
+                        setAmount={setQuoteAmount}
+                        pair={pair}
                         currencyList={currencyList}
-                        onChange={({ amount, currency }) => {
-                            setIntialBalance(
-                                Object.assign(initialBalance, {
-                                    [currency]: amount,
-                                })
-                            );
+                        onChange={({ amount }) => {
+                            setQuoteAmount(amount);
                         }}
                     />
                 </RowItem>

@@ -17,8 +17,9 @@ const MainCol = styled(Column)`
 
 const ChildContainer = styled.div`
     flex-grow: 1;
-    padding: 10px;
+    padding: 25px;
 	box-sizing: border-box;
+	overflow: hidden;
 `;
 
 const Layout: React.FC = (props) => {

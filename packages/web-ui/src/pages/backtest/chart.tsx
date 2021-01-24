@@ -1,6 +1,5 @@
-import { BacktestResults, OHLCV } from "@algotia/core";
+import { OHLCV } from "@algotia/core";
 import { Component, ContextType, FC } from "react";
-import { max as d3Max } from "d3-array";
 import {
     CandlestickSeries,
     Chart,
@@ -14,21 +13,43 @@ import {
     Annotate,
     LabelAnnotation,
     LabelAnnotationProps,
-    defaultScaleProvider,
     OHLCTooltip,
-    HoverTooltip,
-    timeFormat,
+    LineSeries,
 } from "react-financial-charts";
 import { BacktestContext } from "./context";
+import styled from "styled-components";
+import { Paper } from "@material-ui/core";
 
 interface ChartProps extends WithSizeProps {
     readonly ratio: number;
+}
+
+const Wrapper = styled(Paper)`
+    && {
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+`;
+
+function sma() {
+    let arr: number[] = [];
+    return (data: OHLCV) => {
+        arr.push(data.close);
+        if (arr.length === 4) {
+            arr.shift();
+            return data.close;
+        }
+
+        return undefined;
+    };
 }
 
 class ResultChart extends Component<ChartProps> {
     static contextType = BacktestContext;
 
     context!: ContextType<typeof BacktestContext>;
+
     private readonly margin = { left: 0, right: 40, top: 0, bottom: 24 };
 
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
@@ -38,8 +59,8 @@ class ResultChart extends Component<ChartProps> {
     private readonly buyAnnotation: Omit<LabelAnnotationProps, "plotData"> = {
         rotate: 90,
         text: ({ timestamp }: OHLCV) => {
-            if (this.context.results) {
-                const order = this.context.results.closedOrders.find(
+            if (this.context.requestResult) {
+                const order = this.context.requestResult.results.closedOrders.find(
                     (order) => order.timestamp === timestamp
                 );
                 if (order) return order.side;
@@ -48,8 +69,8 @@ class ResultChart extends Component<ChartProps> {
         },
         tooltip: "yeet",
         fill: ({ timestamp }: OHLCV) => {
-            if (this.context.results) {
-                const order = this.context.results.closedOrders.find(
+            if (this.context.requestResult) {
+                const order = this.context.requestResult.results.closedOrders.find(
                     (order) => order.timestamp === timestamp
                 );
                 if (order) return order.side === "buy" ? "green" : "red";
@@ -57,7 +78,7 @@ class ResultChart extends Component<ChartProps> {
             return "#000";
         },
         y: ({ yScale, datum }: any) => {
-            const order = this.context.results?.closedOrders.find(
+            const order = this.context.requestResult?.results.closedOrders.find(
                 (order) => order.timestamp == datum.timestamp
             );
             if (order?.side === "buy") {
@@ -72,12 +93,10 @@ class ResultChart extends Component<ChartProps> {
         const { height, width } = this.props;
 
         const annotationDates = (data: OHLCV) => {
-            return (
-                Boolean(
-                    this.context.results?.closedOrders.find(
-                        (order) => order.timestamp === data.timestamp
-                    )
-                ) || false
+            return Boolean(
+                this.context.requestResult?.results.closedOrders.find(
+                    (order) => order.timestamp === data.timestamp
+                )
             );
         };
 
@@ -86,36 +105,53 @@ class ResultChart extends Component<ChartProps> {
             xScale,
             xAccessor,
             displayXAccessor,
-        } = this.xScaleProvider(this.context.candles || []);
+        } = this.xScaleProvider(this.context.requestResult?.candles || []);
 
         const max = xAccessor(data[data.length - 1]);
         const min = xAccessor(data[Math.max(0, data.length - 100)]);
         const xExtents = [min, max];
 
         return (
-            <ChartCanvas
-                height={height}
-                width={width}
-                ratio={1}
-                margin={this.margin}
-                data={data}
-                displayXAccessor={displayXAccessor}
-                seriesName="Data"
-                xScale={xScale}
-                xAccessor={xAccessor}
-                xExtents={xExtents}
-            >
-                <Chart id={1} yExtents={this.yExtents}>
-                    <XAxis showGridLines={true} />
-                    <YAxis showGridLines={true} />
-                    <Annotate
-                        with={LabelAnnotation}
-                        usingProps={this.buyAnnotation}
-                        when={annotationDates}
-                    />
-                    <CandlestickSeries />
-                </Chart>
-            </ChartCanvas>
+            <Wrapper>
+                <ChartCanvas
+                    height={height - 4}
+                    width={width - 4}
+                    ratio={1}
+                    margin={this.margin}
+                    data={data}
+                    displayXAccessor={displayXAccessor}
+                    seriesName="Data"
+                    xScale={xScale}
+                    xAccessor={xAccessor}
+                    xExtents={xExtents}
+                >
+                    <Chart id={1} yExtents={this.yExtents}>
+                        <XAxis showGridLines={true} />
+                        <YAxis showGridLines={true} />
+                        <Annotate
+                            with={LabelAnnotation}
+                            usingProps={this.buyAnnotation}
+                            when={annotationDates}
+                        />
+                        <CandlestickSeries />
+                        <LineSeries yAccessor={sma()} strokeWidth={2} />
+                        {data.length && (
+                            <OHLCTooltip
+                                ohlcFormat={(n) => {
+                                    const precision =
+                                        this.context.requestResult?.market
+                                            .precision.quote || 4;
+                                    return n.valueOf().toFixed(precision);
+                                }}
+                                origin={[8, 16]}
+                                textFill={(d) =>
+                                    d.close > d.open ? "#26a69a" : "#ef5350"
+                                }
+                            />
+                        )}
+                    </Chart>
+                </ChartCanvas>
+            </Wrapper>
         );
     }
 

@@ -1,5 +1,13 @@
-import {BacktestResults, OHLCV} from "@algotia/core";
-import {createContext} from "react";
+import { BacktestResults, OHLCV } from "@algotia/core";
+import { Market } from "ccxt";
+import { createContext } from "react";
+
+export interface RequestResult {
+    candles: OHLCV[];
+    results: BacktestResults;
+    options: Options;
+    market: Market;
+}
 
 export interface Options {
     exchange: string;
@@ -13,15 +21,11 @@ export interface Options {
 export type Strategy = { strategyPath: string };
 
 export const BacktestContext = createContext<{
-    candles: OHLCV[] | undefined;
-    results: BacktestResults | undefined;
-    options: Options | undefined;
+    requestResult: RequestResult | undefined;
     strategyPath: string | undefined;
     loading: boolean;
 }>({
-    candles: undefined,
-    results: undefined,
-    options: undefined,
+    requestResult: undefined,
     strategyPath: undefined,
     loading: false,
 });
