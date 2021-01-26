@@ -29,6 +29,7 @@
 		}
 	},
 	"dependencies": {
+		"@algotia/types": "^1.0.0",
 		"ccxt": "^1.37.68",
 		"decimal.js": "^10.2.1"
 	},

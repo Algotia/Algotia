@@ -1,7 +1,7 @@
 import { AllowedExchangeIDs, ExchangeID } from "@algotia/core";
+import { IRequest, IResponse } from "@algotia/types";
 import { validationResult } from "express-validator";
 import { check } from "express-validator/src/middlewares/check";
-import { IRequest, IResponse } from "../../../types";
 import { getExchange } from "../../../utils";
 import OPCache from "op-cache";
 

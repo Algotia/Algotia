@@ -1,6 +1,6 @@
 import { AllowedExchangeIDs, ExchangeID } from "@algotia/core";
 import { query, validationResult } from "express-validator";
-import { IRequest, IResponse } from "../../../types";
+import { IRequest, IResponse } from "@algotia/types";
 import { getExchange as getCachedExchange } from "../../../utils";
 
 interface GetExchangeParams {
@@ -36,7 +36,8 @@ const validateGetExchange = [
             if (!exchange.symbols.includes(marketStr)) {
                 throw `${marketStr} is not a valid symbol for exchange ${exchange.id}`;
             }
-        }).optional(),
+        })
+        .optional(),
 ];
 
 const getExchange = async (

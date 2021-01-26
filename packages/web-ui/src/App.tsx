@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import { BacktestPage } from "./pages";
 import Init from "./pages/init/init";
+import Docs from "./pages/docs";
 
 const About = () => <div>about</div>;
 const Users = () => <div>users</div>;
@@ -72,6 +73,9 @@ function App() {
                             <Route path="/users">
                                 <Users />
                             </Route>
+                            <Route path="/docs">
+                                <Docs />
+                            </Route>
                             <Route path="/">
                                 <Home />
                             </Route>
@@ -79,9 +83,7 @@ function App() {
                     </Layout>
                 </Router>
             )}
-            {init && !init.init && (
-                <Init onInit={onInit} init={init} />
-            )}
+            {init && !init.init && <Init onInit={onInit} init={init} />}
         </ThemeProvider>
     );
 }

@@ -1,5 +1,5 @@
 import { param, ValidationChain, validationResult } from "express-validator";
-import { ConfigOptions, IRequest, IResponse } from "../../../types";
+import { ConfigOptions, IRequest, IResponse } from "@algotia/types";
 import { Configurer } from "../../../utils";
 
 const validateGetConfig = (

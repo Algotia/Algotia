@@ -7,10 +7,9 @@ jest.mock("@algotia/core", () => {
     return {
         __esModule: true, // Use it when dealing with esModules
         ...algotia,
-        createExchange: (exchangeId: ExchangeID) => {
-            const exchange = algotia.createExchange(exchangeId);
+        createExchange: () => {
             return {
-                ...exchange,
+                loadMarkets: () => {},
                 fetchStatus: jest.fn().mockImplementation(async () => {
                     return { status: "down" };
                 }),

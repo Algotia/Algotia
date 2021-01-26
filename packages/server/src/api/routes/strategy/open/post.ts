@@ -1,8 +1,9 @@
 import { IRequest, IResponse } from "@algotia/types";
-import { Configurer } from "../../../utils";
+import { Configurer } from "../../../../utils";
 import node_path from "path";
 import fs from "fs";
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
+import open from "open";
 
 interface PostStrategyRequestBody {
     fileName: string;
@@ -13,8 +14,8 @@ interface PostStrategyResponseBody {
     results: boolean;
 }
 
-const validatePostStrategy = [
-    body("fileName")
+const validatePostOpenStrategy = [
+    param("fileName")
         .isString()
         .bail()
         .withMessage("File name must be a string")
@@ -34,7 +35,7 @@ const validatePostStrategy = [
         }),
 ];
 
-const postStrategy = (configurer: Configurer) => {
+const postOpenStrategy = (configurer: Configurer) => {
     return (
         req: IRequest<never, PostStrategyResponseBody, PostStrategyRequestBody>,
         res: IResponse<PostStrategyResponseBody>
@@ -50,12 +51,12 @@ const postStrategy = (configurer: Configurer) => {
             "strategies/"
         );
 
-        const { fileName, value } = req.body;
+        const { fileName } = req.params;
 
         const pathToFile = node_path.join(strategyDir, fileName);
 
         try {
-            fs.writeFileSync(pathToFile, value, { encoding: "utf8" });
+            open(pathToFile);
         } catch (err) {
             return res
                 .status(500)
@@ -66,4 +67,4 @@ const postStrategy = (configurer: Configurer) => {
     };
 };
 
-export { postStrategy, validatePostStrategy };
+export { postOpenStrategy, validatePostOpenStrategy };

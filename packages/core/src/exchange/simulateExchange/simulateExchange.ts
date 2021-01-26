@@ -45,7 +45,7 @@ const simulateExchange = (
 		balance: createInitialBalance(initialBalance),
 	};
 
-	const exchange: SimulatedExchange = Object.assign({}, derivesFrom, {
+	const exchange: SimulatedExchange = Object.assign(derivesFrom, {
 		id: derivesFrom.id as ExchangeID,
 		simulated: true as true,
 		fetchOHLCV: createFetchOHLCV(derivesFrom),

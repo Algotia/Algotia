@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import styled from "styled-components";
 import { Column } from "../shared";
 import { IconType } from "react-icons";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaBook } from "react-icons/fa";
 import { RiTestTubeFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 import { Paper } from "@material-ui/core";
@@ -68,6 +68,11 @@ const navItems: NavItemObj[] = [
         label: "Backtest",
         Icon: RiTestTubeFill,
     },
+	{
+		path: "/docs",
+		label: "Docs",
+		Icon: FaBook
+	}
 ];
 
 const SideBar = () => {

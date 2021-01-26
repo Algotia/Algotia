@@ -11,16 +11,23 @@ jest.mock("@algotia/core", () => {
         createExchange: jest
             .fn()
             .mockImplementation((exchangeId: ExchangeID) => {
-                let exchange: Exchange = algotia.createExchange(exchangeId);
+                let exchange: any = {};
                 let anyObj: any = {};
-                exchange.markets = {
+                const markets = {
                     "ETH/BTC": anyObj,
                     "BTC/ETH": anyObj,
                 };
-                exchange.symbols = ["ETH/BTC", "BTC/ETH"];
+                exchange.loadMarkets = async () => {
+                    return markets;
+                };
+                exchange.markets = markets;
+                exchange.symbols = Object.keys(markets);
                 exchange.timeframes = { "1h": "1h" };
                 //@ts-ignore
-                exchange.currencies = { ETH: {}, BTC: {} };
+                exchange.currencies = {
+                    ETH: {},
+                    BTC: {},
+                };
                 return exchange;
             }),
         backfill: jest.fn().mockReturnValue(

@@ -1,6 +1,6 @@
 export interface StrategyMetaData {
     language: "JavaScript" | "TypeScript";
-    modifiedAt: Date;
+    modifiedAt: number;
     path: string;
     basename: string;
 }

@@ -1,4 +1,4 @@
-import { ConfigOptions, IRequest, IResponse } from "../../../types";
+import { ConfigOptions, IRequest, IResponse } from "@algotia/types";
 import { Configurer } from "../../../utils";
 import { initSteps } from "./service";
 import { body, validationResult, ValidationChain } from "express-validator";

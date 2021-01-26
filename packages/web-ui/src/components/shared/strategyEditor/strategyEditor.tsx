@@ -6,16 +6,7 @@ import defaultValue from "./defaultValue";
 import editorTypes from "../../../assets/editor_types";
 import BottomBar from "./bottomBar";
 import { Paper } from "@material-ui/core";
-
-export interface StrategyMeta {
-    basename: string;
-    language: string;
-    path: string;
-}
-
-export interface StrategyData extends StrategyMeta {
-    value: string;
-}
+import { StrategyData, StrategyMetaData } from "@algotia/types";
 
 let KEY_S: number;
 let CtrlCmd: number;
@@ -57,26 +48,24 @@ const EditorWrapper = styled(Paper)`
 `;
 
 const EditorSSS = styled.div`
-    height: calc(100% - 60px);
+    height: calc(100% - 55px);
 `;
 
 const StrategyEditor: FC<{
     rootRef: MutableRefObject<HTMLDivElement> | undefined;
-    onStrategySelected?: (strategy: StrategyData) => void;
+    onStrategySelected?: (strategy: StrategyMetaData) => void;
 }> = (props) => {
     const { onStrategySelected, rootRef } = props;
 
     const [editorValue, setEditorValue] = useState<string>(defaultValue);
-    const [currentStrategy, setCurrentStrategy] = useState<StrategyData>();
-	const [mtime, setMtime] = useState<Date>()
-    const [saving, setSaving] = useState(false);
+    const [strategyMeta, setStrategyMeta] = useState<StrategyMetaData>();
 
-    const selectStrategy = (meta: StrategyMeta) => {
+    const selectStrategy = (meta: StrategyMetaData) => {
         fetch(`/api/strategy/${meta.basename}`)
             .then((res) => res.json())
-            .then((data: StrategyData) => {
-                setEditorValue(data.value);
-                setCurrentStrategy(data);
+            .then(({ value, ...meta }: StrategyData) => {
+                setStrategyMeta(meta);
+                setEditorValue(value);
             });
     };
 
@@ -87,13 +76,13 @@ const StrategyEditor: FC<{
     };
 
     useEffect(() => {
-        if (currentStrategy && editorRef.current) {
-            onStrategySelected && onStrategySelected(currentStrategy);
+        if (strategyMeta && editorRef.current) {
+            onStrategySelected && onStrategySelected(strategyMeta);
             editorRef.current.addCommand(CtrlCmd | KEY_S, () => {
-                if (editorRef.current && currentStrategy) {
+                if (editorRef.current && strategyMeta) {
                     const newValue = editorRef.current.getValue();
 
-                    setCurrentStrategy(
+                    setStrategyMeta(
                         (prev) =>
                             prev && {
                                 ...prev,
@@ -108,7 +97,7 @@ const StrategyEditor: FC<{
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                            fileName: currentStrategy.basename,
+                            fileName: strategyMeta.basename,
                             value: newValue,
                         }),
                     })
@@ -126,26 +115,30 @@ const StrategyEditor: FC<{
                 }
             });
         }
-    }, [currentStrategy]);
+    }, [strategyMeta]);
 
     return (
         <EditorWrapper ref={rootRef}>
-            <TopBar selectStrategy={selectStrategy} height="35px" />
+            <TopBar selectStrategy={selectStrategy} />
             <EditorSSS>
                 <Editor
                     language={
-                        currentStrategy ? currentStrategy.language : "text"
+                        strategyMeta
+                            ? // strategyMeta.language is the formatted language name
+                              // TypeScript || JavaScript -> typescript | javascript
+                              strategyMeta.language.toLowerCase()
+                            : "text"
                     }
                     height="100%"
                     options={{
-                        readOnly: !currentStrategy,
+                        readOnly: !strategyMeta,
                     }}
                     theme="vs-dark"
                     value={editorValue}
                     editorDidMount={editorDidMount}
                 />
             </EditorSSS>
-            <BottomBar height="20px" />
+            <BottomBar height="20px" meta={strategyMeta} />
         </EditorWrapper>
     );
 };

@@ -1,7 +1,7 @@
-import { BacktestResults } from "@algotia/core";
 import { FC, useContext } from "react";
 import { ColDef, DataGrid } from "@material-ui/data-grid";
 import { BacktestContext } from "../context";
+import styled from "styled-components";
 
 const columns: ColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
@@ -10,6 +10,10 @@ const columns: ColDef[] = [
     { field: "price", headerName: "Price", flex: 0.8 },
     { field: "cost", headerName: "Cost", flex: 0.8 },
 ];
+
+const Wrapper = styled.div`
+    height: calc(100% - 75px);
+`;
 
 const ClosedOrders: FC = () => {
     const { requestResult } = useContext(BacktestContext);
@@ -30,12 +34,14 @@ const ClosedOrders: FC = () => {
     });
 
     return (
-        <DataGrid
-            rows={rows || []}
-            columns={columns}
-            density="compact"
-            rowsPerPageOptions={[100]}
-        />
+        <Wrapper>
+            <DataGrid
+                rows={rows || []}
+                columns={columns}
+                density="compact"
+                rowsPerPageOptions={[100]}
+            />
+        </Wrapper>
     );
 };
 

@@ -5,10 +5,13 @@ import {
     ValidationChain,
     validationResult,
 } from "express-validator";
-import { StrategyMetaData } from "../../../types";
-import { IRequest, IResponse } from "../../../types";
+import {
+    IRequest,
+    IResponse,
+    StrategyMetaData,
+    StrategyData,
+} from "@algotia/types";
 import { Configurer, getStrategyMeta } from "../../../utils";
-import { StrategyData } from "../../../types";
 import node_path from "path";
 import fs from "fs";
 

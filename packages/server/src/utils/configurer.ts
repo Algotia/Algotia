@@ -1,4 +1,4 @@
-import { ConfigOptions } from "../types";
+import { ConfigOptions } from "@algotia/types";
 import Joi, { ValidationResult } from "joi";
 import node_path from "path";
 import OPCache from "op-cache";

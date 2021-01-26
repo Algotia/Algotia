@@ -4,26 +4,26 @@ import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Row } from "../utils";
 import NewStrategyModal from "./newStrategyModal";
-import { StrategyMeta } from "./strategyEditor";
+import { StrategyMetaData } from "@algotia/types";
 
 const BarWrapper = styled(Row)`
-    height: 45px;
+    height: 35px;
     width: 100%;
     background-color: #444;
     align-items: center;
     justify-content: center;
     position: relative;
     padding: 5px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
     box-sizing: border-box;
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
 `;
 
 //TODO: import StrategyData from server types
 
 const useButtonStyles = makeStyles({
     root: {
-        height: (props: { height: string }) => props.height,
+        height: "25px",
         width: "45px",
         backgroundColor: "#72a56f",
         position: "absolute",
@@ -32,14 +32,13 @@ const useButtonStyles = makeStyles({
 });
 
 const TopBar: FC<{
-    height: string;
-    selectStrategy: (data: StrategyMeta) => void;
-}> = ({ selectStrategy, height }) => {
-    const [allStrategies, setAllStrategies] = useState<StrategyMeta[]>();
+    selectStrategy: (data: StrategyMetaData) => void;
+}> = ({ selectStrategy }) => {
+    const [allStrategies, setAllStrategies] = useState<StrategyMetaData[]>();
     const [selectVal, setSelectVal] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
 
-    const buttonClasses = useButtonStyles({ height });
+    const buttonClasses = useButtonStyles();
 
     useEffect(() => {
         fetch("/api/strategy")

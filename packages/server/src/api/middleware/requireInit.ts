@@ -1,5 +1,5 @@
 import { NextFunction } from "express";
-import { IRequest, IResponse } from "../../types";
+import { IRequest, IResponse } from "@algotia/types";
 import { Configurer } from "../../utils";
 
 export const requireInit = (configurer: Configurer) => {

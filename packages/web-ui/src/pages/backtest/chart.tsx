@@ -1,6 +1,7 @@
 import { OHLCV } from "@algotia/core";
 import { Component, ContextType, FC } from "react";
 import {
+    ema,
     CandlestickSeries,
     Chart,
     ChartCanvas,
@@ -31,19 +32,6 @@ const Wrapper = styled(Paper)`
         box-sizing: border-box;
     }
 `;
-
-function sma() {
-    let arr: number[] = [];
-    return (data: OHLCV) => {
-        arr.push(data.close);
-        if (arr.length === 4) {
-            arr.shift();
-            return data.close;
-        }
-
-        return undefined;
-    };
-}
 
 class ResultChart extends Component<ChartProps> {
     static contextType = BacktestContext;
@@ -134,7 +122,6 @@ class ResultChart extends Component<ChartProps> {
                             when={annotationDates}
                         />
                         <CandlestickSeries />
-                        <LineSeries yAccessor={sma()} strokeWidth={2} />
                         {data.length && (
                             <OHLCTooltip
                                 ohlcFormat={(n) => {

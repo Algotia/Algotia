@@ -1,12 +1,12 @@
 import ts from "typescript";
-import babel from "@babel/core";
+import * as babel from "@babel/core";
 import pkgDir from "pkg-dir";
 import node_path from "path";
 import fs from "fs";
 import importFresh from "import-fresh";
 import { Strategy } from "@algotia/core";
 import getStrategyMeta from "./getStrategyMeta";
-import { StrategyTemplateOptions } from "../types";
+import { StrategyTemplateOptions } from "@algotia/types";
 import handlebars from "handlebars";
 
 const tempDir = node_path.join(pkgDir.sync(), ".internal/strategyDist/");

@@ -9,9 +9,8 @@ import {
     simulateExchange,
 } from "@algotia/core";
 import { body, validationResult } from "express-validator";
-import { IRequest, IResponse } from "../../../types/";
+import { IRequest, IResponse } from "@algotia/types";
 import { getExchange, importStrategy } from "../../../utils";
-import importFresh from "import-fresh";
 import node_path from "path";
 import fs from "fs";
 import { register } from "ts-node";
@@ -158,12 +157,11 @@ const postBacktest = async (
     const realExchange = await getExchange(exchangeId);
 
     const simulatedExchange = simulateExchange({
-        derviesFrom: realExchange,
+        derivesFrom: realExchange,
         initialBalance,
     });
 
     try {
-
         const strategy = importStrategy(strategyPath, {
             exchangeId,
             pair,
@@ -189,6 +187,7 @@ const postBacktest = async (
             results,
         });
     } catch (err) {
+		console.log(err)
         return res.status(500).json({
             errors: [err.message],
         });

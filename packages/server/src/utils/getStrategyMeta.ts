@@ -1,4 +1,4 @@
-import { StrategyMetaData } from "../types";
+import { StrategyMetaData } from "@algotia/types";
 import node_path from "path";
 import fs from "fs";
 
@@ -11,7 +11,7 @@ const getStrategyMeta = (path: string): StrategyMetaData => {
     if (!stat.isFile()) {
         throw new Error(`Path ${path} is not a file`);
     }
-    const modifiedAt = stat.mtime;
+    const modifiedAt = stat.mtime.getTime();
 
     const basename = node_path.basename(path);
 
