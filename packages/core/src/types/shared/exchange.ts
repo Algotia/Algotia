@@ -1,4 +1,4 @@
-import { Exchange, Order, Balances, Dictionary } from "ccxt";
+import { Exchange, Order, Balances } from "@algotia/ccxt";
 import { StrategyError } from "../errors";
 
 export const AllowedExchangeIDs = ["binance", "kucoin", "bitfinex"] as const;
@@ -7,7 +7,7 @@ export type ExchangeID = typeof AllowedExchangeIDs[number];
 
 export type InitialBalance = Record<string, number>;
 
-export interface OHLCV {
+export interface OHLCV_Candle {
 	timestamp: number;
 	open: number;
 	high: number;
@@ -33,7 +33,7 @@ export interface SimulatedExchangeStore {
 }
 
 export interface SimulatedExchangeResult {
-	fillOrders: (candle: OHLCV) => void;
+	fillOrders: (candle: OHLCV_Candle) => void;
 	updateContext: (time: number, price: number) => void;
 	flushStore: () => void;
 	store: SimulatedExchangeStore;

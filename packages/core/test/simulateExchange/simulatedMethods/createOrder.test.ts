@@ -1,4 +1,4 @@
-import { BadSymbol, InsufficientFunds } from "ccxt";
+import { BadSymbol, InsufficientFunds } from "@algotia/ccxt";
 import { parsePair } from "../../../src/utils";
 import {
 	simulatedExchanges,

@@ -1,12 +1,12 @@
-import { Trade, Order } from "ccxt";
-import { SimulatedExchangeStore, OHLCV } from "../../../types";
+import { Trade, Order } from "@algotia/ccxt";
+import { SimulatedExchangeStore, OHLCV_Candle } from "../../../types";
 import { parsePair } from "../../../utils";
 import Decimal from "decimal.js";
 
 const createFillOrders = (
 	store: SimulatedExchangeStore
-): ((candle: OHLCV) => void) => {
-	return (candle: OHLCV) => {
+): ((candle: OHLCV_Candle) => void) => {
+	return (candle: OHLCV_Candle) => {
 		for (const order of store.openOrders) {
 			if (order.type === "market") {
 				closeOrder(store, order);

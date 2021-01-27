@@ -1,4 +1,4 @@
-import { Exchange, OHLCV, SimulatedExchange } from "../../types";
+import { Exchange, OHLCV_Candle, SimulatedExchange } from "../../types";
 import { parsePeriod, reshapeOHLCV } from "../../utils/";
 import fillEmptyCandles from "./fillEmptyCandles";
 
@@ -10,12 +10,12 @@ interface BackfillArgs {
 	exchange: Exchange | SimulatedExchange;
 }
 /** This helper function is a wrapper around the CCXT method fetchOHLCV. It handles pagination and filling periods where no candles were returned with dummy candles. */
-const backfill = async (args: BackfillArgs): Promise<OHLCV[]> => {
+const backfill = async (args: BackfillArgs): Promise<OHLCV_Candle[]> => {
 	const { from, to, pair, period, exchange } = args;
 	const { periodMs } = parsePeriod(period);
 
 	let recordsToFetch = Math.ceil((to - from) / periodMs);
-	let candles: OHLCV[] = [];
+	let candles: OHLCV_Candle[] = [];
 	let timeCursor = from;
 	let page = 0;
 

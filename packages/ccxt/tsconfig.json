@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"lib": ["ES2019"],
+		"target": "ES6",
+		"module": "CommonJS",
+		"allowJs": true,
+		"declaration": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"include": ["ccxt.ts"],
+	"exclude": ["node_modules/"]
+}

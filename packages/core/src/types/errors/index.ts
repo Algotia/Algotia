@@ -1,4 +1,4 @@
-import {Balances} from "ccxt";
+import { Balances } from "@algotia/ccxt";
 
 export interface StrategyError {
 	timestamp: number;

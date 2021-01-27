@@ -1,4 +1,4 @@
-import { Exchange as CCXT_Exchange, Order } from "ccxt";
+import { Exchange as CCXT_Exchange, Order } from "@algotia/ccxt";
 import Decimal from "decimal.js";
 import { Exchange, SimulatedExchangeStore } from "../../../types";
 import { parsePair } from "../../../utils";

@@ -1,7 +1,7 @@
 import {
-	AllowedExchangeIDs,
 	createExchange,
 	simulateExchange,
+	AllowedExchangeIDs,
 } from "../../src/algotia";
 
 export const initialBalance = {

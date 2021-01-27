@@ -1,7 +1,6 @@
-import { OHLCV as CCXT_OHLCV } from "ccxt";
-import { OHLCV } from "../../types";
+import { OHLCV_Candle } from "../../types";
 
-const reshapeOHLCV = (rawCandles: CCXT_OHLCV[]): OHLCV[] => {
+const reshapeOHLCV = (rawCandles: number[][]): OHLCV_Candle[] => {
 	return rawCandles.map((ohlcv) => {
 		return {
 			timestamp: ohlcv[0],

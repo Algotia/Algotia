@@ -1,4 +1,4 @@
-import { Exchange as CCXT_Exchange } from "ccxt";
+import { Exchange as CCXT_Exchange } from "@algotia/ccxt";
 import { SimulatedExchangeStore } from "../../../types";
 
 type FetchBalance = CCXT_Exchange["fetchBalance"];

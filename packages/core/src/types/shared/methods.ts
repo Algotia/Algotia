@@ -1,5 +1,5 @@
 import {
-	OHLCV,
+	OHLCV_Candle,
 	SimulatedExchangeResult,
 	SimulatedExchangeStore,
 } from "./exchange";
@@ -7,7 +7,7 @@ import { Strategy } from "./shared";
 
 export interface BacktestOptions {
 	simulatedExchange: SimulatedExchangeResult;
-	data: OHLCV[];
+	data: OHLCV_Candle[];
 	strategy: Strategy;
 }
 export type BacktestResults = Omit<

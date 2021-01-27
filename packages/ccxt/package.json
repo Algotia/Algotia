@@ -1,0 +1,16 @@
+{
+    "name": "@algotia/ccxt",
+    "version": "1.0.0",
+    "description": "",
+    "main": "ccxt.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "ccxt": "^1.41.5",
+        "patch-package": "^6.2.2"
+    }
+}

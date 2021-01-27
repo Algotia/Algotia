@@ -1,54 +1,57 @@
 import { parsePeriod } from "../../src/utils";
-import { backfill } from "../../src/exchangeHelpers";
+import { backfill } from "../../src/exchange/helpers";
 import { initialBalanceSymbol, simulatedExchanges } from "../test-utils";
-import { OHLCV } from "ccxt";
+import { OHLCV } from "@algotia/ccxt";
 
-jest.mock("../../src/exchangeHelpers/fillEmptyCandles", () => {
+jest.mock("../../src/exchange/helpers/fillEmptyCandles", () => {
 	const actual = jest.requireActual(
-		"../../src/exchangeHelpers/fillEmptyCandles"
+		"../../src/exchange/helpers/fillEmptyCandles"
 	).default;
 	return jest.fn().mockImplementation(actual);
 });
 
-jest.mock("../../src/simulateExchange/simulatedMethods/fetchOHLCV", () => {
-	const parsePeriod = jest.requireActual("../../src/utils").parsePeriod;
-	const roundTime = jest.requireActual("../../src/utils").roundTime;
-	return () => {
-		return async (
-			symbol: string,
-			timeframe: string,
-			since: number,
-			limit: number
-		): Promise<OHLCV[]> => {
-			const { periodMs } = parsePeriod(timeframe);
-			const nearestCandleToSince = roundTime(
-				new Date(since),
-				periodMs,
-				"ceil"
-			).getTime();
+jest.mock(
+	"../../src/exchange/simulateExchange/simulatedMethods/fetchOHLCV",
+	() => {
+		const parsePeriod = jest.requireActual("../../src/utils").parsePeriod;
+		const roundTime = jest.requireActual("../../src/utils").roundTime;
+		return () => {
+			return async (
+				_: string,
+				timeframe: string,
+				since: number,
+				limit: number
+			): Promise<OHLCV[]> => {
+				const { periodMs } = parsePeriod(timeframe);
+				const nearestCandleToSince = roundTime(
+					new Date(since),
+					periodMs,
+					"ceil"
+				).getTime();
 
-			let candles: OHLCV[] = [];
-			let timeCursor = nearestCandleToSince;
+				let candles: OHLCV[] = [];
+				let timeCursor = nearestCandleToSince;
 
-			for (let i = 0; i < limit; i++) {
-				const candle: OHLCV = [timeCursor, 1, 1, 1, 1, 1];
-				candles.push(candle);
-				timeCursor += periodMs;
-			}
+				for (let i = 0; i < limit; i++) {
+					const candle: OHLCV = [timeCursor, 1, 1, 1, 1, 1];
+					candles.push(candle);
+					timeCursor += periodMs;
+				}
 
-			// Remove up to 10% of candles
-			const randomNum = Math.floor(Math.random() * (limit * 0.1));
+				// Remove up to 10% of candles
+				const randomNum = Math.floor(Math.random() * (limit * 0.1));
 
-			// Removes random candles from the result, for the backfill helper to
-			// fill with dummy candles
-			for (let i = 0; i < randomNum; i++) {
-				const randomIndex = Math.floor(Math.random() * limit) + 1;
-				candles.splice(randomIndex, 1);
-			}
-			return candles;
+				// Removes random candles from the result, for the backfill helper to
+				// fill with dummy candles
+				for (let i = 0; i < randomNum; i++) {
+					const randomIndex = Math.floor(Math.random() * limit) + 1;
+					candles.splice(randomIndex, 1);
+				}
+				return candles;
+			};
 		};
-	};
-});
+	}
+);
 
 const checkCandlesAreContinuous = (
 	candles: any[],
@@ -102,7 +105,7 @@ describe("backfill", () => {
 				});
 
 				expect(
-					require("../../src/exchangeHelpers/fillEmptyCandles")
+					require("../../src/exchange/helpers/fillEmptyCandles")
 				).toHaveBeenCalled();
 
 				checkCandlesAreContinuous(candles, timeframe, from);

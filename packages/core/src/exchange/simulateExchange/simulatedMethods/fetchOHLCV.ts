@@ -1,4 +1,4 @@
-import { Exchange as CCXT_Exchange, OHLCV } from "ccxt";
+import { Exchange as CCXT_Exchange, OHLCV } from "@algotia/ccxt";
 import { Exchange } from "../../../types";
 
 type FetchOHLCV = CCXT_Exchange["fetchOHLCV"];
@@ -8,10 +8,10 @@ const createFetchOHLCV = (derviedExchange?: Exchange): FetchOHLCV => {
 		return derviedExchange.fetchOHLCV;
 	}
 	return async (
-		symbol: string,
-		timeframe: string,
-		since: number,
-		limit: number
+		_symbol: string,
+		_timeframe: string,
+		_since: number,
+		_limit: number
 	): Promise<OHLCV[]> => {
 		try {
 			return [];

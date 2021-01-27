@@ -1,0 +1,16 @@
+{
+    "entryFile": "src/app.ts",
+    "noImplicitAdditionalProperties": "throw-on-extras",
+    "controllerPathGlobs": ["src/**/*Controller.ts"],
+    "spec": {
+        "schemes": ["http"],
+        "basePath": "api",
+        "host": "localhost:2008",
+        "outputDirectory": "spec",
+        "specVersion": 3
+    },
+    "routes": {
+        "routesDir": "src",
+        "basePath": "api"
+    }
+}

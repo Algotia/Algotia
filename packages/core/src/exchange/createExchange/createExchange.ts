@@ -1,4 +1,4 @@
-import ccxt from "ccxt";
+import ccxt from "@algotia/ccxt";
 import { ExchangeID, isExchangeID } from "../../types";
 
 const createExchange = (

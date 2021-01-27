@@ -1,0 +1,1 @@
+{"version":3,"file":"OHLCV_Candle.d.ts","sourceRoot":"","sources":["../../src/models/OHLCV_Candle.ts"],"names":[],"mappings":"AAIA,oBAAY,YAAY,GAAG;IACvB,SAAS,EAAE,MAAM,CAAC;IAClB,IAAI,EAAE,MAAM,CAAC;IACb,IAAI,EAAE,MAAM,CAAC;IACb,GAAG,EAAE,MAAM,CAAC;IACZ,KAAK,EAAE,MAAM,CAAC;IACd,MAAM,EAAE,MAAM,CAAC;CAClB,CAAA"}

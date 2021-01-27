@@ -1,0 +1,1 @@
+{"version":3,"file":"StrategyError.d.ts","sourceRoot":"","sources":["../../src/models/StrategyError.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AAE3C,oBAAY,aAAa,GAAG;IACxB,SAAS,EAAE,MAAM,CAAC;IAClB,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,EAAE,QAAQ,CAAC;CACrB,CAAA"}

@@ -1,14 +1,14 @@
-import { Exchange as CCXT_Exchange, Order, Params } from "ccxt";
+import { Exchange as CCXT_Exchange, Order, Params } from "@algotia/ccxt";
 import { SimulatedExchangeStore } from "../../../types";
 
 type FetchOrders = CCXT_Exchange["fetchOrders"];
 
 const createFetchOrders = (store: SimulatedExchangeStore): FetchOrders => {
 	return async (
-		symbol?: string,
-		since?: number,
-		limit?: number,
-		params?: Params
+		_symbol?: string,
+		_since?: number,
+		_limit?: number,
+		_params?: Params
 	): Promise<Order[]> => {
 		return store.openOrders.concat(store.closedOrders);
 	};

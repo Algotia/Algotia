@@ -1,4 +1,4 @@
-import { BadRequest, BadSymbol, InsufficientFunds, Order } from "ccxt";
+import { BadRequest, BadSymbol, InsufficientFunds, Order } from "@algotia/ccxt";
 import { Exchange, SimulatedExchangeStore } from "../../../types";
 import { parsePair, uuid } from "../../../utils";
 import Decimal from "decimal.js";

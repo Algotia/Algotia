@@ -1,10 +1,14 @@
-import { paperTrade } from "../../src/algotia";
-import { Exchange, Strategy, PaperTradeOptions } from "../../src/types";
+import {
+	paperTrade,
+	Exchange,
+	Strategy,
+	PaperTradeOptions,
+} from "../../src/algotia";
 import { reset, initialBalance, simulatedExchanges } from "../test-utils";
 import sinon from "sinon";
 import { EventEmitter } from "events";
 
-jest.mock("../../src/exchangeHelpers/getLiveCandle", () => {
+jest.mock("../../src/exchange/helpers/getLiveCandle", () => {
 	return jest.fn(() => {
 		return {
 			timestamp: 1000,

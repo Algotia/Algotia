@@ -1,4 +1,4 @@
-import { OHLCV, SimulatedExchangeStore } from "../../../src/types";
+import { OHLCV_Candle, SimulatedExchangeStore } from "../../../src/algotia";
 import { parsePair } from "../../../src/utils";
 import { simulatedExchanges, initialBalance, reset } from "../../test-utils";
 
@@ -79,8 +79,8 @@ describe.each(simulatedExchanges)("fillOrders", (simulatedExchange) => {
 	}
 	for (const side of orderSides) {
 		it(`Should fill limit ${side} order after 1 candle`, async () => {
-			let firstCandle: OHLCV;
-			let secondCandle: OHLCV;
+			let firstCandle: OHLCV_Candle;
+			let secondCandle: OHLCV_Candle;
 			if (side === "buy") {
 				firstCandle = {
 					timestamp: 1000,

@@ -1,15 +1,10 @@
-import ccxt, {
-	Exchange as CCXT_Exchange,
-	Dictionary,
-	Market,
-	Exchange,
-} from "ccxt";
+import { Exchange as CCXT_Exchange, IDictionary, Market } from "@algotia/ccxt";
 import {
 	simulateExchange,
+	createExchange,
 	AllowedExchangeIDs,
 	ExchangeID,
 	SimulatedExchange,
-	createExchange,
 } from "../../src/algotia";
 
 interface ExchangeObj {
@@ -30,7 +25,7 @@ describe.each(AllowedExchangeIDs)("simulateExchange", (exchangeId) => {
 			derivesFrom: realExchange,
 		});
 
-		expect(exchange).toMatchObject(realExchange)
+		expect(exchange).toMatchObject(realExchange);
 	});
 
 	it("should have populated properties if dervies from real exchange", async () => {
@@ -47,7 +42,7 @@ describe.each(AllowedExchangeIDs)("simulateExchange", (exchangeId) => {
 			const loadMarketsSpy = jest
 				.spyOn(realExchange, "loadMarkets")
 				.mockImplementation(async function () {
-					this.markets = markets as Dictionary<Market>;
+					this.markets = markets as IDictionary<Market>;
 					this.symbols = Object.keys(markets);
 					this.currencies = currencies;
 					return markets;

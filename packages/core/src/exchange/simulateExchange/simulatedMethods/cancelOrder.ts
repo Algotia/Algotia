@@ -1,4 +1,4 @@
-import { Exchange as CCXT_Exchange, Params, Order } from "ccxt";
+import { Exchange as CCXT_Exchange, Params, Order } from "@algotia/ccxt";
 import { SimulatedExchangeStore } from "../../../types";
 import { parsePair } from "../../../utils";
 import Decimal from "decimal.js";
@@ -8,8 +8,8 @@ type CancelOrder = CCXT_Exchange["cancelOrder"];
 const createCancelOrder = (store: SimulatedExchangeStore): CancelOrder => {
 	return async (
 		id: string,
-		symbol?: string,
-		params?: Params
+		_symbol?: string,
+		_params?: Params
 	): Promise<Order> => {
 		const order = store.openOrders.find((order) => {
 			return order.id === id;

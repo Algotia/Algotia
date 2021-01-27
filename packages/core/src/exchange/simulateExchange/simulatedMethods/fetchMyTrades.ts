@@ -1,14 +1,14 @@
-import { Exchange as CCXT_Exchange, Params, Trade } from "ccxt";
+import { Exchange as CCXT_Exchange, Params, Trade } from "@algotia/ccxt";
 import { SimulatedExchangeStore } from "../../../types";
 
 type FetchMyTrades = CCXT_Exchange["fetchMyTrades"];
 
 const createFetchMyTrades = (store: SimulatedExchangeStore): FetchMyTrades => {
 	return async (
-		symbol?: string,
-		since?: string,
-		limit?: string,
-		params?: Params
+		_symbol?: string,
+		_since?: string,
+		_limit?: string,
+		_params?: Params
 	): Promise<Trade[]> => {
 		try {
 			const withTrades = store.closedOrders.filter((order) => {
