@@ -1,13 +1,12 @@
-import { Exchange, ExchangeID } from "@algotia/core";
+import { CreateBacktestOptions, ExchangeID } from "@algotia/client";
 import node_path from "path";
-import { request } from "../test-utils";
+import { client } from "../test-utils";
 
 jest.mock("@algotia/core", () => {
     const algotia = jest.requireActual("@algotia/core");
 
     return {
-        __esModule: true, // Use it when dealing with esModules
-        ...algotia,
+        __esModule: true, // Use it when dealing with esModules ...algotia,
         createExchange: jest
             .fn()
             .mockImplementation((exchangeId: ExchangeID) => {
@@ -49,184 +48,72 @@ jest.mock("@algotia/core", () => {
     };
 });
 
+const validBody: CreateBacktestOptions = {
+    to: 1606867200000,
+    from: 1606780800000,
+    exchange: "binance" as ExchangeID,
+    pair: "ETH/BTC",
+    period: "1h",
+    strategyPath: node_path.join(__dirname, "./__fixtures__/strategy.js"),
+    initialBalance: {
+        ETH: 100,
+        BTC: 100,
+    } as const,
+};
+
+const reqBodies: [CreateBacktestOptions, string][] = [
+    [Object.assign(validBody, { exchange: "foo" }), "exchange"],
+    [Object.assign(validBody, { exchange: undefined }), "exchange"],
+    [Object.assign(validBody, { pair: "foo/bar" }), "pair"],
+    [Object.assign(validBody, { period: "foo" }), "period"],
+    [Object.assign({ strategyPath: "foo" }), "strategyPath"],
+    [
+        Object.assign(validBody, {
+            initialBalance: { foo: 1, bar: 1 },
+        }),
+        "initialBalance",
+    ],
+    [
+        Object.assign(validBody, {
+            initialBalance: {
+                ETH: "foo",
+                BTC: "bar",
+            },
+        }),
+        "initialBalance",
+    ],
+    [
+        Object.assign(validBody, {
+            initialBalance: undefined,
+        }),
+        "initialBalance",
+    ],
+];
 describe("POST backtest", () => {
     it("should fail validation", async () => {
-        const reqBodies = [
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    exchange: "foo",
-                    pair: "ETH/BTC",
-                    period: "1h",
-                    strategyPath: node_path.join(
-                        __dirname,
-                        "./__fixtures__/strategy.js"
-                    ),
-                    initialBalance: {
-                        ETH: 100,
-                        BTC: 100,
-                    },
-                },
-                "exchange",
-            ],
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    exchange: "binance",
-                    pair: "foo/bar",
-                    period: "1h",
-                    strategyPath: node_path.join(
-                        __dirname,
-                        "./__fixtures__/strategy.js"
-                    ),
-                    initialBalance: {
-                        ETH: 100,
-                        BTC: 100,
-                    },
-                },
-                "pair",
-            ],
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    exchange: "binance",
-                    pair: "ETH/BTC",
-                    period: "foo",
-                    strategyPath: node_path.join(
-                        __dirname,
-                        "./__fixtures__/strategy.js"
-                    ),
-                    initialBalance: {
-                        ETH: 100,
-                        BTC: 100,
-                    },
-                },
-                "period",
-            ],
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    exchange: "binance",
-                    pair: "ETH/BTC",
-                    period: "1h",
-                    strategyPath: "./__fixtures__/strategy.js",
-                    initialBalance: {
-                        ETH: 100,
-                        BTC: 100,
-                    },
-                },
-                "strategyPath",
-            ],
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    pair: "ETH/BTC",
-                    period: "1h",
-                    strategyPath: node_path.join(
-                        __dirname,
-                        "./__fixtures__/strategy.js"
-                    ),
-                    initialBalance: {
-                        ETH: 100,
-                        BTC: 100,
-                    },
-                },
-                "exchange",
-            ],
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    exchange: "binance",
-                    pair: "ETH/BTC",
-                    period: "1h",
-                    strategyPath: node_path.join(
-                        __dirname,
-                        "./__fixtures__/strategy.js"
-                    ),
-                    initialBalance: {
-                        foo: 100,
-                        bar: 100,
-                    },
-                },
-                "initialBalance",
-            ],
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    exchange: "binance",
-                    pair: "ETH/BTC",
-                    period: "1h",
-                    strategyPath: node_path.join(
-                        __dirname,
-                        "./__fixtures__/strategy.js"
-                    ),
-                    initialBalance: {
-                        ETH: "foo",
-                        BTC: "bar",
-                    },
-                },
-                "initialBalance",
-            ],
-            [
-                {
-                    to: 1606867200000,
-                    from: 1606780800000,
-                    exchange: "binance",
-                    pair: "ETH/BTC",
-                    period: "1h",
-                    strategyPath: node_path.join(
-                        __dirname,
-                        "./__fixtures__/strategy.js"
-                    ),
-                },
-                "initialBalance",
-            ],
-        ];
-
         for (const [body, param] of reqBodies) {
-            const res = await request()
-                .post("/api/backtest")
-                .set("Accept", "application/json")
-                .send(body);
-            expect(res.status).toStrictEqual(400);
-            expect(Array.isArray(res.body.errors)).toStrictEqual(true);
-            expect(res.body.errors[0].param).toStrictEqual(param);
+            expect(client.createBacktest(body)).rejects.toThrowError();
         }
     });
     test("returns backtest results and candles", async () => {
-        const res = await request()
-            .post("/api/backtest")
-            .set("Accept", "application/json")
-            .send({
-                exchange: "binance",
-                to: 1606867200000,
-                from: 1606780800000,
-                pair: "ETH/BTC",
-                period: "1h",
-                strategyPath: node_path.join(
-                    __dirname,
-                    "./__fixtures__/strategy.js"
-                ),
+        try {
+            const res = await client.createBacktest({
+                ...validBody,
+                exchange: "binance" as ExchangeID,
                 initialBalance: {
                     ETH: 100,
                     BTC: 100,
                 },
             });
 
-        expect(res.body.candles).toBeTruthy();
-        expect(Array.isArray(res.body.candles)).toStrictEqual(true);
-
-        expect(res.body.results).toBeTruthy();
-        expect(res.body.results.balance).toBeTruthy();
-        expect(res.body.results.closedOrders).toBeDefined();
-        expect(res.body.results.openOrders).toBeDefined();
-        expect(res.body.results.errors).toBeDefined();
+            expect(Array.isArray(res.data.candles)).toStrictEqual(true);
+            expect(res.data.results).toBeTruthy();
+            expect(res.data.results.balance).toBeTruthy();
+            expect(res.data.results.closedOrders).toBeDefined();
+            expect(res.data.results.openOrders).toBeDefined();
+            expect(res.data.results.errors).toBeDefined();
+        } catch (err) {
+            console.log(err.response.data);
+        }
     });
 });

@@ -1,9 +1,9 @@
-import { Balances } from "@algotia/ccxt";
+import { SimulatedExchangeStore } from "../shared";
 
 export interface StrategyError {
 	timestamp: number;
 	message: string;
-	balance: Balances;
+	balance: SimulatedExchangeStore["balance"];
 }
 
 export const createStrategyError = (args: StrategyError): StrategyError => {

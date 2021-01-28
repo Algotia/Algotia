@@ -1,4 +1,4 @@
-import { Exchange, Order, Balances } from "@algotia/ccxt";
+import { Exchange, Order, Balances, Balance } from "@algotia/ccxt";
 import { StrategyError } from "../errors";
 
 export const AllowedExchangeIDs = ["binance", "kucoin", "bitfinex"] as const;
@@ -26,7 +26,7 @@ export interface SimulatedExchange extends InstanceType<typeof Exchange> {
 export interface SimulatedExchangeStore {
 	currentTime: number;
 	currentPrice: number;
-	balance: Balances;
+	balance: { [key: string]: Balance };
 	openOrders: Order[];
 	closedOrders: Order[];
 	errors: StrategyError[];

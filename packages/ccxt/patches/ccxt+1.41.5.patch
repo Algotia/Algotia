@@ -1,16 +1,18 @@
 diff --git a/node_modules/ccxt/ccxt.d.ts b/node_modules/ccxt/ccxt.d.ts
-index b2f0056..9cc8d6e 100644
+index b2f0056..7ce5f59 100644
 --- a/node_modules/ccxt/ccxt.d.ts
 +++ b/node_modules/ccxt/ccxt.d.ts
-@@ -3,7 +3,7 @@ declare module 'ccxt' {
+@@ -3,8 +3,8 @@ declare module 'ccxt' {
      /**
       * Represents an associative array of a same type.
       */
 -    interface Dictionary<T> {
-+    interface IDictionary<T> {
-         [key: string]: T;
+-        [key: string]: T;
++    type IDictionary<T> = {
++    	[key: string]: T
      }
  
+     // errors.js -----------------------------------------
 @@ -48,7 +48,7 @@ declare module 'ccxt' {
  
      export interface MinMax {
@@ -29,7 +31,7 @@ index b2f0056..9cc8d6e 100644
          info: any;
      }
  
-@@ -174,10 +174,10 @@ declare module 'ccxt' {
+@@ -174,11 +174,11 @@ declare module 'ccxt' {
          total: number;
      }
  
@@ -38,10 +40,12 @@ index b2f0056..9cc8d6e 100644
      }
  
 -    export interface Balances extends Dictionary<Balance> {
+-        info: any;
 +    export interface Balances extends IDictionary<Balance> {
-         info: any;
++    	info: any
      }
  
+     export interface DepositAddress {
 @@ -211,7 +211,7 @@ declare module 'ccxt' {
      export type OHLCV = [number, number, number, number, number, number];
  
