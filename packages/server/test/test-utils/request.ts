@@ -1,5 +1,5 @@
-import { DefaultApi } from "@algotia/client";
+import supertest from "supertest";
 
-const client = new DefaultApi();
+const request = () => supertest(require("../../src/server").app);
 
-export default client;
+export default request;

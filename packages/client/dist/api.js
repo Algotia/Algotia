@@ -179,37 +179,6 @@ const DefaultApiAxiosParamCreator = function (configuration) {
         }),
         /**
          *
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAllStrategyMetaData: (options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const localVarPath = `/strategy`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            const queryParameters = new URLSearchParams(localVarUrlObj.search);
-            for (const key in localVarQueryParameter) {
-                queryParameters.set(key, localVarQueryParameter[key]);
-            }
-            for (const key in options.query) {
-                queryParameters.set(key, options.query[key]);
-            }
-            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
-            return {
-                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
-                options: localVarRequestOptions,
-            };
-        }),
-        /**
-         *
          * @param {'port' | 'appDir'} key
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -221,43 +190,6 @@ const DefaultApiAxiosParamCreator = function (configuration) {
             }
             const localVarPath = `/config/{key}`
                 .replace(`{${"key"}}`, encodeURIComponent(String(key)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            const queryParameters = new URLSearchParams(localVarUrlObj.search);
-            for (const key in localVarQueryParameter) {
-                queryParameters.set(key, localVarQueryParameter[key]);
-            }
-            for (const key in options.query) {
-                queryParameters.set(key, options.query[key]);
-            }
-            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
-            return {
-                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
-                options: localVarRequestOptions,
-            };
-        }),
-        /**
-         *
-         * @param {ExchangeID} id
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getCurrencies: (id, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            // verify required parameter 'id' is not null or undefined
-            if (id === null || id === undefined) {
-                throw new base_1.RequiredError('id', 'Required parameter id was null or undefined when calling getCurrencies.');
-            }
-            const localVarPath = `/exchange/{id}/currencies`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -540,20 +472,6 @@ const DefaultApiFp = function (configuration) {
         },
         /**
          *
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAllStrategyMetaData(options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield exports.DefaultApiAxiosParamCreator(configuration).getAllStrategyMetaData(options);
-                return (axios = axios_1.default, basePath = base_1.BASE_PATH) => {
-                    const axiosRequestArgs = Object.assign(Object.assign({}, localVarAxiosArgs.options), { url: ((configuration === null || configuration === void 0 ? void 0 : configuration.basePath) || basePath) + localVarAxiosArgs.url });
-                    return axios.request(axiosRequestArgs);
-                };
-            });
-        },
-        /**
-         *
          * @param {'port' | 'appDir'} key
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -561,21 +479,6 @@ const DefaultApiFp = function (configuration) {
         getConfigOptionByKey(key, options) {
             return __awaiter(this, void 0, void 0, function* () {
                 const localVarAxiosArgs = yield exports.DefaultApiAxiosParamCreator(configuration).getConfigOptionByKey(key, options);
-                return (axios = axios_1.default, basePath = base_1.BASE_PATH) => {
-                    const axiosRequestArgs = Object.assign(Object.assign({}, localVarAxiosArgs.options), { url: ((configuration === null || configuration === void 0 ? void 0 : configuration.basePath) || basePath) + localVarAxiosArgs.url });
-                    return axios.request(axiosRequestArgs);
-                };
-            });
-        },
-        /**
-         *
-         * @param {ExchangeID} id
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getCurrencies(id, options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield exports.DefaultApiAxiosParamCreator(configuration).getCurrencies(id, options);
                 return (axios = axios_1.default, basePath = base_1.BASE_PATH) => {
                     const axiosRequestArgs = Object.assign(Object.assign({}, localVarAxiosArgs.options), { url: ((configuration === null || configuration === void 0 ? void 0 : configuration.basePath) || basePath) + localVarAxiosArgs.url });
                     return axios.request(axiosRequestArgs);
@@ -699,29 +602,12 @@ const DefaultApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAllStrategyMetaData(options) {
-            return exports.DefaultApiFp(configuration).getAllStrategyMetaData(options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
          * @param {'port' | 'appDir'} key
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         getConfigOptionByKey(key, options) {
             return exports.DefaultApiFp(configuration).getConfigOptionByKey(key, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @param {ExchangeID} id
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getCurrencies(id, options) {
-            return exports.DefaultApiFp(configuration).getCurrencies(id, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -807,15 +693,6 @@ class DefaultApi extends base_1.BaseAPI {
     }
     /**
      *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getAllStrategyMetaData(options) {
-        return exports.DefaultApiFp(this.configuration).getAllStrategyMetaData(options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
      * @param {'port' | 'appDir'} key
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -823,16 +700,6 @@ class DefaultApi extends base_1.BaseAPI {
      */
     getConfigOptionByKey(key, options) {
         return exports.DefaultApiFp(this.configuration).getConfigOptionByKey(key, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @param {ExchangeID} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getCurrencies(id, options) {
-        return exports.DefaultApiFp(this.configuration).getCurrencies(id, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

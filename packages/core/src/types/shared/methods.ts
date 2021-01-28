@@ -10,7 +10,6 @@ export interface BacktestOptions {
 	data: OHLCV_Candle[];
 	strategy: Strategy;
 }
-
 export type BacktestResults = Omit<
 	SimulatedExchangeStore,
 	"currentTime" | "currentPrice"

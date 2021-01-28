@@ -1,6 +1,6 @@
 0 silly argv {
 0 silly argv   _: [ 'add' ],
-0 silly argv   scope: '@algotia/web-ui',
+0 silly argv   scope: '@algotia/server-2',
 0 silly argv   globs: [],
 0 silly argv   lernaVersion: '3.22.1',
 0 silly argv   '$0': '/home/jake/Documents/Code/algotia-mono/node_modules/.bin/lerna',

@@ -40,6 +40,19 @@ export interface Balance {
 /**
  *
  * @export
+ * @interface Balances
+ */
+export interface Balances {
+    /**
+     *
+     * @type {any}
+     * @memberof Balances
+     */
+    info: any | null;
+}
+/**
+ *
+ * @export
  * @interface CreateBacktestOptions
  */
 export interface CreateBacktestOptions {
@@ -106,37 +119,6 @@ export interface CreateBacktestResult {
      * @memberof CreateBacktestResult
      */
     candles: Array<OHLCVCandle>;
-}
-/**
- *
- * @export
- * @interface Currency
- */
-export interface Currency {
-    /**
-     *
-     * @type {string}
-     * @memberof Currency
-     */
-    id: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Currency
-     */
-    code: string;
-    /**
-     *
-     * @type {number}
-     * @memberof Currency
-     */
-    numericId?: number;
-    /**
-     *
-     * @type {number}
-     * @memberof Currency
-     */
-    precision: number;
 }
 /**
  *
@@ -591,12 +573,10 @@ export declare enum OrderSideEnum {
 export interface PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice {
     /**
      *
-     * @type {{ [key: string]: Balance; }}
+     * @type {Balances}
      * @memberof PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice
      */
-    balance: {
-        [key: string]: Balance;
-    };
+    balance: Balances;
     /**
      *
      * @type {Array<Order>}
@@ -661,12 +641,10 @@ export interface StrategyError {
     message: string;
     /**
      *
-     * @type {{ [key: string]: Balance; }}
+     * @type {Balances}
      * @memberof StrategyError
      */
-    balance: {
-        [key: string]: Balance;
-    };
+    balance: Balances;
 }
 /**
  *
@@ -828,24 +806,11 @@ export declare const DefaultApiAxiosParamCreator: (configuration?: Configuration
     getAllConfigOptions: (options?: any) => Promise<RequestArgs>;
     /**
      *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAllStrategyMetaData: (options?: any) => Promise<RequestArgs>;
-    /**
-     *
      * @param {'port' | 'appDir'} key
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getConfigOptionByKey: (key: 'port' | 'appDir', options?: any) => Promise<RequestArgs>;
-    /**
-     *
-     * @param {ExchangeID} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCurrencies: (id: ExchangeID, options?: any) => Promise<RequestArgs>;
     /**
      *
      * @param {*} [options] Override http request option.
@@ -908,26 +873,11 @@ export declare const DefaultApiFp: (configuration?: Configuration) => {
     getAllConfigOptions(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>>;
     /**
      *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAllStrategyMetaData(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<StrategyMetaData>>>;
-    /**
-     *
      * @param {'port' | 'appDir'} key
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getConfigOptionByKey(key: 'port' | 'appDir', options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string | number>>;
-    /**
-     *
-     * @param {ExchangeID} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCurrencies(id: ExchangeID, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{
-        [key: string]: Currency;
-    }>>;
     /**
      *
      * @param {*} [options] Override http request option.
@@ -992,26 +942,11 @@ export declare const DefaultApiFactory: (configuration?: Configuration, basePath
     getAllConfigOptions(options?: any): AxiosPromise<any>;
     /**
      *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAllStrategyMetaData(options?: any): AxiosPromise<Array<StrategyMetaData>>;
-    /**
-     *
      * @param {'port' | 'appDir'} key
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     getConfigOptionByKey(key: 'port' | 'appDir', options?: any): AxiosPromise<string | number>;
-    /**
-     *
-     * @param {ExchangeID} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCurrencies(id: ExchangeID, options?: any): AxiosPromise<{
-        [key: string]: Currency;
-    }>;
     /**
      *
      * @param {*} [options] Override http request option.
@@ -1080,29 +1015,12 @@ export declare class DefaultApi extends BaseAPI {
     getAllConfigOptions(options?: any): Promise<import("axios").AxiosResponse<any>>;
     /**
      *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getAllStrategyMetaData(options?: any): Promise<import("axios").AxiosResponse<StrategyMetaData[]>>;
-    /**
-     *
      * @param {'port' | 'appDir'} key
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
     getConfigOptionByKey(key: 'port' | 'appDir', options?: any): Promise<import("axios").AxiosResponse<string | number>>;
-    /**
-     *
-     * @param {ExchangeID} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    getCurrencies(id: ExchangeID, options?: any): Promise<import("axios").AxiosResponse<{
-        [key: string]: Currency;
-    }>>;
     /**
      *
      * @param {*} [options] Override http request option.

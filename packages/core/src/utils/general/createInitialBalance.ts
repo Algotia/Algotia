@@ -1,9 +1,9 @@
-import { InitialBalance, SimulatedExchangeStore } from "../../types";
+import { Balances } from "@algotia/ccxt";
+import { InitialBalance } from "../../types";
 
-const createInitialBalance = (
-	initialBalance: InitialBalance
-): SimulatedExchangeStore["balance"] => {
-	let balance: SimulatedExchangeStore["balance"];
+const createInitialBalance = (initialBalance: InitialBalance): Balances => {
+	let balance: Balances;
+
 	const keys = Object.keys(initialBalance);
 
 	for (const currency of keys) {
@@ -15,6 +15,8 @@ const createInitialBalance = (
 			},
 		});
 	}
+
+	balance.info = { ...balance };
 
 	return balance;
 };

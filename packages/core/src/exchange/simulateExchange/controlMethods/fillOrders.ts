@@ -114,6 +114,8 @@ const updateBalance = (store: SimulatedExchangeStore, closedOrder: Order) => {
 				[quote]: newQuoteBalance,
 			});
 
+			newBalance.info = { ...newBalance };
+
 			store.balance = newBalance;
 		}
 
@@ -144,6 +146,8 @@ const updateBalance = (store: SimulatedExchangeStore, closedOrder: Order) => {
 				[base]: newBaseBalance,
 				[quote]: newQuoteBalance,
 			});
+
+			newBalance.info = { ...newBalance };
 
 			store.balance = newBalance;
 		}

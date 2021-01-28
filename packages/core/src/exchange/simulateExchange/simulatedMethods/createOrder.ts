@@ -141,6 +141,8 @@ const createCreateOrder = (
 					total: new Decimal(oldQuoteBalance.total).toNumber(),
 				},
 			});
+			store.balance.info = { ...store.balance };
+			delete store.balance.info.info;
 		}
 
 		if (side === "sell") {
@@ -164,6 +166,8 @@ const createCreateOrder = (
 					total: new Decimal(oldQuoteBalance.total).toNumber(),
 				},
 			});
+			store.balance.info = { ...store.balance };
+			delete store.balance.info.info;
 		}
 
 		store.openOrders.push(order);
