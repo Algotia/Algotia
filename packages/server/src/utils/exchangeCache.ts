@@ -1,18 +1,17 @@
 import { createExchange, Exchange, ExchangeID } from "@algotia/core";
+import OPCache from "op-cache";
 
-let cache: Record<ExchangeID, Exchange>;
+const cache = new OPCache<Record<ExchangeID, Exchange>>();
 
-const getExchange = async (exchangeId: ExchangeID) => {
-    if (!cache || !cache[exchangeId]) {
-        const exchange = createExchange(exchangeId);
+const getExchange = async (id: ExchangeID): Promise<Exchange> => {
+    if (!cache.has(id)) {
+        const exchange = createExchange(id);
+
         await exchange.loadMarkets();
-        cache = {
-            ...cache,
-            [exchangeId]: exchange,
-        };
-    }
 
-    return cache[exchangeId];
+        cache.set(id, exchange);
+    }
+    return cache.get(id);
 };
 
-export default getExchange;
+export { getExchange };
