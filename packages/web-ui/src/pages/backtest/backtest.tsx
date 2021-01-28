@@ -5,7 +5,8 @@ import Form from "./form";
 import Results from "./results/";
 import Chart from "./chart";
 import { Backdrop, CircularProgress } from "@material-ui/core";
-import { Options, BacktestContext, RequestResult } from "./context";
+import { BacktestContext, RequestResult } from "./context";
+import { CreateBacktestOptions, DefaultApi } from "@algotia/client";
 
 const Wrapper = styled.div`
     height: 100%;
@@ -36,12 +37,16 @@ const BottomRight = styled.div`
 
 const BacktestPage: FC = () => {
     const [requestResult, setRequestResult] = useState<RequestResult>();
-    const [options, setOptions] = useState<Options>();
+    const [options, setOptions] = useState<
+        Omit<CreateBacktestOptions, "strategyPath">
+    >();
     const [strategyPath, setStraegyPath] = useState<string>();
     const [loading, setLoading] = useState(false);
 
+    const client = new DefaultApi();
+
     useEffect(() => {
-        if (options) {
+        if (options && strategyPath) {
             let result: RequestResult;
 
             const body = {
@@ -50,57 +55,21 @@ const BacktestPage: FC = () => {
             };
 
             setLoading(true);
-
-            fetch("/api/backtest", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8",
-                },
-                body: JSON.stringify(body),
-            })
-                .then((res) => {
-                    return res.json();
-                })
-                .then((res) => {
-                    if (res.errors) {
-                        alert(res.errors);
-                        console.log(res.errors);
-                    }
-                    result = {
-                        ...result,
-                        candles: res.candles,
-                        results: res.results,
-                        options,
-                    };
-                })
-                .catch((err) => {
-                    alert(err);
-                })
-                .then(() => {
-                    fetch(
-                        `/api/exchange?id=${options.exchange}&market=${options.pair}`
-                    )
-                        .then((res) => res.json())
-                        .then((json) => {
-                            if (json.market) {
-                                result = {
-                                    ...result,
-                                    market: json.market,
-                                };
-                            } else if (json.errors) {
-                                alert(json.errors);
-                            }
-                        })
-                        .catch((err) => {
-                            alert(err);
-                        })
-                        .then(() => {
-                            setRequestResult(result);
-                        });
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+            client.createBacktest(body).then(({ data: backtestResult }) => {
+                client
+                    .getMarket(body.exchange, body.pair)
+                    .then(({ data: market }) => {
+                        result = {
+                            ...backtestResult,
+                            options: body,
+                            market,
+                        };
+                        setRequestResult(result);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    });
+            });
         }
     }, [options]);
 

@@ -12,15 +12,13 @@ const SelectPair: FC<SelectPairProps> = (props) => {
     const { pairList, setPair, pair } = props;
     return (
         <Autocomplete
+            id="select-pair"
             fullWidth={true}
             disabled={!pairList}
             options={pairList || []}
             value={pair}
-            getOptionLabel={(symbol) => symbol}
-            onInputChange={(_, val) => {
-                if (val) {
-                    setPair(val.toUpperCase());
-                }
+            onChange={(_, val) => {
+                setPair(val?.toUpperCase() || "");
             }}
             renderInput={(params) => (
                 <TextField

@@ -5,18 +5,25 @@ import {
     Dispatch,
     SetStateAction,
     useContext,
+    ReactText,
 } from "react";
 import styled from "styled-components";
-import { ExchangeID, parsePair, parsePeriod } from "@algotia/core";
+import { parsePair, parsePeriod } from "@algotia/core";
 import { Button, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Row } from "../../../components/shared";
-import { BacktestContext, Options } from "../context";
+import { BacktestContext } from "../context";
 import SelectExchange from "./selectExchange";
 import SelectDate from "./selectDates";
 import SelectInitialBalance from "./selectInitialBalance";
 import SelectPair from "./selectPair";
 import SelectPeriod from "./selectPeriod";
+import {
+    DefaultApi,
+    ExchangeID,
+    Currency,
+    CreateBacktestOptions,
+} from "@algotia/client";
 
 const FormWrapper = styled.div`
     box-sizing: border-box;
@@ -66,11 +73,17 @@ const useStyles = makeStyles({
 });
 
 const Form: FC<{
-    setOptions: Dispatch<SetStateAction<Options | undefined>>;
+    setOptions: Dispatch<
+        SetStateAction<Omit<CreateBacktestOptions, "strategyPath"> | undefined>
+    >;
 }> = (props) => {
     const [pairList, setPairList] = useState<string[]>();
-    const [periodList, setTimeframeList] = useState<string[]>();
-    const [currencyList, setCurrencyList] = useState<string[]>();
+    const [periodList, setTimeframeList] = useState<
+        Record<string, ReactText>
+    >();
+    const [currencyList, setCurrencyList] = useState<
+        Record<string, Currency>
+    >();
 
     let now = new Date();
 
@@ -106,22 +119,19 @@ const Form: FC<{
         }
     }, [pair]);
 
+    const client = new DefaultApi();
+
     useEffect(() => {
         if (exchangeId) {
-            fetch(
-                `/api/exchange?id=${exchangeId}&symbols=true&timeframes=true&currencies=true`
-            )
-                .then((res) => {
-                    return res.json();
-                })
-                .then((res) => {
-                    setPairList(res.symbols);
-                    setTimeframeList(Object.keys(res.timeframes));
-                    setCurrencyList(Object.keys(res.currencies));
-                })
-                .catch((err) => {
-                    alert(err);
-                });
+            client.getCurrencies(exchangeId).then((res) => {
+                setCurrencyList(res.data);
+            });
+            client.getPairs(exchangeId).then((res) => {
+                setPairList(res.data);
+            });
+            client.getTimeFrames(exchangeId).then((res) => {
+                setTimeframeList(res.data);
+            });
             setPair("");
             setPeriod("");
         }

@@ -4,11 +4,8 @@ import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import styled from "styled-components";
 import { Row } from "../shared";
 import { Paper, Theme } from "@material-ui/core";
-import {
-    WithStyles,
-    withStyles,
-    createStyles,
-} from "@material-ui/core/styles";
+import { WithStyles, withStyles, createStyles } from "@material-ui/core/styles";
+import { DefaultApi, RecordExchangeIDBoolean } from "@algotia/client";
 
 const styles = (theme: Theme) => {
     return createStyles({
@@ -66,15 +63,16 @@ const StatusLabel = styled.p`
 
 const Footer = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [data, setData] = useState<Record<string, boolean>>();
+    const [data, setData] = useState<RecordExchangeIDBoolean>();
+
+    const client = new DefaultApi();
 
     const fetchStatus = async () => {
-        const res = await fetch("/api/status");
+        const res = await client.getExchangeStatuses();
         if (res.status !== 200) {
             throw "PLACEHOLDER ERROR";
         }
-        const json = await res.json();
-        setData(json.exchanges);
+        setData(res.data);
     };
 
     useEffect(() => {
@@ -89,15 +87,17 @@ const Footer = () => {
     };
 
     return (
-            <Wrapper>
-                <StatusWrapper onClick={onClick}>
-                    <button>Status</button>
-                </StatusWrapper>
-                {menuOpen && (
-                    <Menu>
-                        <MenuHeader>Exchange status</MenuHeader>
-                        {data &&
-                            Object.keys(data).map((key) => {
+        <Wrapper>
+            <StatusWrapper onClick={onClick}>
+                <button>Status</button>
+            </StatusWrapper>
+            {menuOpen && (
+                <Menu>
+                    <MenuHeader>Exchange status</MenuHeader>
+                    {data &&
+                        Object.keys(data).map((k) => {
+                            if (data.hasOwnProperty(k)) {
+                                const key = k as keyof RecordExchangeIDBoolean;
                                 return (
                                     <StatusRow>
                                         <StatusLabel>{key}</StatusLabel>
@@ -108,10 +108,11 @@ const Footer = () => {
                                         )}
                                     </StatusRow>
                                 );
-                            })}
-                    </Menu>
-                )}
-            </Wrapper>
+                            }
+                        })}
+                </Menu>
+            )}
+        </Wrapper>
     );
 };
 

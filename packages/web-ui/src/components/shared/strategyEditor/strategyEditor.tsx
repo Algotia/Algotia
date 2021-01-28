@@ -6,7 +6,7 @@ import defaultValue from "./defaultValue";
 import editorTypes from "../../../assets/editor_types";
 import BottomBar from "./bottomBar";
 import { Paper } from "@material-ui/core";
-import { StrategyData, StrategyMetaData } from "@algotia/types";
+import { DefaultApi, StrategyMetaData } from "@algotia/client";
 
 let KEY_S: number;
 let CtrlCmd: number;
@@ -55,18 +55,16 @@ const StrategyEditor: FC<{
     rootRef: MutableRefObject<HTMLDivElement> | undefined;
     onStrategySelected?: (strategy: StrategyMetaData) => void;
 }> = (props) => {
+    const client = new DefaultApi();
     const { onStrategySelected, rootRef } = props;
 
     const [editorValue, setEditorValue] = useState<string>(defaultValue);
     const [strategyMeta, setStrategyMeta] = useState<StrategyMetaData>();
 
-    const selectStrategy = (meta: StrategyMetaData) => {
-        fetch(`/api/strategy/${meta.basename}`)
-            .then((res) => res.json())
-            .then(({ value, ...meta }: StrategyData) => {
-                setStrategyMeta(meta);
-                setEditorValue(value);
-            });
+    const selectStrategy = async (meta: StrategyMetaData) => {
+        const res = await client.getStrategyByFilename(meta.basename);
+        setStrategyMeta(res.data.meta);
+        setEditorValue(res.data.value);
     };
 
     const editorRef = useRef<any>();

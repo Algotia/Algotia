@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "proxy": "http://localhost:2008/",
     "dependencies": {
+        "@algotia/client": "^1.0.0",
         "@algotia/core": "^0.0.4-30",
         "@algotia/server": "^0.1.0",
         "@algotia/types": "^1.0.0",

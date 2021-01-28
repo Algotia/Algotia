@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction, useContext, useState } from "react";
 import { Column } from "../../../components";
-import { BacktestResults, OHLCV } from "@algotia/core";
+import { BacktestResults, OHLCV_Candle } from "@algotia/core";
 import {
     Button,
     ButtonGroup,
