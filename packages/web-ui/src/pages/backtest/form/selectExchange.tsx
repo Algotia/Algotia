@@ -1,23 +1,18 @@
+import { AllowedExchangeIDs, ExchangeID } from "@algotia/core";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { Dispatch, FC, SetStateAction, useContext } from "react";
-import { BacktestContext } from "../context";
-import { ExchangeID } from "@algotia/client";
+import {BacktestContext} from "../context";
 
 interface SelectExchangeProps {
     exchangeId: string;
     setExchangeId: Dispatch<SetStateAction<ExchangeID>>;
 }
 
-function enumKeys<O extends object, K extends keyof O = keyof O>(obj: O): K[] {
-    return Object.keys(obj).filter((k) => Number.isNaN(+k)) as K[];
-}
-const keys = enumKeys(ExchangeID);
-
 const SelectExchange: FC<SelectExchangeProps> = ({
     exchangeId,
     setExchangeId,
 }) => {
-    const { strategyPath } = useContext(BacktestContext);
+	const { strategyPath } = useContext(BacktestContext)
     return (
         <FormControl fullWidth={true}>
             <InputLabel htmlFor="exchange-select">
@@ -28,8 +23,7 @@ const SelectExchange: FC<SelectExchangeProps> = ({
                 id="exchange-select"
                 disabled={!strategyPath}
             >
-                {keys.map((key) => {
-                    const id = ExchangeID[key];
+                {AllowedExchangeIDs.map((id) => {
                     return (
                         <MenuItem
                             key={"select-" + id}
@@ -38,7 +32,7 @@ const SelectExchange: FC<SelectExchangeProps> = ({
                                 setExchangeId(id);
                             }}
                         >
-                            {key}
+                            {id}
                         </MenuItem>
                     );
                 })}

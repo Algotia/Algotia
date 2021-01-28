@@ -1,4 +1,3 @@
-import { Currency } from "@algotia/client";
 import { TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
@@ -10,7 +9,7 @@ interface SelectInitialBalanceProps {
     setCurrency: Dispatch<SetStateAction<string>>;
     amount: number;
     setAmount: Dispatch<SetStateAction<number>>;
-    currencyList: Record<string, Currency> | undefined;
+    currencyList: string[] | undefined;
     onChange: (value: { currency: string; amount: number }) => void;
     FormItem: FC;
 }
@@ -35,11 +34,14 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
                     id={id + "-autocomplete"}
                     fullWidth={true}
                     disabled={!pair}
-                    options={Object.keys(currencyList || {})}
+                    options={currencyList || []}
                     getOptionLabel={(c) => c}
                     value={currency}
                     onChange={(_, val) => {
-                        setCurrency(val || "");
+                        console.log("V", val);
+                        if (val) {
+                            setCurrency(val);
+                        }
                     }}
                     renderInput={(params) => (
                         <TextField

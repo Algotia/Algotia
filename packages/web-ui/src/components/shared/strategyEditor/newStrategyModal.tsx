@@ -1,4 +1,3 @@
-import {DefaultApi} from "@algotia/client";
 import { Button, makeStyles, Modal, TextField } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
@@ -51,14 +50,29 @@ const NewStrategyModal: FC<{
     const closeModalClasses = useCloseModalButtonStyles();
     const submitButtonClasses = useSubmitButtonStyles();
 
-	const client = new DefaultApi()
-
     useEffect(() => {
-
+        fetch("/api/config/strategyDir")
+            .then((res) => {
+                return res.json();
+            })
+            .then((json) => {
+                if (!json.errors) {
+                    setStrategyDir(json.strategyDir);
+                    setFileName(json.strategyDir);
+                } else {
+                    alert(json.errors);
+                }
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
     }, []);
 
     const onSubmit = () => {
-
+        if (strategyDir) {
+            const baseFileName = fileName.replace(strategyDir, "");
+            onNewStrategy(baseFileName);
+        }
     };
 
     return (

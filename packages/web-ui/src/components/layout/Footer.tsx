@@ -4,8 +4,11 @@ import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import styled from "styled-components";
 import { Row } from "../shared";
 import { Paper, Theme } from "@material-ui/core";
-import { WithStyles, withStyles, createStyles } from "@material-ui/core/styles";
-import { DefaultApi, RecordExchangeIDBoolean } from "@algotia/client";
+import {
+    WithStyles,
+    withStyles,
+    createStyles,
+} from "@material-ui/core/styles";
 
 const styles = (theme: Theme) => {
     return createStyles({
@@ -63,16 +66,15 @@ const StatusLabel = styled.p`
 
 const Footer = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [data, setData] = useState<RecordExchangeIDBoolean>();
-
-    const client = new DefaultApi();
+    const [data, setData] = useState<Record<string, boolean>>();
 
     const fetchStatus = async () => {
-        const res = await client.getExchangeStatuses();
+        const res = await fetch("/api/status");
         if (res.status !== 200) {
             throw "PLACEHOLDER ERROR";
         }
-        setData(res.data);
+        const json = await res.json();
+        setData(json.exchanges);
     };
 
     useEffect(() => {
@@ -87,17 +89,15 @@ const Footer = () => {
     };
 
     return (
-        <Wrapper>
-            <StatusWrapper onClick={onClick}>
-                <button>Status</button>
-            </StatusWrapper>
-            {menuOpen && (
-                <Menu>
-                    <MenuHeader>Exchange status</MenuHeader>
-                    {data &&
-                        Object.keys(data).map((k) => {
-                            if (data.hasOwnProperty(k)) {
-                                const key = k as keyof RecordExchangeIDBoolean;
+            <Wrapper>
+                <StatusWrapper onClick={onClick}>
+                    <button>Status</button>
+                </StatusWrapper>
+                {menuOpen && (
+                    <Menu>
+                        <MenuHeader>Exchange status</MenuHeader>
+                        {data &&
+                            Object.keys(data).map((key) => {
                                 return (
                                     <StatusRow>
                                         <StatusLabel>{key}</StatusLabel>
@@ -108,11 +108,10 @@ const Footer = () => {
                                         )}
                                     </StatusRow>
                                 );
-                            }
-                        })}
-                </Menu>
-            )}
-        </Wrapper>
+                            })}
+                    </Menu>
+                )}
+            </Wrapper>
     );
 };
 
