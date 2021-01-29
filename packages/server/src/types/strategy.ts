@@ -8,3 +8,7 @@ export interface StrategyMetaData {
 export interface StrategyTemplateOptions {
     pair: string;
 }
+
+export interface WriteStrategyOptions {
+    contents: string;
+}

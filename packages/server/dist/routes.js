@@ -25,14 +25,6 @@ const models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Balances": {
-        "dataType": "refObject",
-        "properties": {
-            "info": { "dataType": "any", "required": true },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Fee": {
         "dataType": "refObject",
         "properties": {
@@ -95,14 +87,14 @@ const models = {
         "properties": {
             "timestamp": { "dataType": "double", "required": true },
             "message": { "dataType": "string", "required": true },
-            "balance": { "ref": "Balances", "required": true },
+            "balance": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "ref": "Balance" }, "required": true },
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Pick_SimulatedExchangeStore.Exclude_keyofSimulatedExchangeStore.currentTime-or-currentPrice__": {
         "dataType": "refAlias",
-        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "balance": { "ref": "Balances", "required": true }, "openOrders": { "dataType": "array", "array": { "ref": "Order" }, "required": true }, "closedOrders": { "dataType": "array", "array": { "ref": "Order" }, "required": true }, "errors": { "dataType": "array", "array": { "ref": "StrategyError" }, "required": true } }, "validators": {} },
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "balance": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "ref": "Balance" }, "required": true }, "openOrders": { "dataType": "array", "array": { "ref": "Order" }, "required": true }, "closedOrders": { "dataType": "array", "array": { "ref": "Order" }, "required": true }, "errors": { "dataType": "array", "array": { "ref": "StrategyError" }, "required": true } }, "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Omit_SimulatedExchangeStore.currentTime-or-currentPrice_": {
@@ -197,9 +189,8 @@ const models = {
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IDictionary_number-or-string_": {
-        "dataType": "refObject",
-        "properties": {},
-        "additionalProperties": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "string" }] },
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": {}, "additionalProperties": { "dataType": "union", "subSchemas": [{ "dataType": "double" }, { "dataType": "string" }] }, "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyMetaData": {
@@ -218,6 +209,14 @@ const models = {
         "properties": {
             "value": { "dataType": "string", "required": true },
             "meta": { "ref": "StrategyMetaData", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "WriteStrategyOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "contents": { "dataType": "string", "required": true },
         },
         "additionalProperties": false,
     },
@@ -360,6 +359,21 @@ function RegisterRoutes(app) {
         promiseHandler(controller, promise, response, undefined, next);
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/api/strategy', function (request, response, next) {
+        const args = {};
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+        }
+        catch (err) {
+            return next(err);
+        }
+        const controller = new strategyController_1.StrategyController();
+        const promise = controller.getAllStrategies.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, undefined, next);
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     app.get('/api/strategy/:fileName', function (request, response, next) {
         const args = {
             fileName: { "in": "path", "name": "fileName", "required": true, "dataType": "string" },
@@ -374,6 +388,24 @@ function RegisterRoutes(app) {
         }
         const controller = new strategyController_1.StrategyController();
         const promise = controller.getStrategyByFilename.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, undefined, next);
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/api/strategy/:fileName', function (request, response, next) {
+        const args = {
+            fileName: { "in": "path", "name": "fileName", "required": true, "dataType": "string" },
+            contents: { "in": "body", "name": "contents", "required": true, "ref": "WriteStrategyOptions" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+        }
+        catch (err) {
+            return next(err);
+        }
+        const controller = new strategyController_1.StrategyController();
+        const promise = controller.writeStrategy.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, undefined, next);
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

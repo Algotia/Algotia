@@ -15,19 +15,15 @@ const SelectPair: FC<SelectPairProps> = (props) => {
             fullWidth={true}
             disabled={!pairList}
             options={pairList || []}
-            value={pair}
             getOptionLabel={(symbol) => symbol}
-            onInputChange={(_, val) => {
+            value={pair}
+            onChange={(_, val) => {
                 if (val) {
                     setPair(val.toUpperCase());
                 }
             }}
             renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label="Select a pair"
-                    variant="standard"
-                />
+                <TextField {...params} label="Pair" variant="outlined" />
             )}
         />
     );

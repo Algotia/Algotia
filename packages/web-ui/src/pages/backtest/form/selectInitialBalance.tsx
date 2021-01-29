@@ -47,7 +47,7 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
                         <TextField
                             {...params}
                             label="Select a currency"
-                            variant="standard"
+                            variant="outlined"
                         />
                     )}
                 />
@@ -55,6 +55,7 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
             <FormItem>
                 <TextField
                     id={id + "-text-field"}
+					variant="outlined"
                     disabled={!pair}
                     fullWidth={true}
                     label={"Amount"}

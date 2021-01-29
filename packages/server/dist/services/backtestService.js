@@ -8,16 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BacktestService = void 0;
 const core_1 = require("@algotia/core");
 const exchangeService_1 = require("./exchangeService");
 const strategyService_1 = require("./strategyService");
-const path_1 = __importDefault(require("path"));
-const import_fresh_1 = __importDefault(require("import-fresh"));
 class BacktestService {
     constructor() {
         this.exchangeService = new exchangeService_1.ExchangeService();
@@ -31,11 +26,9 @@ class BacktestService {
                 derivesFrom: realExchange,
                 initialBalance,
             });
-            const strategy = path_1.default.isAbsolute(strategyPath)
-                ? import_fresh_1.default(strategyPath)
-                : yield this.strategyService.import(strategyPath, {
-                    pair,
-                });
+            const strategy = yield this.strategyService.import(strategyPath, {
+                pair,
+            });
             const candles = yield core_1.backfill({
                 from,
                 to,

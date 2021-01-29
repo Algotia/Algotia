@@ -6,7 +6,8 @@ import defaultValue from "./defaultValue";
 import editorTypes from "../../../assets/editor_types";
 import BottomBar from "./bottomBar";
 import { Paper } from "@material-ui/core";
-import { StrategyData, StrategyMetaData } from "@algotia/types";
+import { StrategyData } from "@algotia/types";
+import { DefaultApi, StrategyMetaData } from "@algotia/client";
 
 let KEY_S: number;
 let CtrlCmd: number;
@@ -51,6 +52,8 @@ const EditorSSS = styled.div`
     height: calc(100% - 55px);
 `;
 
+const client = new DefaultApi();
+
 const StrategyEditor: FC<{
     rootRef: MutableRefObject<HTMLDivElement> | undefined;
     onStrategySelected?: (strategy: StrategyMetaData) => void;
@@ -61,12 +64,10 @@ const StrategyEditor: FC<{
     const [strategyMeta, setStrategyMeta] = useState<StrategyMetaData>();
 
     const selectStrategy = (meta: StrategyMetaData) => {
-        fetch(`/api/strategy/${meta.basename}`)
-            .then((res) => res.json())
-            .then(({ value, ...meta }: StrategyData) => {
-                setStrategyMeta(meta);
-                setEditorValue(value);
-            });
+        client.getStrategyByFilename(meta.basename).then((res) => {
+            setStrategyMeta(meta);
+            setEditorValue(res.data.value);
+        });
     };
 
     const editorRef = useRef<any>();
@@ -90,27 +91,15 @@ const StrategyEditor: FC<{
                             }
                     );
 
-                    fetch("/api/strategy", {
-                        method: "POST",
-                        headers: {
-                            Accept: "application/json",
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            fileName: strategyMeta.basename,
-                            value: newValue,
-                        }),
-                    })
-                        .then((res) => {
-                            return res.json();
+                    client
+                        .writeStrategy(strategyMeta.basename, {
+                            contents: newValue,
                         })
-                        .then((json) => {
-                            if (json.results === true) {
-                                alert("saved");
-                            }
+                        .then(() => {
+                            alert("Saved");
                         })
-                        .catch(() => {
-                            alert("something went wrong");
+                        .catch((err) => {
+                            alert(err["message"]);
                         });
                 }
             });

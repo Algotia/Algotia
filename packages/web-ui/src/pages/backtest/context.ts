@@ -1,21 +1,13 @@
-import { BacktestResults, OHLCV } from "@algotia/core";
-import { Market } from "ccxt";
 import { createContext } from "react";
+import {
+    CreateBacktestResult,
+    CreateBacktestOptions,
+    Market,
+} from "@algotia/client";
 
-export interface RequestResult {
-    candles: OHLCV[];
-    results: BacktestResults;
-    options: Options;
+export interface RequestResult extends CreateBacktestResult {
+    options: CreateBacktestOptions;
     market: Market;
-}
-
-export interface Options {
-    exchange: string;
-    period: string;
-    pair: string;
-    to: number;
-    from: number;
-    initialBalance: Record<string, number>;
 }
 
 export type Strategy = { strategyPath: string };

@@ -1,1 +1,0 @@
-{"version":3,"file":"GetStrategyResult.d.ts","sourceRoot":"","sources":["../../src/models/GetStrategyResult.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,oBAAoB,CAAC;AAE3D,oBAAY,iBAAiB,GAAG;IAC5B,KAAK,EAAE,MAAM,CAAC;IACd,IAAI,EAAE,gBAAgB,CAAC;CAC1B,CAAA"}

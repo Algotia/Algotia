@@ -4,6 +4,7 @@ import {
     MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnUtils from "@date-io/date-fns";
+import { TextField } from "@material-ui/core";
 
 interface SelectDatesProps {
     exchangeId: string | undefined;
@@ -19,11 +20,13 @@ const SelectDate: FC<SelectDatesProps> = (props) => {
     return (
         <MuiPickersUtilsProvider utils={DateFnUtils}>
             <KeyboardDateTimePicker
-                fullWidth={true}
                 label={label}
                 disableFuture={true}
                 disabled={!exchangeId}
                 value={date}
+                TextFieldComponent={(props) => (
+                    <TextField {...props} variant="outlined" />
+                )}
                 onChange={(d) => d && setDate(d)}
                 minDate={minDate}
             />

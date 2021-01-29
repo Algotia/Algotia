@@ -2,12 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { Column, Row } from "../shared";
 import SideBar from "./SideBar";
-import Footer from "./Footer";
 
 const Wrapper = styled(Row)`
     height: 100%;
     width: 100%;
-	overflow: hidden;
+    overflow: hidden;
 `;
 
 const MainCol = styled(Column)`
@@ -18,8 +17,8 @@ const MainCol = styled(Column)`
 const ChildContainer = styled.div`
     flex-grow: 1;
     padding: 25px;
-	box-sizing: border-box;
-	overflow: hidden;
+    box-sizing: border-box;
+    overflow: hidden;
 `;
 
 const Layout: React.FC = (props) => {
@@ -27,10 +26,7 @@ const Layout: React.FC = (props) => {
         <Wrapper>
             <SideBar />
             <MainCol>
-				<ChildContainer>
-                {props.children}
-				</ChildContainer>
-                <Footer />
+                <ChildContainer>{props.children}</ChildContainer>
             </MainCol>
         </Wrapper>
     );

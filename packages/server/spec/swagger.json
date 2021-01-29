@@ -29,16 +29,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Balances": {
-				"properties": {
-					"info": {}
-				},
-				"required": [
-					"info"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"Fee": {
 				"properties": {
 					"type": {
@@ -247,7 +237,11 @@
 						"type": "string"
 					},
 					"balance": {
-						"$ref": "#/components/schemas/Balances"
+						"properties": {},
+						"additionalProperties": {
+							"$ref": "#/components/schemas/Balance"
+						},
+						"type": "object"
 					}
 				},
 				"required": [
@@ -261,7 +255,11 @@
 			"Pick_SimulatedExchangeStore.Exclude_keyofSimulatedExchangeStore.currentTime-or-currentPrice__": {
 				"properties": {
 					"balance": {
-						"$ref": "#/components/schemas/Balances"
+						"properties": {},
+						"additionalProperties": {
+							"$ref": "#/components/schemas/Balance"
+						},
+						"type": "object"
 					},
 					"openOrders": {
 						"items": {
@@ -559,9 +557,7 @@
 				"additionalProperties": false
 			},
 			"IDictionary_number-or-string_": {
-				"description": "Represents an associative array of a same type.",
 				"properties": {},
-				"type": "object",
 				"additionalProperties": {
 					"anyOf": [
 						{
@@ -572,7 +568,9 @@
 							"type": "string"
 						}
 					]
-				}
+				},
+				"type": "object",
+				"description": "Represents an associative array of a same type."
 			},
 			"StrategyMetaData": {
 				"properties": {
@@ -618,12 +616,24 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"WriteStrategyOptions": {
+				"properties": {
+					"contents": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"contents"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
 	},
 	"info": {
-		"title": "@algotia/server-2",
+		"title": "@algotia/server",
 		"version": "0.1.0",
 		"license": {
 			"name": "ISC"
@@ -854,6 +864,28 @@
 				]
 			}
 		},
+		"/strategy": {
+			"get": {
+				"operationId": "GetAllStrategies",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/StrategyMetaData"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/strategy/{fileName}": {
 			"get": {
 				"operationId": "GetStrategyByFilename",
@@ -880,6 +912,35 @@
 						}
 					}
 				]
+			},
+			"post": {
+				"operationId": "WriteStrategy",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "fileName",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/WriteStrategyOptions"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

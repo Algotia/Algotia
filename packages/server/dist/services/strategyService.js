@@ -42,8 +42,10 @@ const utils_1 = require("../utils");
 class StrategyService {
     constructor() {
         this.outDir = path_1.default.join(utils_1.getInternalDir(), "strategyDist/");
-        this.getPath = (fileName) => {
-            const path = path_1.default.join(this.strategyDir, fileName);
+        this.getPath = (path) => {
+            if (!path.startsWith(this.strategyDir)) {
+                path = path_1.default.join(this.strategyDir, path);
+            }
             if (!fs_1.default.existsSync(path)) {
                 throw new Error(`Path ${path} does not exist`);
             }
@@ -105,15 +107,13 @@ class StrategyService {
             fs_1.default.writeFileSync(outFile, output, {
                 encoding: "utf-8",
             });
-            return import_fresh_1.default(path);
+            return import_fresh_1.default(outFile);
         });
     }
-    write(fileName, contents) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const path = this.getPath(fileName);
-            fs_1.default.writeFileSync(path, contents, {
-                encoding: "utf8",
-            });
+    writeStrategy(fileName, { contents }) {
+        const path = this.getPath(fileName);
+        fs_1.default.writeFileSync(path, contents, {
+            encoding: "utf8",
         });
     }
     getStrategy(fileName) {
@@ -124,6 +124,16 @@ class StrategyService {
             value,
             meta,
         };
+    }
+    getAllStrategies() {
+        const strategyDirContents = fs_1.default.readdirSync(this.strategyDir);
+        const strategyDirFiles = strategyDirContents.filter((path) => {
+            path = path_1.default.join(this.strategyDir, path);
+            return fs_1.default.statSync(path).isFile();
+        });
+        return strategyDirFiles.map((fileName) => {
+            return this.getMeta(fileName);
+        });
     }
 }
 exports.StrategyService = StrategyService;

@@ -1,6 +1,5 @@
-import { BacktestResults, OHLCV, parsePair } from "@algotia/core";
 import { FC, useContext } from "react";
-import { BacktestContext, Options } from "../context";
+import { BacktestContext } from "../context";
 import { ColDef, DataGrid } from "@material-ui/data-grid";
 
 const columns: ColDef[] = [

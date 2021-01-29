@@ -7,36 +7,35 @@ import {
     useContext,
 } from "react";
 import styled from "styled-components";
-import { ExchangeID, parsePair, parsePeriod } from "@algotia/core";
+import { parsePair, parsePeriod } from "@algotia/core";
 import { Button, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Row } from "../../../components/shared";
-import { BacktestContext, Options } from "../context";
+import { BacktestContext } from "../context";
 import SelectExchange from "./selectExchange";
 import SelectDate from "./selectDates";
 import SelectInitialBalance from "./selectInitialBalance";
 import SelectPair from "./selectPair";
 import SelectPeriod from "./selectPeriod";
+import { DefaultApi, ExchangeID } from "@algotia/client";
 
 const FormWrapper = styled.div`
     box-sizing: border-box;
     width: 100%;
-    height: 100%;
+    height: 60%;
     background-color: #ffffff;
     position: relative;
     box-sizing: border-box;
 `;
 
-const FormBody = styled(Paper)`
-    && {
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-evenly;
-    }
+const FormBody = styled.div`
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
 `;
 
 const FormItem = styled(Row)`
@@ -65,8 +64,10 @@ const useStyles = makeStyles({
     },
 });
 
+const client = new DefaultApi();
+
 const Form: FC<{
-    setOptions: Dispatch<SetStateAction<Options | undefined>>;
+    setOptions: Dispatch<SetStateAction<any | undefined>>;
 }> = (props) => {
     const [pairList, setPairList] = useState<string[]>();
     const [periodList, setTimeframeList] = useState<string[]>();
@@ -97,6 +98,23 @@ const Form: FC<{
     const [canRun, setCanRun] = useState(false);
 
     useEffect(() => {
+        if (exchangeId) {
+            client.getPairs(exchangeId).then((res) => {
+                setPairList(res.data);
+            });
+            client.getTimeFrames(exchangeId).then((res) => {
+                setTimeframeList(Object.keys(res.data));
+            });
+            setPair("");
+            setPeriod("");
+            setBaseCurrency("");
+            setBaseAmount(0);
+            setQuoteCurrency("");
+            setQuoteAmount(0);
+        }
+    }, [exchangeId]);
+
+    useEffect(() => {
         if (pair) {
             const [base, quote] = parsePair(pair);
             setBaseCurrency(base);
@@ -107,29 +125,10 @@ const Form: FC<{
     }, [pair]);
 
     useEffect(() => {
-        if (exchangeId) {
-            fetch(
-                `/api/exchange?id=${exchangeId}&symbols=true&timeframes=true&currencies=true`
-            )
-                .then((res) => {
-                    return res.json();
-                })
-                .then((res) => {
-                    setPairList(res.symbols);
-                    setTimeframeList(Object.keys(res.timeframes));
-                    setCurrencyList(Object.keys(res.currencies));
-                })
-                .catch((err) => {
-                    alert(err);
-                });
-            setPair("");
-            setPeriod("");
-        }
-    }, [exchangeId]);
-
-    useEffect(() => {
         if (to && from && pair && period) {
             setCanRun(true);
+        } else {
+        	setCanRun(false)
         }
     }, [to, from, pair, period]);
 

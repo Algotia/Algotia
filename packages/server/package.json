@@ -4,10 +4,10 @@
     "main": "dist/server.js",
     "scripts": {
         "test": "jest",
-        "dev": "tsc && node dist/server.js",
+        "dev": "npm run build && node dist/server.js",
         "build": "tsoa spec-and-routes && tsc && npm run generate-client",
         "preview-docs": "node ./scripts/preview-swagger.js",
-        "generate-client": "openapi-generator-cli generate -i ./spec/swagger.json -o ../client/src -g typescript-jquery",
+        "generate-client": "openapi-generator-cli generate -i ./spec/swagger.json -o ../client/src -g typescript-axios",
         "postinstall": "patch-package"
     },
     "files": [

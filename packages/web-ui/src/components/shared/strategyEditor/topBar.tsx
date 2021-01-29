@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Row } from "../utils";
 import NewStrategyModal from "./newStrategyModal";
-import { StrategyMetaData } from "@algotia/types";
+import { DefaultApi, StrategyMetaData } from "@algotia/client";
 
 const BarWrapper = styled(Row)`
     height: 35px;
@@ -31,6 +31,8 @@ const useButtonStyles = makeStyles({
     },
 });
 
+const client = new DefaultApi();
+
 const TopBar: FC<{
     selectStrategy: (data: StrategyMetaData) => void;
 }> = ({ selectStrategy }) => {
@@ -41,6 +43,9 @@ const TopBar: FC<{
     const buttonClasses = useButtonStyles();
 
     useEffect(() => {
+        client.getAllStrategies().then((res) => {
+            setAllStrategies(res.data);
+        });
         fetch("/api/strategy")
             .then((res) => res.json())
             .then((json) => {

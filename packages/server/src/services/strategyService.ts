@@ -1,5 +1,5 @@
 import { Strategy } from "@algotia/core";
-import { StrategyTemplateOptions } from "../types";
+import { StrategyTemplateOptions, WriteStrategyOptions } from "../types";
 import * as babel from "@babel/core";
 import ts from "typescript";
 import importFresh from "import-fresh";
@@ -26,8 +26,10 @@ export class StrategyService {
 
     private outDir = node_path.join(getInternalDir(), "strategyDist/");
 
-    private getPath = (fileName: string): string => {
-        const path = node_path.join(this.strategyDir, fileName);
+    private getPath = (path: string): string => {
+        if (!path.startsWith(this.strategyDir)) {
+            path = node_path.join(this.strategyDir, path);
+        }
 
         if (!fs.existsSync(path)) {
             throw new Error(`Path ${path} does not exist`);
@@ -105,10 +107,10 @@ export class StrategyService {
             encoding: "utf-8",
         });
 
-        return importFresh(path);
+        return importFresh(outFile);
     }
 
-    public async write(fileName: string, contents: string) {
+    public writeStrategy(fileName: string, { contents }: WriteStrategyOptions) {
         const path = this.getPath(fileName);
 
         fs.writeFileSync(path, contents, {
@@ -124,5 +126,16 @@ export class StrategyService {
             value,
             meta,
         };
+    }
+
+    public getAllStrategies(): StrategyMetaData[] {
+        const strategyDirContents = fs.readdirSync(this.strategyDir);
+        const strategyDirFiles = strategyDirContents.filter((path) => {
+            path = node_path.join(this.strategyDir, path);
+            return fs.statSync(path).isFile();
+        });
+        return strategyDirFiles.map((fileName) => {
+            return this.getMeta(fileName);
+        });
     }
 }

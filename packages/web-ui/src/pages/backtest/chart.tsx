@@ -1,4 +1,4 @@
-import { OHLCV } from "@algotia/core";
+import { OHLCV_Candle } from "@algotia/core";
 import { Component, ContextType, FC } from "react";
 import {
     ema,
@@ -41,12 +41,12 @@ class ResultChart extends Component<ChartProps> {
     private readonly margin = { left: 0, right: 40, top: 0, bottom: 24 };
 
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
-        (d: OHLCV) => new Date(d.timestamp)
+        (d: OHLCV_Candle) => new Date(d.timestamp)
     );
 
     private readonly buyAnnotation: Omit<LabelAnnotationProps, "plotData"> = {
         rotate: 90,
-        text: ({ timestamp }: OHLCV) => {
+        text: ({ timestamp }: OHLCV_Candle) => {
             if (this.context.requestResult) {
                 const order = this.context.requestResult.results.closedOrders.find(
                     (order) => order.timestamp === timestamp
@@ -56,7 +56,7 @@ class ResultChart extends Component<ChartProps> {
             return "";
         },
         tooltip: "yeet",
-        fill: ({ timestamp }: OHLCV) => {
+        fill: ({ timestamp }: OHLCV_Candle) => {
             if (this.context.requestResult) {
                 const order = this.context.requestResult.results.closedOrders.find(
                     (order) => order.timestamp === timestamp
@@ -80,7 +80,7 @@ class ResultChart extends Component<ChartProps> {
     public render() {
         const { height, width } = this.props;
 
-        const annotationDates = (data: OHLCV) => {
+        const annotationDates = (data: OHLCV_Candle) => {
             return Boolean(
                 this.context.requestResult?.results.closedOrders.find(
                     (order) => order.timestamp === data.timestamp
@@ -99,6 +99,13 @@ class ResultChart extends Component<ChartProps> {
         const min = xAccessor(data[Math.max(0, data.length - 100)]);
         const xExtents = [min, max];
 
+        if (!data.length) {
+            return (
+                <Wrapper>
+                    <div>no data</div>
+                </Wrapper>
+            );
+        }
         return (
             <Wrapper>
                 <ChartCanvas
@@ -142,7 +149,7 @@ class ResultChart extends Component<ChartProps> {
         );
     }
 
-    private readonly yExtents = (data: OHLCV) => {
+    private readonly yExtents = (data: OHLCV_Candle) => {
         return [data.high, data.low];
     };
 }

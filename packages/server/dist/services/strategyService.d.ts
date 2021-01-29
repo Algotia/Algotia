@@ -1,5 +1,5 @@
 import { Strategy } from "@algotia/core";
-import { StrategyTemplateOptions } from "../types";
+import { StrategyTemplateOptions, WriteStrategyOptions } from "../types";
 import { StrategyMetaData } from "../types";
 export interface GetStrategyResult {
     value: string;
@@ -12,6 +12,7 @@ export declare class StrategyService {
     private getPath;
     getMeta(fileName: string): StrategyMetaData;
     import(fileName: string, templateOptions: StrategyTemplateOptions): Promise<Strategy>;
-    write(fileName: string, contents: string): Promise<void>;
+    writeStrategy(fileName: string, { contents }: WriteStrategyOptions): void;
     getStrategy(fileName: string): GetStrategyResult;
+    getAllStrategies(): StrategyMetaData[];
 }

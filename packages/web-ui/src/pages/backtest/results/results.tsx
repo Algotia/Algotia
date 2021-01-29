@@ -1,15 +1,7 @@
-import { Dispatch, FC, SetStateAction, useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Column } from "../../../components";
-import { BacktestResults, OHLCV } from "@algotia/core";
-import {
-    Button,
-    ButtonGroup,
-    makeStyles,
-    Paper,
-    Tab,
-    Tabs,
-    Toolbar,
-} from "@material-ui/core";
+import { BacktestResults } from "@algotia/core";
+import { Button, ButtonGroup, makeStyles, Toolbar } from "@material-ui/core";
 import styled from "styled-components";
 import { BacktestContext } from "../context";
 import Balance from "./balance";
@@ -17,8 +9,8 @@ import ClosedOrders from "./closedOrders";
 import Errors from "./errors";
 import OpenOrders from "./openOrders";
 
-const ResultsTableWrapper = styled(Paper)`
-    height: 100%;
+const ResultsTableWrapper = styled.div`
+    height: 40%;
     width: 100%;
 `;
 

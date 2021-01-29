@@ -5,8 +5,14 @@ import { IconType } from "react-icons";
 import { FaHome, FaBook } from "react-icons/fa";
 import { RiTestTubeFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
-import { Paper } from "@material-ui/core";
-import { createStyles, withStyles, WithStyles, Theme, useTheme } from "@material-ui/core/styles";
+import { Paper, Typography, Divider } from "@material-ui/core";
+import {
+    createStyles,
+    withStyles,
+    WithStyles,
+    Theme,
+    useTheme,
+} from "@material-ui/core/styles";
 
 const styles = (theme: Theme) => {
     return createStyles({
@@ -36,19 +42,13 @@ const AlgotiaLogo = styled.div`
     margin: 0 auto;
 `;
 
-const NavItem = styled(Column)`
-    height: 50px;
+const NavItem = styled.div`
+    height: 75px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-`;
-
-const Label = styled.p`
-    font-size: 1em;
-`;
-const Seperator = styled.hr`
-    width: 80%;
-    margin: 5px auto 5px;
 `;
 
 interface NavItemObj {
@@ -68,11 +68,11 @@ const navItems: NavItemObj[] = [
         label: "Backtest",
         Icon: RiTestTubeFill,
     },
-	{
-		path: "/docs",
-		label: "Docs",
-		Icon: FaBook
-	}
+    {
+        path: "/docs",
+        label: "Docs",
+        Icon: FaBook,
+    },
 ];
 
 const SideBar = () => {
@@ -83,23 +83,26 @@ const SideBar = () => {
             {navItems.map(({ path, label, Icon }, i) => {
                 return (
                     <div key={"to-" + path}>
-                        <Seperator />
+                        <Divider />
                         <NavLink
                             exact
                             to={path}
                             style={{
                                 color: "#999",
+                                textDecoration: "none",
                             }}
                             activeStyle={{
                                 color: "#fff",
                             }}
                         >
                             <NavItem>
-                                <Icon size={24} />
-                                <Label>{label}</Label>
+                                <Icon />
+                                <Typography>{label}</Typography>
                             </NavItem>
                         </NavLink>
-                        {i === navItems.length - 1 && <Seperator />}
+                        {i === navItems.length - 1 && (
+                            <Divider variant="middle" light />
+                        )}
                     </div>
                 );
             })}

@@ -20,10 +20,22 @@ let StrategyController = class StrategyController extends tsoa_1.Controller {
         super(...arguments);
         this.strategyService = new services_1.StrategyService();
     }
+    getAllStrategies() {
+        return this.strategyService.getAllStrategies();
+    }
     getStrategyByFilename(fileName) {
         return this.strategyService.getStrategy(fileName);
     }
+    writeStrategy(fileName, contents) {
+        return this.strategyService.writeStrategy(fileName, contents);
+    }
 };
+__decorate([
+    tsoa_1.Get(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Array)
+], StrategyController.prototype, "getAllStrategies", null);
 __decorate([
     tsoa_1.Get("{fileName}"),
     __param(0, tsoa_1.Path()),
@@ -31,6 +43,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Object)
 ], StrategyController.prototype, "getStrategyByFilename", null);
+__decorate([
+    tsoa_1.Post("{fileName}"),
+    __param(0, tsoa_1.Path()),
+    __param(1, tsoa_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], StrategyController.prototype, "writeStrategy", null);
 StrategyController = __decorate([
     tsoa_1.Route("strategy")
 ], StrategyController);

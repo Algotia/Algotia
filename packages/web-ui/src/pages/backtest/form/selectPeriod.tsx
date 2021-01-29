@@ -11,10 +11,20 @@ const SelectPeriod: FC<SelectPeriodProps> = (props) => {
     const { periodList, period, setPeriod } = props;
     return (
         <FormControl fullWidth={true}>
-            <InputLabel htmlFor="period-select" disabled={!periodList}>
-                Select a period
+            <InputLabel
+				variant="outlined"
+                htmlFor="period-select"
+                disabled={!periodList}
+                id="period-select-label"
+            >
+                Period
             </InputLabel>
-            <Select disabled={!periodList} value={period} id="period-select">
+            <Select
+                variant="outlined"
+                disabled={!periodList}
+                value={period}
+                id="period-select"
+            >
                 {
                     //@ts-ignore
                     periodList &&

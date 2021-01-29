@@ -54,9 +54,7 @@ export class BacktestService {
             initialBalance,
         });
 
-        const strategy: Strategy = node_path.isAbsolute(strategyPath)
-            ? importFresh(strategyPath)
-            : await this.strategyService.import(strategyPath, {
+        const strategy: Strategy = await this.strategyService.import(strategyPath, {
                   pair,
               });
 
