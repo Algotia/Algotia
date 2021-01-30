@@ -2,6 +2,10 @@ import { AllowedExchangeIDs, Exchange, ExchangeID } from "@algotia/core";
 import { Controller, Get, Path, Query, Route } from "tsoa";
 import { ExchangeService } from "../services";
 
+type ExchangeStatuses = {
+    [key in ExchangeID]: boolean;
+};
+
 @Route("exchange")
 export class ExchangeController extends Controller {
     exchangeService = new ExchangeService();
@@ -12,8 +16,8 @@ export class ExchangeController extends Controller {
     }
 
     @Get("statuses")
-    public async getExchangeStatuses(): Promise<Record<ExchangeID, boolean>> {
-        let statuses: Record<ExchangeID, boolean>;
+    public async getExchangeStatuses(): Promise<ExchangeStatuses> {
+        let statuses: ExchangeStatuses;
         for (const id of AllowedExchangeIDs) {
             const exchange = await this.exchangeService.getExchange(id);
             let status: boolean;

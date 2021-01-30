@@ -25,6 +25,24 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Balances": {
+        "dataType": "refObject",
+        "properties": {
+            "info": {"dataType":"any","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "StrategyError": {
+        "dataType": "refObject",
+        "properties": {
+            "timestamp": {"dataType":"double","required":true},
+            "message": {"dataType":"string","required":true},
+            "balance": {"ref":"Balances","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Fee": {
         "dataType": "refObject",
         "properties": {
@@ -82,29 +100,15 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "StrategyError": {
+    "BacktestResults": {
         "dataType": "refObject",
         "properties": {
-            "timestamp": {"dataType":"double","required":true},
-            "message": {"dataType":"string","required":true},
-            "balance": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"ref":"Balance"},"required":true},
+            "errors": {"dataType":"array","array":{"ref":"StrategyError"},"required":true},
+            "openOrders": {"dataType":"array","array":{"ref":"Order"},"required":true},
+            "closedOrders": {"dataType":"array","array":{"ref":"Order"},"required":true},
+            "balance": {"ref":"Balances","required":true},
         },
         "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Pick_SimulatedExchangeStore.Exclude_keyofSimulatedExchangeStore.currentTime-or-currentPrice__": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"balance":{"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"ref":"Balance"},"required":true},"openOrders":{"dataType":"array","array":{"ref":"Order"},"required":true},"closedOrders":{"dataType":"array","array":{"ref":"Order"},"required":true},"errors":{"dataType":"array","array":{"ref":"StrategyError"},"required":true}},"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Omit_SimulatedExchangeStore.currentTime-or-currentPrice_": {
-        "dataType": "refAlias",
-        "type": {"ref":"Pick_SimulatedExchangeStore.Exclude_keyofSimulatedExchangeStore.currentTime-or-currentPrice__","validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "BacktestResults": {
-        "dataType": "refAlias",
-        "type": {"ref":"Omit_SimulatedExchangeStore.currentTime-or-currentPrice_","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "OHLCV_Candle": {
@@ -148,7 +152,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Record_ExchangeID.boolean_": {
+    "ExchangeStatuses": {
         "dataType": "refAlias",
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"binance":{"dataType":"boolean"},"kucoin":{"dataType":"boolean"},"bitfinex":{"dataType":"boolean"}},"validators":{}},
     },
