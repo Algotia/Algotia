@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-/src/assets/editor_types
 
 # testing
 /coverage
@@ -13,11 +12,13 @@
 /build
 
 # misc
+.internal
 .DS_Store
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+/src/assets/editor_types
 
 .eslintcache
 

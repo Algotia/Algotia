@@ -12,6 +12,7 @@ interface SelectInitialBalanceProps {
     currencyList: string[] | undefined;
     onChange: (value: { currency: string; amount: number }) => void;
     FormItem: FC;
+    focus: boolean;
 }
 
 const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
@@ -24,8 +25,12 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
         setCurrency,
         amount,
         setAmount,
+        focus,
     } = props;
+
     const [error, setError] = useState(false);
+
+	const [shouldFocus, setShouldFocus] = useState(focus)
 
     return (
         <>
@@ -55,7 +60,7 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
             <FormItem>
                 <TextField
                     id={id + "-text-field"}
-					variant="outlined"
+                    variant="outlined"
                     disabled={!pair}
                     fullWidth={true}
                     label={"Amount"}

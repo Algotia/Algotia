@@ -1,4 +1,4 @@
-import { OHLCV_Candle } from "@algotia/core";
+import { OHLCV_Candle, parsePair } from "@algotia/core";
 import { Component, ContextType, FC } from "react";
 import {
     ema,
@@ -29,7 +29,19 @@ const Wrapper = styled(Paper)`
     && {
         height: 100%;
         width: 100%;
-        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
+const NoDataContainer = styled(Paper)`
+    && {
+        height: calc(100% - 30px);
+        width: calc(100% - 30px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 `;
 
@@ -55,7 +67,30 @@ class ResultChart extends Component<ChartProps> {
             }
             return "";
         },
-        tooltip: "yeet",
+        tooltip: ({ timestamp }: OHLCV_Candle) => {
+            if (this.context.requestResult) {
+                const orders = this.context.requestResult.results.closedOrders.filter(
+                    (order) => order.timestamp === timestamp
+                );
+                let str = "";
+                for (const order of orders) {
+                    const [base, quote] = parsePair(order.symbol);
+                    if (str.length) str += "\n";
+                    str +=
+                        order.side.toUpperCase() +
+                        " " +
+                        order.amount +
+                        " " +
+                        base +
+                        " @ " +
+                        order.price +
+                        " " +
+                        quote;
+                }
+                return str;
+            }
+            return "";
+        },
         fill: ({ timestamp }: OHLCV_Candle) => {
             if (this.context.requestResult) {
                 const order = this.context.requestResult.results.closedOrders.find(
@@ -102,7 +137,9 @@ class ResultChart extends Component<ChartProps> {
         if (!data.length) {
             return (
                 <Wrapper>
-                    <div>no data</div>
+                    <NoDataContainer variant="outlined">
+                        No Data
+                    </NoDataContainer>
                 </Wrapper>
             );
         }

@@ -20,7 +20,7 @@ const SelectExchange: FC<SelectExchangeProps> = ({
 }) => {
     const { strategyPath } = useContext(BacktestContext);
     return (
-        <FormControl variant="outlined" fullWidth={true}>
+        <FormControl variant="outlined" fullWidth={true} focused={!!strategyPath && !exchangeId}>
             <InputLabel id="select-exchange-label">Exchange</InputLabel>
             <Select
                 disabled={!strategyPath}

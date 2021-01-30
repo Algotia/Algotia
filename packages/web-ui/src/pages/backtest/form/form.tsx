@@ -128,7 +128,7 @@ const Form: FC<{
         if (to && from && pair && period) {
             setCanRun(true);
         } else {
-        	setCanRun(false)
+            setCanRun(false);
         }
     }, [to, from, pair, period]);
 
@@ -195,6 +195,7 @@ const Form: FC<{
                     </FormItem>
                     <FormItem>
                         <SelectPeriod
+                            pair={pair}
                             period={period}
                             setPeriod={setPeriod}
                             periodList={periodList}
@@ -214,10 +215,12 @@ const Form: FC<{
                         onChange={({ amount }) => {
                             setBaseAmount(amount);
                         }}
+						focus={!!period}
                     />
                 </RowItem>
                 <RowItem>
                     <SelectInitialBalance
+						focus={!!pair}
                         FormItem={FormItem}
                         id="quote"
                         currency={quoteCurrency}

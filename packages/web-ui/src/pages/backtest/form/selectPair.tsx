@@ -23,7 +23,12 @@ const SelectPair: FC<SelectPairProps> = (props) => {
                 }
             }}
             renderInput={(params) => (
-                <TextField {...params} label="Pair" variant="outlined" />
+                <TextField
+                    {...params}
+                    label="Pair"
+                    variant="outlined"
+                    focused={!!pairList && !pair}
+                />
             )}
         />
     );
