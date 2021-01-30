@@ -1,7 +1,12 @@
 {
-  "name": "root",
-  "private": true,
-  "devDependencies": {
-    "lerna": "^3.22.1"
-  }
+    "name": "root",
+    "private": true,
+    "scripts": {
+        "build": "node ./scripts/build.js",
+        "postinstall": "lerna bootstrap"
+    },
+    "devDependencies": {
+        "execa": "^1.0.0",
+        "lerna": "^3.22.1"
+    }
 }

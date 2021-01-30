@@ -1,5 +1,5 @@
 diff --git a/node_modules/ccxt/ccxt.d.ts b/node_modules/ccxt/ccxt.d.ts
-index b2f0056..9cc8d6e 100644
+index b2f0056..c6951a9 100644
 --- a/node_modules/ccxt/ccxt.d.ts
 +++ b/node_modules/ccxt/ccxt.d.ts
 @@ -3,7 +3,7 @@ declare module 'ccxt' {
@@ -29,7 +29,7 @@ index b2f0056..9cc8d6e 100644
          info: any;
      }
  
-@@ -174,10 +174,10 @@ declare module 'ccxt' {
+@@ -174,10 +174,11 @@ declare module 'ccxt' {
          total: number;
      }
  
@@ -38,11 +38,12 @@ index b2f0056..9cc8d6e 100644
      }
  
 -    export interface Balances extends Dictionary<Balance> {
-+    export interface Balances extends IDictionary<Balance> {
++    export interface Balances {
++		[key: string]: Balance;
          info: any;
      }
  
-@@ -211,7 +211,7 @@ declare module 'ccxt' {
+@@ -211,7 +212,7 @@ declare module 'ccxt' {
      export type OHLCV = [number, number, number, number, number, number];
  
      /** Request parameters */
@@ -51,7 +52,7 @@ index b2f0056..9cc8d6e 100644
  
      export class Exchange {
          constructor(config?: {[key in keyof Exchange]?: Exchange[key]});
-@@ -239,8 +239,8 @@ declare module 'ccxt' {
+@@ -239,8 +240,8 @@ declare module 'ccxt' {
          };
          urls: {
              logo: string;
@@ -62,7 +63,7 @@ index b2f0056..9cc8d6e 100644
              www: string;
              doc: string[];
              api_management?: string;
-@@ -285,9 +285,9 @@ declare module 'ccxt' {
+@@ -285,9 +286,9 @@ declare module 'ccxt' {
          enableRateLimit: boolean;
          countries: string[];
          // set by loadMarkets
@@ -75,7 +76,7 @@ index b2f0056..9cc8d6e 100644
          ids: string[];
          symbols: string[];
          id: string;
-@@ -299,8 +299,8 @@ declare module 'ccxt' {
+@@ -299,8 +300,8 @@ declare module 'ccxt' {
          verbose: boolean;
          twofa: boolean;// two-factor authentication
          substituteCommonCurrencyCodes: boolean;
@@ -86,7 +87,7 @@ index b2f0056..9cc8d6e 100644
          balance: object;
          orderbooks: object;
          orders: object;
-@@ -361,7 +361,7 @@ declare module 'ccxt' {
+@@ -361,7 +362,7 @@ declare module 'ccxt' {
          createOrder (symbol: string, type: Order['type'], side: Order['side'], amount: number, price?: number, params?: Params): Promise<Order>;
          decode (str: string): string;
          defaults (): any;
@@ -95,7 +96,7 @@ index b2f0056..9cc8d6e 100644
          deposit (...args: any): Promise<any>; // TODO: add function signatures
          describe (): any;
          editOrder (id: string, symbol: string, type: Order['type'], side: Order['side'], amount: number, price?: number, params?: Params): Promise<Order>;
-@@ -373,7 +373,7 @@ declare module 'ccxt' {
+@@ -373,7 +374,7 @@ declare module 'ccxt' {
          fetchBalance (params?: Params): Promise<Balances>;
          fetchBidsAsks (symbols?: string[], params?: Params): Promise<any>;
          fetchClosedOrders (symbol?: string, since?: number, limit?: number, params?: Params): Promise<Order[]>;
@@ -104,7 +105,7 @@ index b2f0056..9cc8d6e 100644
          fetchDepositAddress (currency: string, params?: Params): Promise<DepositAddressResponse>;
          fetchDeposits (currency?: string, since?: number, limit?: number, params?: Params): Promise<Transaction[]>;
          fetchFreeBalance (params?: Params): Promise<PartialBalances>;
-@@ -391,7 +391,7 @@ declare module 'ccxt' {
+@@ -391,7 +392,7 @@ declare module 'ccxt' {
          fetchOrderStatus (id: string, market: string): Promise<string>;
          fetchStatus (...args: any): Promise<any>; // TODO: add function signatures
          fetchTicker (symbol: string, params?: Params): Promise<Ticker>;
@@ -113,7 +114,7 @@ index b2f0056..9cc8d6e 100644
          fetchTime (params?: Params): Promise<number>;
          fetchTotalBalance (params?: Params): Promise<PartialBalances>;
          fetchTrades (symbol: string, since?: number, limit?: number, params?: Params): Promise<Trade[]>;
-@@ -404,7 +404,7 @@ declare module 'ccxt' {
+@@ -404,7 +405,7 @@ declare module 'ccxt' {
          getMarket (symbol: string): Market;
          initRestRateLimiter (): void;
          iso8601 (timestamp: number | string): string;
@@ -122,7 +123,7 @@ index b2f0056..9cc8d6e 100644
          market (symbol: string): Market;
          marketId (symbol: string): string;
          marketIds (symbols: string[]): string[];
-@@ -414,7 +414,7 @@ declare module 'ccxt' {
+@@ -414,7 +415,7 @@ declare module 'ccxt' {
          purgeCachedOrders (timestamp: number): void;
          request (path: string, api?: string, method?: string, params?: Params, headers?: any, body?: any): Promise<any>;
          seconds (): number;

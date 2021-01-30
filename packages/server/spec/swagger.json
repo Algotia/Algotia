@@ -37,7 +37,9 @@
 					"info"
 				],
 				"type": "object",
-				"additionalProperties": false
+				"additionalProperties": {
+					"$ref": "#/components/schemas/Balance"
+				}
 			},
 			"StrategyError": {
 				"properties": {
@@ -630,7 +632,7 @@
 		"title": "@algotia/server",
 		"version": "0.1.0",
 		"license": {
-			"name": "ISC"
+			"name": "AGPL-3.0"
 		},
 		"contact": {}
 	},

@@ -30,7 +30,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "info": {"dataType":"any","required":true},
         },
-        "additionalProperties": false,
+        "additionalProperties": {"ref":"Balance"},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyError": {

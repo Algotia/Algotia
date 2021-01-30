@@ -81,6 +81,8 @@ export interface Balance {
  * @interface Balances
  */
 export interface Balances {
+    [key: string]: Balance | any;
+
     /**
      * 
      * @type {any}
