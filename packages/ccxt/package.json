@@ -4,7 +4,7 @@
     "description": "",
     "main": "ccxt.js",
     "scripts": {
-        "build": "patch-package && tsc",
+        "build": "patch-package ccxt && patch-package && tsc",
         "postinstall": "patch-package"
     },
     "keywords": [],
