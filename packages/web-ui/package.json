@@ -1,6 +1,7 @@
 {
     "name": "@algotia/web-ui",
     "version": "0.1.0",
+    "license": "AGPL-3.0",
     "proxy": "http://localhost:2008/",
     "dependencies": {
         "@algotia/client": "^1.0.0",
