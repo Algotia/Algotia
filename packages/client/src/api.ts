@@ -22,6 +22,37 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 /**
  * 
  * @export
+ * @interface BacktestResults
+ */
+export interface BacktestResults {
+    /**
+     * 
+     * @type {Array<StrategyError>}
+     * @memberof BacktestResults
+     */
+    errors: Array<StrategyError>;
+    /**
+     * 
+     * @type {Array<Order>}
+     * @memberof BacktestResults
+     */
+    openOrders: Array<Order>;
+    /**
+     * 
+     * @type {Array<Order>}
+     * @memberof BacktestResults
+     */
+    closedOrders: Array<Order>;
+    /**
+     * 
+     * @type {Balances}
+     * @memberof BacktestResults
+     */
+    balance: Balances;
+}
+/**
+ * 
+ * @export
  * @interface Balance
  */
 export interface Balance {
@@ -43,6 +74,19 @@ export interface Balance {
      * @memberof Balance
      */
     total: number;
+}
+/**
+ * 
+ * @export
+ * @interface Balances
+ */
+export interface Balances {
+    /**
+     * 
+     * @type {any}
+     * @memberof Balances
+     */
+    info: any | null;
 }
 /**
  * 
@@ -101,10 +145,10 @@ export interface CreateBacktestOptions {
 export interface CreateBacktestResult {
     /**
      * 
-     * @type {PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice}
+     * @type {BacktestResults}
      * @memberof CreateBacktestResult
      */
-    results: PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice;
+    results: BacktestResults;
     /**
      * 
      * @type {Array<OHLCVCandle>}
@@ -123,6 +167,31 @@ export enum ExchangeID {
     Bitfinex = 'bitfinex'
 }
 
+/**
+ * 
+ * @export
+ * @interface ExchangeStatuses
+ */
+export interface ExchangeStatuses {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ExchangeStatuses
+     */
+    binance?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ExchangeStatuses
+     */
+    kucoin?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ExchangeStatuses
+     */
+    bitfinex?: boolean;
+}
 /**
  * 
  * @export
@@ -563,62 +632,6 @@ export enum OrderSideEnum {
 }
 
 /**
- * From T, pick a set of properties whose keys are in the union K
- * @export
- * @interface PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice
- */
-export interface PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice {
-    /**
-     * 
-     * @type {{ [key: string]: Balance; }}
-     * @memberof PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice
-     */
-    balance: { [key: string]: Balance; };
-    /**
-     * 
-     * @type {Array<Order>}
-     * @memberof PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice
-     */
-    openOrders: Array<Order>;
-    /**
-     * 
-     * @type {Array<Order>}
-     * @memberof PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice
-     */
-    closedOrders: Array<Order>;
-    /**
-     * 
-     * @type {Array<StrategyError>}
-     * @memberof PickSimulatedExchangeStoreExcludeKeyofSimulatedExchangeStoreCurrentTimeOrCurrentPrice
-     */
-    errors: Array<StrategyError>;
-}
-/**
- * Construct a type with a set of properties K of type T
- * @export
- * @interface RecordExchangeIDBoolean
- */
-export interface RecordExchangeIDBoolean {
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RecordExchangeIDBoolean
-     */
-    binance?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RecordExchangeIDBoolean
-     */
-    kucoin?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RecordExchangeIDBoolean
-     */
-    bitfinex?: boolean;
-}
-/**
  * 
  * @export
  * @interface StrategyError
@@ -638,10 +651,10 @@ export interface StrategyError {
     message: string;
     /**
      * 
-     * @type {{ [key: string]: Balance; }}
+     * @type {Balances}
      * @memberof StrategyError
      */
-    balance: { [key: string]: Balance; };
+    balance: Balances;
 }
 /**
  * 
@@ -1352,7 +1365,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getExchangeStatuses(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RecordExchangeIDBoolean>> {
+        async getExchangeStatuses(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExchangeStatuses>> {
             const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getExchangeStatuses(options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
@@ -1482,7 +1495,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getExchangeStatuses(options?: any): AxiosPromise<RecordExchangeIDBoolean> {
+        getExchangeStatuses(options?: any): AxiosPromise<ExchangeStatuses> {
             return DefaultApiFp(configuration).getExchangeStatuses(options).then((request) => request(axios, basePath));
         },
         /**
