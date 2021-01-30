@@ -551,7 +551,9 @@
 				"additionalProperties": false
 			},
 			"IDictionary_number-or-string_": {
+				"description": "Represents an associative array of a same type.",
 				"properties": {},
+				"type": "object",
 				"additionalProperties": {
 					"anyOf": [
 						{
@@ -562,9 +564,7 @@
 							"type": "string"
 						}
 					]
-				},
-				"type": "object",
-				"description": "Represents an associative array of a same type."
+				}
 			},
 			"StrategyMetaData": {
 				"properties": {

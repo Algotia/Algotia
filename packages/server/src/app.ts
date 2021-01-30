@@ -6,9 +6,12 @@ import express, {
 import bodyParser from "body-parser";
 import { ValidateError } from "tsoa";
 import cors from "cors";
+import { RegisterRoutes } from "./routes";
+import { bootstrap } from "./utils";
+
+bootstrap();
 
 export const app = express();
-
 
 app.use(
     bodyParser.urlencoded({
@@ -21,7 +24,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-require("../dist/routes").RegisterRoutes(app);
+RegisterRoutes(app);
 
 app.use(function errorHandler(
     err: unknown,

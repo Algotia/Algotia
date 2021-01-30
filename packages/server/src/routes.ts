@@ -193,8 +193,10 @@ const models: TsoaRoute.Models = {
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IDictionary_number-or-string_": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"string"}]},"validators":{}},
+        "dataType": "refObject",
+        "properties": {
+        },
+        "additionalProperties": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"string"}]},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyMetaData": {
