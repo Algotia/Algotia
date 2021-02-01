@@ -1,6 +1,6 @@
 {
     "name": "@algotia/server",
-    "version": "0.1.0",
+    "version": "1.0.0-alpha.0",
     "main": "dist/server.js",
     "scripts": {
         "test": "jest",
@@ -40,7 +40,7 @@
     },
     "dependencies": {
         "@algotia/client": "^1.0.0",
-        "@algotia/core": "^0.0.4-32",
+        "@algotia/core": "^1.0.0-alpha.0",
         "@babel/core": "^7.12.10",
         "@babel/polyfill": "^7.12.1",
         "@babel/register": "^7.12.10",
