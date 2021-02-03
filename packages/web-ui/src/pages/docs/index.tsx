@@ -7,6 +7,7 @@ const Wrapper = styled.div`
     height: 100%;
     width: 100%;
     overflow-y: scroll;
+	background-color: #fff;
 `;
 
 const Docs = () => {

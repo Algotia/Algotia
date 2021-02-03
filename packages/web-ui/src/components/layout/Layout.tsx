@@ -1,3 +1,4 @@
+import { useTheme, styled as muiStyled } from "@material-ui/core";
 import React from "react";
 import styled from "styled-components";
 import { Column, Row } from "../shared";
@@ -21,12 +22,20 @@ const ChildContainer = styled.div`
     overflow: hidden;
 `;
 
+
 const Layout: React.FC = (props) => {
+    const theme = useTheme();
     return (
         <Wrapper>
             <SideBar />
             <MainCol>
-                <ChildContainer>{props.children}</ChildContainer>
+                <ChildContainer
+                    style={{
+                        backgroundColor: theme.palette.background.default,
+                    }}
+                >
+                    {props.children}
+                </ChildContainer>
             </MainCol>
         </Wrapper>
     );

@@ -19,8 +19,9 @@ const SelectExchange: FC<SelectExchangeProps> = ({
     setExchangeId,
 }) => {
     const { strategyPath } = useContext(BacktestContext);
+
     return (
-        <FormControl variant="outlined" fullWidth={true} focused={!!strategyPath && !exchangeId}>
+        <FormControl fullWidth={true} focused={!!strategyPath && !exchangeId}>
             <InputLabel id="select-exchange-label">Exchange</InputLabel>
             <Select
                 disabled={!strategyPath}
@@ -32,6 +33,7 @@ const SelectExchange: FC<SelectExchangeProps> = ({
                 {Object.entries(ExchangeID).map(([key, id]) => {
                     return (
                         <MenuItem
+                            id={`exchange-select-${id}`}
                             key={"select-" + id}
                             value={id}
                             onClick={() => {

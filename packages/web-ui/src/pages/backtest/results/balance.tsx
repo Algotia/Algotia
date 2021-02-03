@@ -3,6 +3,7 @@ import { FC, useContext } from "react";
 import { BacktestContext, RequestResult } from "../context";
 import { ColDef, DataGrid } from "@material-ui/data-grid";
 import styled from "styled-components";
+import { makeStyles } from "@material-ui/core";
 
 const getPercentage = (
     initial: number,
@@ -19,7 +20,7 @@ const getPercentage = (
 };
 
 const Wrapper = styled.div`
-    height: calc(100% - 75px);
+    height: 100%;
 `;
 
 const getTotalRow = (requestResult: RequestResult) => {
@@ -103,18 +104,40 @@ const getRows = (requestResult: RequestResult) => {
 const columns: ColDef[] = [
     { field: "currency", headerName: "Currency", flex: 1 },
     { field: "initial", headerName: "Initial", flex: 1 },
-    { field: "change", headerName: "Change", flex: 1 },
+    {
+        field: "change",
+        headerName: "Change",
+        flex: 1,
+        // renderCell: (props) => {
+        //     const value = props.row["change"];
+        //     const color =
+        //         typeof value === "string" && value.startsWith("-")
+        //             ? "red"
+        //             : "green";
+        //
+        //     return <p style={color && { color }}>{value}</p>;
+        // },
+    },
     { field: "final", headerName: "Final", flex: 1 },
 ];
 
+const useDataGridStyles = makeStyles({
+    root: {
+        color: "#fff",
+        backgroundColor: "#444",
+    },
+});
 const Balance: FC = () => {
     const { requestResult } = useContext(BacktestContext);
 
     const rows = requestResult && getRows(requestResult);
 
+    const dataGridClasses = useDataGridStyles();
+
     return (
         <Wrapper>
             <DataGrid
+                className={dataGridClasses.root}
                 columns={columns}
                 rows={rows || []}
                 hideFooter={true}

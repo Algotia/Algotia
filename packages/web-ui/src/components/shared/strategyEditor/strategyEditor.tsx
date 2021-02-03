@@ -5,7 +5,7 @@ import TopBar from "./topBar";
 import defaultValue from "./defaultValue";
 import editorTypes from "../../../assets/editor_types";
 import BottomBar from "./bottomBar";
-import { Paper } from "@material-ui/core";
+import { Paper, useTheme } from "@material-ui/core";
 import { StrategyData } from "@algotia/types";
 import { DefaultApi, StrategyMetaData } from "@algotia/client";
 
@@ -106,6 +106,9 @@ const StrategyEditor: FC<{
         }
     }, [strategyMeta]);
 
+    const theme = useTheme();
+    const vsTheme = "vs-" + theme.palette.type;
+
     return (
         <EditorWrapper ref={rootRef}>
             <TopBar selectStrategy={selectStrategy} />
@@ -122,7 +125,7 @@ const StrategyEditor: FC<{
                     options={{
                         readOnly: !strategyMeta,
                     }}
-                    theme="vs-dark"
+                    theme={vsTheme}
                     value={editorValue}
                     editorDidMount={editorDidMount}
                 />

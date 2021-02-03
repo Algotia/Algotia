@@ -12,27 +12,28 @@ import OpenOrders from "./openOrders";
 const ResultsTableWrapper = styled.div`
     height: 40%;
     width: 100%;
+	padding: 15px 0px;
 `;
 
-const Header = styled(Toolbar)`
-    height: 50px;
-    width: 100%;
-    display: flex;
-    box-sizing: border-box;
-    padding: 5px 0;
-    justify-content: center;
-    align-items: space-around;
+const Header = styled.div`
+        height: 50px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: space-around;
 `;
 
 const useTabsStyles = makeStyles({
     root: {
         width: "auto",
+        backgroundColor: "#444",
+        color: "#fff",
     },
 });
 
 const TableBody = styled(Column)`
-    height: 100%;
-    width: calc(100% - 30px);
+    height: calc(100% - 50px);
+    width: 100%;
     margin: 0 auto;
 `;
 

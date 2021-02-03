@@ -10,14 +10,14 @@ const createFillOrders = (
 		for (const order of store.openOrders) {
 			if (order.type === "market") {
 				closeOrder(store, order);
-			} else if (order.type === "limit") {
+			}
+
+			if (order.type === "limit") {
 				if (order.side === "buy") {
 					if (order.price >= candle.low) {
 						closeOrder(store, order);
 					}
-				}
-
-				if (order.side === "sell") {
+				} else if (order.side === "sell") {
 					if (order.price <= candle.high) {
 						closeOrder(store, order);
 					}
@@ -37,7 +37,7 @@ const closeOrder = (store: SimulatedExchangeStore, order: Order): Order => {
 		status: "closed",
 		filled: order.amount,
 		average: order.price,
-		cost: order.amount * order.price,
+		cost: new Decimal(order.price).mul(order.amount).toNumber(),
 		remaining: 0,
 		lastTradeTimestamp: trade.timestamp,
 		trades: [trade],

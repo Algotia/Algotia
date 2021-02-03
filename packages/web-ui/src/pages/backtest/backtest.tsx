@@ -2,8 +2,13 @@ import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import Editor from "./editor";
 import Results from "./results/";
-import Chart from "./chart";
-import { Backdrop, CircularProgress, Paper } from "@material-ui/core";
+import Chart from "./chart/";
+import {
+    Backdrop,
+    CircularProgress,
+    Paper,
+    styled as muiStyled,
+} from "@material-ui/core";
 import { BacktestContext, RequestResult } from "./context";
 import { CreateBacktestOptions, DefaultApi } from "@algotia/client";
 import Form from "./form";
@@ -31,14 +36,11 @@ const RightHalf = styled.div`
     grid-area: 1 / 7 / 11 / 11;
 `;
 
-const FormAndResults = styled(Paper)`
-    && {
-        height: 100%;
-        box-sizing: border-box;
-        padding: 15px;
-        overflow-y: auto;
-    }
-`;
+const FormAndResults = muiStyled(Paper)(() => ({
+    height: "100%",
+    padding: "15px",
+    overflowY: "auto",
+}));
 
 const client = new DefaultApi();
 
@@ -49,6 +51,7 @@ const BacktestPage: FC = () => {
     >();
     const [strategyPath, setStraegyPath] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const [highlightedCandle, setHighlightedCandle] = useState(0);
 
     useEffect(() => {
         if (options && strategyPath) {
@@ -82,6 +85,7 @@ const BacktestPage: FC = () => {
                 requestResult,
                 strategyPath,
                 loading,
+                highlightedCandle,
             }}
         >
             <Wrapper>

@@ -1,18 +1,22 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useContext } from "react";
 import styled from "styled-components";
-import { Column } from "../shared";
 import { IconType } from "react-icons";
 import { FaHome, FaBook } from "react-icons/fa";
 import { RiTestTubeFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
-import { Paper, Typography, Divider } from "@material-ui/core";
+import {
+    Paper,
+    Typography,
+    Divider,
+    styled as muiStyled,
+} from "@material-ui/core";
 import {
     createStyles,
     withStyles,
     WithStyles,
     Theme,
-    useTheme,
 } from "@material-ui/core/styles";
+import { ThemeSetterContext } from "../../App";
 
 const styles = (theme: Theme) => {
     return createStyles({
@@ -23,6 +27,7 @@ const styles = (theme: Theme) => {
             width: "100px",
             borderRadius: "0px",
             backgroundColor: theme.palette.primary.main,
+            position: "relative",
         },
     });
 };
@@ -76,7 +81,7 @@ const navItems: NavItemObj[] = [
 ];
 
 const SideBar = () => {
-    const theme = useTheme();
+    const themeContext = useContext(ThemeSetterContext);
     return (
         <Wrapper>
             <AlgotiaLogo />
@@ -106,6 +111,15 @@ const SideBar = () => {
                     </div>
                 );
             })}
+            <button
+                onClick={() => {
+                    if (themeContext.setTheme) {
+                        themeContext.setTheme();
+                    }
+                }}
+            >
+                Theme
+            </button>
         </Wrapper>
     );
 };

@@ -1,17 +1,9 @@
-import {
-    useEffect,
-    useState,
-    FC,
-    Dispatch,
-    SetStateAction,
-    useContext,
-} from "react";
+import { useEffect, useState, FC, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { parsePair, parsePeriod } from "@algotia/core";
-import { Button, Paper } from "@material-ui/core";
+import { parsePair } from "@algotia/core";
+import { Button, Paper, styled as muiStyled } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Row } from "../../../components/shared";
-import { BacktestContext } from "../context";
 import SelectExchange from "./selectExchange";
 import SelectDate from "./selectDates";
 import SelectInitialBalance from "./selectInitialBalance";
@@ -19,14 +11,13 @@ import SelectPair from "./selectPair";
 import SelectPeriod from "./selectPeriod";
 import { DefaultApi, ExchangeID } from "@algotia/client";
 
-const FormWrapper = styled.div`
-    box-sizing: border-box;
-    width: 100%;
-    height: 60%;
-    background-color: #ffffff;
-    position: relative;
-    box-sizing: border-box;
-`;
+const FormWrapper = muiStyled(Paper)(() => ({
+    width: "100%",
+    height: "60%",
+    padding: "15px 0",
+    position: "relative",
+    border: "1px solid #fff",
+}));
 
 const FormBody = styled.div`
     width: 100%;
@@ -48,22 +39,6 @@ const RowItem = styled(FormItem)`
     width: 80%;
     justify-content: space-between;
 `;
-
-const useStyles = makeStyles({
-    root: {
-        height: "50px",
-        width: "100px",
-        fontSize: "20px",
-        boxSizing: "border-box",
-    },
-    primary: {
-        backgroundColor: "#20ad16",
-    },
-    disabled: {
-        backgroundColor: "grey",
-    },
-});
-
 const client = new DefaultApi();
 
 const Form: FC<{
@@ -132,12 +107,6 @@ const Form: FC<{
         }
     }, [to, from, pair, period]);
 
-    const classes = useStyles();
-
-    const buttonClasses = `${classes.root} ${
-        (canRun && classes.primary) || classes.disabled
-    }`;
-
     const run = () => {
         if (exchangeId && to && from && period && pair) {
             const body = {
@@ -156,7 +125,7 @@ const Form: FC<{
     };
 
     return (
-        <FormWrapper>
+        <FormWrapper elevation={0}>
             <FormBody>
                 <FormItem>
                     <SelectExchange
@@ -191,7 +160,7 @@ const Form: FC<{
                             pairList={pairList}
                             setPair={setPair}
                             pair={pair}
-                        />
+                        />{" "}
                     </FormItem>
                     <FormItem>
                         <SelectPeriod
@@ -215,12 +184,12 @@ const Form: FC<{
                         onChange={({ amount }) => {
                             setBaseAmount(amount);
                         }}
-						focus={!!period}
+                        focus={!!period}
                     />
                 </RowItem>
                 <RowItem>
                     <SelectInitialBalance
-						focus={!!pair}
+                        focus={!!pair}
                         FormItem={FormItem}
                         id="quote"
                         currency={quoteCurrency}
@@ -237,7 +206,6 @@ const Form: FC<{
                 <FormItem>
                     <Button
                         disabled={!canRun}
-                        className={buttonClasses}
                         onClick={run}
                     >
                         Run

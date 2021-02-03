@@ -1,6 +1,6 @@
-import React from "react";
+import React, { createContext, useContext, useState } from "react";
 import { ThemeProvider } from "@material-ui/core/styles";
-import { theme, ResetCSS } from "./assets/styles/";
+import { darkTheme, lightTheme } from "./assets/styles/";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import { BacktestPage } from "./pages";
@@ -9,12 +9,19 @@ import { CssBaseline } from "@material-ui/core";
 
 const Home = () => <div>home</div>;
 
-export interface InitRes {
-    init: boolean;
-    initialConfig?: string;
-}
+export const ThemeSetterContext = createContext<{
+    setTheme: () => void;
+}>({ setTheme: () => {} });
 
 function App() {
+    const [theme, setTheme] = useState(lightTheme);
+    const themeSetterContext = useContext(ThemeSetterContext);
+    themeSetterContext.setTheme = () => {
+        const newTheme =
+            theme.palette.type === "light" ? darkTheme : lightTheme;
+        console.log(newTheme.palette.type);
+        setTheme(newTheme);
+    };
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />

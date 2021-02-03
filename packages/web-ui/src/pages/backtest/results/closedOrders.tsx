@@ -40,6 +40,9 @@ const ClosedOrders: FC = () => {
                 columns={columns}
                 density="compact"
                 rowsPerPageOptions={[100]}
+				onRowClick={(param) => {
+					alert(JSON.stringify(param.row))
+				}}
             />
         </Wrapper>
     );

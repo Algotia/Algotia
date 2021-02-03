@@ -103,10 +103,11 @@ const TopBar: FC<{
                 <Select id="strategy-selector" displayEmpty value={selectVal}>
                     <MenuItem value="">Strategy</MenuItem>
                     {allStrategies &&
-                        allStrategies.map((data) => {
+                        allStrategies.map((data, i) => {
                             return (
                                 <MenuItem
-                                    key={"select-file-" + data.basename}
+                                    id={`select-strategy-${i}`}
+                                    key={"select-strategy-" + data.basename}
                                     value={data.basename}
                                     onClick={() => {
                                         setSelectVal(data.basename);

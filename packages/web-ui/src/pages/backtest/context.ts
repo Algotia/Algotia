@@ -16,8 +16,10 @@ export const BacktestContext = createContext<{
     requestResult: RequestResult | undefined;
     strategyPath: string | undefined;
     loading: boolean;
+    highlightedCandle: number;
 }>({
     requestResult: undefined,
     strategyPath: undefined,
     loading: false,
+    highlightedCandle: 0,
 });
