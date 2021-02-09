@@ -18,7 +18,7 @@ const SelectDate: FC<SelectDatesProps> = (props) => {
     const { setDate, date, label, minDate, exchangeId } = props;
 
     return (
-        <FormControl variant="outlined">
+        <FormControl fullWidth={true}>
             <MuiPickersUtilsProvider utils={DateFnUtils}>
                 <KeyboardDateTimePicker
                     label={label}
@@ -26,7 +26,7 @@ const SelectDate: FC<SelectDatesProps> = (props) => {
                     disabled={!exchangeId}
                     value={!exchangeId ? null : date}
                     TextFieldComponent={(props) => (
-                        <TextField {...props} variant="outlined" />
+                        <TextField {...props} variant="filled" />
                     )}
                     onChange={(d) => d && setDate(d)}
                     minDate={minDate}

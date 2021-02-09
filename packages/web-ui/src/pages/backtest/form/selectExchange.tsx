@@ -1,29 +1,27 @@
 import { ExchangeID } from "@algotia/client";
-import {
-    FormControl,
-    InputLabel,
-    makeStyles,
-    MenuItem,
-    Select,
-} from "@material-ui/core";
-import { Dispatch, FC, SetStateAction, useContext } from "react";
-import { BacktestContext } from "../context";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { Dispatch, FC, SetStateAction } from "react";
 
 interface SelectExchangeProps {
     exchangeId: string;
     setExchangeId: Dispatch<SetStateAction<ExchangeID>>;
+    strategyPath: string | undefined;
 }
 
 const SelectExchange: FC<SelectExchangeProps> = ({
     exchangeId,
     setExchangeId,
+    strategyPath,
 }) => {
-    const { strategyPath } = useContext(BacktestContext);
-
     return (
-        <FormControl fullWidth={true} focused={!!strategyPath && !exchangeId}>
+        <FormControl
+            fullWidth={true}
+            focused={!!strategyPath && !exchangeId}
+            variant="filled"
+        >
             <InputLabel id="select-exchange-label">Exchange</InputLabel>
             <Select
+                open={!!strategyPath && !exchangeId}
                 disabled={!strategyPath}
                 labelId="select-exchange-label"
                 id="select-exchange"

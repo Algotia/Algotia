@@ -1,12 +1,11 @@
 import { FC, useState, useEffect, useRef, MutableRefObject } from "react";
 import Editor, { EditorDidMount, monaco } from "@monaco-editor/react";
-import styled, { CSSObject, StyledComponent } from "styled-components";
+import styled from "styled-components";
 import TopBar from "./topBar";
 import defaultValue from "./defaultValue";
 import editorTypes from "../../../assets/editor_types";
 import BottomBar from "./bottomBar";
 import { Paper, useTheme } from "@material-ui/core";
-import { StrategyData } from "@algotia/types";
 import { DefaultApi, StrategyMetaData } from "@algotia/client";
 
 let KEY_S: number;
@@ -52,66 +51,37 @@ const EditorSSS = styled.div`
     height: calc(100% - 55px);
 `;
 
-const client = new DefaultApi();
-
 const StrategyEditor: FC<{
-    rootRef: MutableRefObject<HTMLDivElement> | undefined;
-    onStrategySelected?: (strategy: StrategyMetaData) => void;
-}> = (props) => {
-    const { onStrategySelected, rootRef } = props;
-
-    const [editorValue, setEditorValue] = useState<string>(defaultValue);
-    const [strategyMeta, setStrategyMeta] = useState<StrategyMetaData>();
-
-    const selectStrategy = (meta: StrategyMetaData) => {
-        client.getStrategyByFilename(meta.basename).then((res) => {
-            setStrategyMeta(meta);
-            setEditorValue(res.data.value);
-        });
-    };
-
+    onStrategySaved: (args: { meta: StrategyMetaData; value: string }) => void;
+    strategyMeta: StrategyMetaData | undefined;
+    editorValue: string | undefined;
+}> = ({ onStrategySaved, strategyMeta, editorValue }) => {
+    const rootRef = useRef<HTMLDivElement>();
     const editorRef = useRef<any>();
 
     const editorDidMount: EditorDidMount = (_, editor) => {
         editorRef.current = editor;
     };
 
-    useEffect(() => {
-        if (strategyMeta && editorRef.current) {
-            onStrategySelected && onStrategySelected(strategyMeta);
-            editorRef.current.addCommand(CtrlCmd | KEY_S, () => {
-                if (editorRef.current && strategyMeta) {
-                    const newValue = editorRef.current.getValue();
-
-                    setStrategyMeta(
-                        (prev) =>
-                            prev && {
-                                ...prev,
-                                value: newValue,
-                            }
-                    );
-
-                    client
-                        .writeStrategy(strategyMeta.basename, {
-                            contents: newValue,
-                        })
-                        .then(() => {
-                            alert("Saved");
-                        })
-                        .catch((err) => {
-                            alert(err["message"]);
-                        });
-                }
-            });
+    editorRef.current?.addCommand(CtrlCmd | KEY_S, () => {
+        if (editorRef.current && strategyMeta) {
+            const newValue = editorRef.current.getValue();
+            const newMeta: StrategyMetaData = {
+                ...strategyMeta,
+                modifiedAt: Date.now(),
+            };
+            onStrategySaved({ meta: newMeta, value: newValue });
+        } else {
+            alert("no strategy");
         }
-    }, [strategyMeta]);
+    });
 
     const theme = useTheme();
     const vsTheme = "vs-" + theme.palette.type;
 
     return (
         <EditorWrapper ref={rootRef}>
-            <TopBar selectStrategy={selectStrategy} />
+            <TopBar />
             <EditorSSS>
                 <Editor
                     language={
@@ -126,7 +96,7 @@ const StrategyEditor: FC<{
                         readOnly: !strategyMeta,
                     }}
                     theme={vsTheme}
-                    value={editorValue}
+                    value={editorValue || defaultValue}
                     editorDidMount={editorDidMount}
                 />
             </EditorSSS>

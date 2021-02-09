@@ -30,22 +30,25 @@ const BottomBar: FC<{ height: string; meta: StrategyMetaData | undefined }> = ({
     meta,
 }) => {
     const modifiedAtDate: Date = new Date(meta?.modifiedAt || 0);
-    const modifiedToday: boolean =
-        new Date().toDateString() === modifiedAtDate.toDateString();
     return (
         <Wrapper style={{ height }}>
-            {meta && (
+            {meta ? (
                 <>
                     <Modified>
                         Modified at{" "}
-                        {modifiedToday
-                            ? modifiedAtDate.toLocaleTimeString()
-                            : modifiedAtDate.toLocaleDateString() +
-                              " " +
-                              modifiedAtDate.toLocaleTimeString()}
+                        {modifiedAtDate.toLocaleDateString() +
+                            " " +
+                            modifiedAtDate.toLocaleTimeString()}
                     </Modified>
                     <Language>{meta.language}</Language>
                 </>
+            ): (
+            	<>
+				<Modified>
+					No strategy loaded
+				</Modified>
+				<Language> Text </Language>
+				</>
             )}
         </Wrapper>
     );

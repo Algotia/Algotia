@@ -2,7 +2,6 @@ import { createMuiTheme, ThemeOptions } from "@material-ui/core";
 
 const createTheme = (theme: ThemeOptions) => {
     return createMuiTheme({
-        ...theme,
         typography: {
             fontFamily: "Open Sans",
         },
@@ -20,20 +19,8 @@ const createTheme = (theme: ThemeOptions) => {
                     },
                 },
             },
-            MuiInputBase: {
-                disabled: {
-                    borderColor: "red",
-                },
-            },
-            MuiSelect: {
-                outlined: {
-                    borderColor: "red",
-                },
-                disabled: {
-                    borderColor: "red",
-                },
-            },
         },
+        ...theme,
     });
 };
 

@@ -1,44 +1,23 @@
-import React, { PropsWithChildren, useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 import { IconType } from "react-icons";
 import { FaHome, FaBook } from "react-icons/fa";
 import { RiTestTubeFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
-import {
-    Paper,
-    Typography,
-    Divider,
-    styled as muiStyled,
-} from "@material-ui/core";
-import {
-    createStyles,
-    withStyles,
-    WithStyles,
-    Theme,
-} from "@material-ui/core/styles";
-import { ThemeSetterContext } from "../../App";
+import { Paper, Typography, Divider, makeStyles } from "@material-ui/core";
+import Settings from "./Settings";
 
-const styles = (theme: Theme) => {
-    return createStyles({
-        root: {
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-            width: "100px",
-            borderRadius: "0px",
-            backgroundColor: theme.palette.primary.main,
-            position: "relative",
-        },
-    });
-};
-
-interface Props extends PropsWithChildren<WithStyles<typeof styles>> {}
-
-const Wrapper = withStyles(styles)(({ classes, children }: Props) => (
-    <Paper classes={classes} elevation={3} square>
-        {children}
-    </Paper>
-));
+const useBarStyles = makeStyles((theme) => ({
+    root: {
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        width: "100px",
+        borderRadius: "0px",
+        backgroundColor: theme.palette.primary.main,
+        position: "relative",
+    },
+}));
 
 const AlgotiaLogo = styled.div`
     height: 50px;
@@ -81,9 +60,9 @@ const navItems: NavItemObj[] = [
 ];
 
 const SideBar = () => {
-    const themeContext = useContext(ThemeSetterContext);
+    const barStyles = useBarStyles();
     return (
-        <Wrapper>
+        <Paper classes={barStyles} elevation={3} square>
             <AlgotiaLogo />
             {navItems.map(({ path, label, Icon }, i) => {
                 return (
@@ -111,16 +90,8 @@ const SideBar = () => {
                     </div>
                 );
             })}
-            <button
-                onClick={() => {
-                    if (themeContext.setTheme) {
-                        themeContext.setTheme();
-                    }
-                }}
-            >
-                Theme
-            </button>
-        </Wrapper>
+            <Settings />
+        </Paper>
     );
 };
 

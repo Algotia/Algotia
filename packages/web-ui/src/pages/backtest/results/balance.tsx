@@ -1,9 +1,9 @@
 import { parsePair } from "@algotia/core";
 import { FC, useContext } from "react";
 import { BacktestContext, RequestResult } from "../context";
-import { ColDef, DataGrid } from "@material-ui/data-grid";
 import styled from "styled-components";
-import { makeStyles } from "@material-ui/core";
+import { Grid } from "../../../components";
+import {ColDef} from "@material-ui/data-grid";
 
 const getPercentage = (
     initial: number,
@@ -121,28 +121,14 @@ const columns: ColDef[] = [
     { field: "final", headerName: "Final", flex: 1 },
 ];
 
-const useDataGridStyles = makeStyles({
-    root: {
-        color: "#fff",
-        backgroundColor: "#444",
-    },
-});
 const Balance: FC = () => {
     const { requestResult } = useContext(BacktestContext);
 
     const rows = requestResult && getRows(requestResult);
 
-    const dataGridClasses = useDataGridStyles();
-
     return (
         <Wrapper>
-            <DataGrid
-                className={dataGridClasses.root}
-                columns={columns}
-                rows={rows || []}
-                hideFooter={true}
-                density="compact"
-            />
+            <Grid columns={columns} rows={rows} />
         </Wrapper>
     );
 };

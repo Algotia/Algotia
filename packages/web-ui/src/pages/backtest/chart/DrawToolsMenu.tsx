@@ -2,7 +2,6 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { GraphicMark, Chart } from "klinecharts";
 //@ts-ignore
 import { checkPointOnSegmentLine } from "klinecharts/lib/mark/graphicHelper";
-import styled from "styled-components";
 import {
     Channel,
     Fibbonaci,
@@ -14,30 +13,37 @@ import {
     VerticalRay,
 } from "./icons";
 import { BaseIcon } from "./icons/BaseIcon";
-import { Row } from "../../../components";
-import { Button, makeStyles, Paper, Typography } from "@material-ui/core";
+import {
+    Button,
+    makeStyles,
+    Paper,
+    Typography,
+    styled as muiStyled,
+    useTheme,
+} from "@material-ui/core";
 
-const Flex = styled(Paper)`
-    && {
-        position: absolute;
-        left: 100%;
-        z-index: 100;
-        height: 90%;
-		width: 500px;
-        background-color: #fff;
-        z-index: 100;
-        display: flex;
-        flex-flow: column wrap;
-		justify-content: flex-start;
-		align-items: flex-start;
-		padding: 5px 0;
-    }
-`;
+const Menu = muiStyled(Paper)(({ theme }) => ({
+    position: "absolute",
+    left: "100%",
+    zIndex: 100,
+    height: "90%",
+    width: "500px",
+    display: "flex",
+    flexFlow: "column wrap",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    padding: "5px 0",
+    backgroundColor: theme.palette.common.black,
+}));
+
+const Subtitile = muiStyled(Typography)({
+    marginLeft: "5px",
+});
 
 const rect: GraphicMark = {
     name: "rect",
     totalStep: 3,
-    checkMousePointOn: (type: any, points: any, mousePoint: any) => {
+    checkMousePointOn: (_: any, points: any, mousePoint: any) => {
         return checkPointOnSegmentLine(points[0], points[1], mousePoint);
     },
     createGraphicDataSource: (step, tpPoint, xyPoints) => {
@@ -164,7 +170,7 @@ const drawLines = [
 
 const useButtonStyles = makeStyles({
     root: {
-		width: "250px",
+        width: "250px",
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "flex-start",
@@ -183,9 +189,10 @@ const DrawToolsMenu: FC<{
     }, []);
 
     const buttonClasses = useButtonStyles();
+    const theme = useTheme();
 
     return (
-        <Flex>
+        <Menu>
             {drawLines.map(({ key, text, Icon }) => {
                 return (
                     <Button
@@ -196,20 +203,20 @@ const DrawToolsMenu: FC<{
                             chart?.createGraphicMark(key);
                         }}
                     >
-                        <BaseIcon key={key} text={text}>
+                        <BaseIcon
+                            key={key}
+                            text={text}
+                            color={theme.palette.primary.light}
+                        >
                             <Icon />
                         </BaseIcon>
-                        <Typography
-                            variant="subtitle2"
-                            noWrap
-                            style={{ marginRight: "5px" }}
-                        >
+                        <Subtitile variant="subtitle2" noWrap>
                             {text}
-                        </Typography>
+                        </Subtitile>
                     </Button>
                 );
             })}
-        </Flex>
+        </Menu>
     );
 };
 

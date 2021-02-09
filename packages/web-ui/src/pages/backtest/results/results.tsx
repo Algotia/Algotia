@@ -1,7 +1,8 @@
 import { FC, useContext, useState } from "react";
 import { Column } from "../../../components";
 import { BacktestResults } from "@algotia/core";
-import { Button, ButtonGroup, makeStyles, Toolbar } from "@material-ui/core";
+import { Tab, Tabs, styled as muiStyled } from "@material-ui/core";
+import { TabContext, TabPanel } from "@material-ui/lab";
 import styled from "styled-components";
 import { BacktestContext } from "../context";
 import Balance from "./balance";
@@ -12,24 +13,14 @@ import OpenOrders from "./openOrders";
 const ResultsTableWrapper = styled.div`
     height: 40%;
     width: 100%;
-	padding: 15px 0px;
 `;
 
 const Header = styled.div`
-        height: 50px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: space-around;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: space-around;
 `;
-
-const useTabsStyles = makeStyles({
-    root: {
-        width: "auto",
-        backgroundColor: "#444",
-        color: "#fff",
-    },
-});
 
 const TableBody = styled(Column)`
     height: calc(100% - 50px);
@@ -37,73 +28,72 @@ const TableBody = styled(Column)`
     margin: 0 auto;
 `;
 
+const CustomTab = muiStyled(Tab)(({ theme }) => ({
+    backgroundColor: theme.palette.primary.main,
+}));
+
+const Panel = muiStyled(TabPanel)(({ theme }) => ({
+    padding: theme.spacing(1),
+}));
+
 const Results: FC = () => {
     const { requestResult } = useContext(BacktestContext);
 
-    const allGroups: [keyof BacktestResults, string][] = [
-        ["balance", "balance"],
-        ["closedOrders", "closed orders"],
-        ["openOrders", "open orders"],
-        ["errors", "errors"],
+    const allGroups: [keyof BacktestResults, string, FC][] = [
+        ["balance", "balance", Balance],
+        ["closedOrders", "closed orders", ClosedOrders],
+        ["openOrders", "open orders", OpenOrders],
+        ["errors", "errors", Errors],
     ];
 
     const [activeGroup, setActiveGroup] = useState<keyof BacktestResults>(
         allGroups[0][0]
     );
 
-    const tabClasses = useTabsStyles();
+    const getItems = (key: keyof BacktestResults): number => {
+        return requestResult?.results[key].length;
+    };
 
     return (
         <ResultsTableWrapper>
-            <Header>
-                <ButtonGroup>
-                    {allGroups.map(([resultKey, label]) => {
-                        if (requestResult?.results) {
-                            label =
-                                resultKey === "balance"
-                                    ? resultKey
-                                    : label +
-                                      " (" +
-                                      requestResult.results[resultKey].length +
-                                      ")";
+            <TabContext value={activeGroup}>
+                <Header>
+                    <Tabs
+                        value={activeGroup}
+                        onChange={(_, val) => {
+                            setActiveGroup(val);
+                        }}
+                    >
+                        {allGroups.map(([key, label]) => {
                             return (
-                                <Button
-                                    className={tabClasses.root}
-                                    onClick={() => {
-                                        setActiveGroup(resultKey);
-                                    }}
-                                >
-                                    {label}
-                                </Button>
+                                <CustomTab
+                                    key={key}
+                                    label={
+                                        <div>
+                                            {label}
+                                        </div>
+                                    }
+                                    value={key}
+                                />
                             );
-                        } else {
-                            return (
-                                <Button
-                                    className={tabClasses.root}
-                                    onClick={() => {
-                                        setActiveGroup(resultKey);
-                                    }}
-                                >
-                                    {label}
-                                </Button>
-                            );
-                        }
+                        })}
+                    </Tabs>
+                </Header>
+                <TableBody>
+                    {allGroups.map(([key, _, Component]) => {
+                        return (
+                            <Panel
+                                key={key}
+                                value={key}
+                                style={{ height: "100%" }}
+                            >
+                                <Component />
+                            </Panel>
+                        );
                     })}
-                </ButtonGroup>
-            </Header>
-            <TableBody>
-                {activeGroup === "balance" && <Balance />}
-                {activeGroup === "closedOrders" && <ClosedOrders />}
-                {activeGroup === "openOrders" && <OpenOrders />}
-                {activeGroup === "errors" && <Errors />}
-            </TableBody>
+                </TableBody>
+            </TabContext>
         </ResultsTableWrapper>
     );
 };
 export default Results;
-// <Tabs
-//     onChange={handleGroupChange}
-//     value={activeGroup}
-//     scrollButtons="auto"
-// >
-// </Tabs>

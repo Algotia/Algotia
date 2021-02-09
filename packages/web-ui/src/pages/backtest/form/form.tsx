@@ -1,8 +1,7 @@
 import { useEffect, useState, FC, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { parsePair } from "@algotia/core";
-import { Button, Paper, styled as muiStyled } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Button, Fab, styled as muiStyled } from "@material-ui/core";
 import { Row } from "../../../components/shared";
 import SelectExchange from "./selectExchange";
 import SelectDate from "./selectDates";
@@ -10,13 +9,17 @@ import SelectInitialBalance from "./selectInitialBalance";
 import SelectPair from "./selectPair";
 import SelectPeriod from "./selectPeriod";
 import { DefaultApi, ExchangeID } from "@algotia/client";
+import SelectStrategy from "./selectStrategy";
 
-const FormWrapper = muiStyled(Paper)(() => ({
+const FormWrapper = muiStyled(Box)(({ theme }) => ({
     width: "100%",
     height: "60%",
-    padding: "15px 0",
+    padding: theme.spacing(1),
     position: "relative",
-    border: "1px solid #fff",
+}));
+
+const RunBtn = muiStyled(Fab)(({ theme }) => ({
+    backgroundColor: theme.palette.success.main,
 }));
 
 const FormBody = styled.div`
@@ -36,14 +39,17 @@ const FormItem = styled(Row)`
 `;
 
 const RowItem = styled(FormItem)`
-    width: 80%;
+    width: 100%;
     justify-content: space-between;
 `;
+
 const client = new DefaultApi();
 
 const Form: FC<{
     setOptions: Dispatch<SetStateAction<any | undefined>>;
-}> = (props) => {
+    setStrategyPath: Dispatch<SetStateAction<string | undefined>>;
+	strategyPath: string | undefined;
+}> = ({ setStrategyPath, strategyPath, setOptions }) => {
     const [pairList, setPairList] = useState<string[]>();
     const [periodList, setTimeframeList] = useState<string[]>();
     const [currencyList, setCurrencyList] = useState<string[]>();
@@ -108,31 +114,40 @@ const Form: FC<{
     }, [to, from, pair, period]);
 
     const run = () => {
-        if (exchangeId && to && from && period && pair) {
+        if (strategyPath && exchangeId && to && from && period && pair) {
             const body = {
                 exchange: exchangeId,
                 to: new Date(to.toUTCString()).getTime(),
                 from: new Date(from.toUTCString()).getTime(),
                 pair: pair,
                 period,
+				strategyPath,
                 initialBalance: {
                     [baseCurrency]: baseAmount,
                     [quoteCurrency]: quoteAmount,
                 },
             };
-            props.setOptions(body);
+            setOptions(body);
         }
     };
 
     return (
-        <FormWrapper elevation={0}>
+        <FormWrapper>
             <FormBody>
-                <FormItem>
-                    <SelectExchange
-                        exchangeId={exchangeId}
-                        setExchangeId={setExchangeId}
-                    />
-                </FormItem>
+                <RowItem>
+                    <FormItem>
+                        <SelectStrategy
+							setStrategyPath={setStrategyPath}
+                        />
+                    </FormItem>
+                    <FormItem>
+                        <SelectExchange
+                            exchangeId={exchangeId}
+                            setExchangeId={setExchangeId}
+                            strategyPath={strategyPath}
+                        />
+                    </FormItem>
+                </RowItem>
                 <RowItem>
                     <FormItem>
                         <SelectDate
@@ -204,12 +219,9 @@ const Form: FC<{
                     />
                 </RowItem>
                 <FormItem>
-                    <Button
-                        disabled={!canRun}
-                        onClick={run}
-                    >
+                    <RunBtn disabled={!canRun} onClick={run}>
                         Run
-                    </Button>
+                    </RunBtn>
                 </FormItem>
             </FormBody>
         </FormWrapper>

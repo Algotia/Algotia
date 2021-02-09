@@ -12,7 +12,7 @@ const columns: ColDef[] = [
 ];
 
 const Wrapper = styled.div`
-    height: calc(100% - 75px);
+    height: 100%;
 `;
 
 const ClosedOrders: FC = () => {
@@ -39,6 +39,7 @@ const ClosedOrders: FC = () => {
                 rows={rows || []}
                 columns={columns}
                 density="compact"
+				hideFooter={true}
                 rowsPerPageOptions={[100]}
 				onRowClick={(param) => {
 					alert(JSON.stringify(param.row))

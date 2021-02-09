@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
-import Editor from "./editor";
 import Results from "./results/";
 import Chart from "./chart/";
 import {
@@ -10,8 +9,14 @@ import {
     styled as muiStyled,
 } from "@material-ui/core";
 import { BacktestContext, RequestResult } from "./context";
-import { CreateBacktestOptions, DefaultApi } from "@algotia/client";
+import {
+    CreateBacktestOptions,
+    DefaultApi,
+	ExchangeID,
+    StrategyMetaData,
+} from "@algotia/client";
 import Form from "./form";
+import { StrategyEditor } from "../../components";
 
 const Wrapper = styled.div`
     height: 100%;
@@ -46,22 +51,17 @@ const client = new DefaultApi();
 
 const BacktestPage: FC = () => {
     const [requestResult, setRequestResult] = useState<RequestResult>();
-    const [options, setOptions] = useState<
-        Omit<CreateBacktestOptions, "strategyPath">
-    >();
-    const [strategyPath, setStraegyPath] = useState<string>("");
+    const [options, setOptions] = useState<CreateBacktestOptions>();
     const [loading, setLoading] = useState(false);
-    const [highlightedCandle, setHighlightedCandle] = useState(0);
+    const [strategyPath, setStrategyPath] = useState<string>();
+    const [strategyMeta, setStrategyMeta] = useState<StrategyMetaData>();
+    const [editorValue, setEditorValue] = useState<string>();
 
     useEffect(() => {
-        if (options && strategyPath) {
-            const backtestOptions = {
-                ...options,
-                strategyPath,
-            };
+        if (options) {
             setLoading(true);
             client
-                .createBacktest({ ...options, strategyPath })
+                .createBacktest(options)
                 .then((backtestResult) => {
                     client
                         .getMarket(options.exchange, options.pair)
@@ -69,7 +69,7 @@ const BacktestPage: FC = () => {
                             setRequestResult({
                                 ...backtestResult.data,
                                 market: marketResult.data,
-                                options: backtestOptions,
+                                options,
                             });
                         });
                 })
@@ -79,13 +79,28 @@ const BacktestPage: FC = () => {
         }
     }, [options]);
 
+    useEffect(() => {
+        if (strategyPath) {
+            client
+                .getStrategyByFilename(strategyPath)
+                .then(({ data }) => {
+                    setStrategyMeta(data.meta);
+                    setEditorValue(data.value);
+                })
+                .catch((err) => {
+                    alert(err.message);
+                });
+        }
+    }, [strategyPath]);
+
     return (
         <BacktestContext.Provider
             value={{
                 requestResult,
-                strategyPath,
+                options,
                 loading,
-                highlightedCandle,
+                strategyMeta,
+                strategyPath,
             }}
         >
             <Wrapper>
@@ -96,12 +111,20 @@ const BacktestPage: FC = () => {
                     <Chart />
                 </TopLeft>
                 <BottomLeft>
-                    <Editor setStraegyPath={setStraegyPath} />
+                    <StrategyEditor
+                        onStrategySaved={() => {}}
+                        editorValue={editorValue}
+                        strategyMeta={strategyMeta}
+                    />
                 </BottomLeft>
                 <RightHalf>
                     <FormAndResults>
                         <Results />
-                        <Form setOptions={setOptions} />
+                        <Form
+                            setOptions={setOptions}
+                            setStrategyPath={setStrategyPath}
+							strategyPath={strategyPath}
+                        />
                     </FormAndResults>
                 </RightHalf>
             </Wrapper>

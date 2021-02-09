@@ -24,6 +24,7 @@ const Errors: FC = () => {
         <DataGrid
             rows={rows || []}
             columns={columns}
+			hideFooter={true}
             density="compact"
             disableSelectionOnClick={true}
             rowsPerPageOptions={[100]}

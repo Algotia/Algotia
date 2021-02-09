@@ -1,14 +1,13 @@
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
 import Spec from "@algotia/server/spec/swagger.json";
-import styled from "styled-components";
+import { Paper, styled } from "@material-ui/core";
 
-const Wrapper = styled.div`
-    height: 100%;
-    width: 100%;
-    overflow-y: scroll;
-	background-color: #fff;
-`;
+const Wrapper = styled(Paper)({
+    height: "100%",
+    width: "100%",
+    overflowY: "scroll",
+});
 
 const Docs = () => {
     return (

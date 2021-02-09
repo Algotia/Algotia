@@ -18,7 +18,7 @@ export interface OHLCV_Candle {
 
 export { Exchange };
 
-export interface SimulatedExchange extends InstanceType<typeof Exchange> {
+export interface SimulatedExchange extends Exchange {
 	simulated: true;
 	derviesFrom?: ExchangeID;
 }

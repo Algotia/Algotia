@@ -28,6 +28,7 @@ const OpenOrders: FC = () => {
         <DataGrid
             rows={rows || []}
             columns={columns}
+            hideFooter={true}
             density="compact"
             rowsPerPageOptions={[100]}
             disableSelectionOnClick={true}

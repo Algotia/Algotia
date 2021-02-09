@@ -13,7 +13,7 @@ const SelectPeriod: FC<SelectPeriodProps> = (props) => {
     return (
         <FormControl
             fullWidth={true}
-            variant="outlined"
+            variant="filled"
 			focused={!!periodList && !!pair && !period}
         >
             <InputLabel id="select-period-label">Period</InputLabel>
@@ -23,6 +23,7 @@ const SelectPeriod: FC<SelectPeriodProps> = (props) => {
                 id="select-exchange"
                 value={period}
                 label="Period"
+				open={!!periodList && !!pair && !period}
             >
                 {periodList &&
                     periodList.map((tf) => {
