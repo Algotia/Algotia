@@ -1,9 +1,12 @@
-import { Strategy } from "@algotia/core";
-import { StrategyTemplateOptions, WriteStrategyOptions } from "../types";
+import {
+    StrategyTemplateOptions,
+    WriteStrategyOptions,
+    StrategyMetaData,
+} from "@algotia/types";
+import { Strategy } from "@algotia/types";
 import * as babel from "@babel/core";
 import ts from "typescript";
 import importFresh from "import-fresh";
-import { StrategyMetaData } from "../types";
 import node_path from "path";
 import fs from "fs";
 import handlebars from "handlebars";

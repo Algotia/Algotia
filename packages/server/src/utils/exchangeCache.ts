@@ -1,4 +1,5 @@
-import { createExchange, Exchange, ExchangeID } from "@algotia/core";
+import { createExchange } from "@algotia/core";
+import { Exchange, ExchangeID } from "@algotia/types";
 import OPCache from "op-cache";
 
 const cache = new OPCache<Record<ExchangeID, Exchange>>();

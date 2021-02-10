@@ -1,4 +1,4 @@
-import { InitialBalance, SimulatedExchangeStore } from "../../../types";
+import { InitialBalance, SimulatedExchangeStore } from "@algotia/types";
 import { createInitialBalance } from "../../../utils";
 
 const createFlushStore = (

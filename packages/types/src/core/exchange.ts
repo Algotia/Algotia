@@ -1,5 +1,5 @@
 import { Exchange, Order, Balances } from "@algotia/ccxt";
-import { StrategyError } from "../errors";
+import { StrategyError } from "./errors";
 
 export const AllowedExchangeIDs = ["binance", "kucoin", "bitfinex"] as const;
 

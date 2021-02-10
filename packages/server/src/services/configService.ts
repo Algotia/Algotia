@@ -1,7 +1,7 @@
 import Joi, { ValidationResult } from "joi";
 import OPCache from "op-cache";
 import node_path from "path";
-import { ConfigOptions } from "../types";
+import { ConfigOptions } from "@algotia/types";
 import { getCacheDir } from "../utils";
 import fs from "fs";
 import os from "os";

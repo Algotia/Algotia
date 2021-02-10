@@ -1,5 +1,5 @@
 import { Balances } from "@algotia/ccxt";
-import { InitialBalance } from "../../types";
+import { InitialBalance } from "@algotia/types";
 
 const createInitialBalance = (initialBalance: InitialBalance): Balances => {
 	let balance: Balances;

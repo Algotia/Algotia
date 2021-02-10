@@ -3,7 +3,7 @@ import {
 	pollingPeriodTable,
 	PaperTradeOptions,
 	createStrategyError,
-} from "../types";
+} from "@algotia/types";
 import { parsePeriod, roundTime } from "../utils";
 import { getLiveCandle } from "../exchange";
 import { EventEmitter } from "events";

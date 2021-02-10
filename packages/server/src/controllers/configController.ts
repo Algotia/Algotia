@@ -1,6 +1,6 @@
-import { Controller, Get, Path, Route } from "tsoa";
+import { ConfigOptions } from "@algotia/types";
 import { ConfigService } from "../services";
-import { ConfigOptions } from "../types";
+import { Controller, Get, Path, Route } from "tsoa";
 
 @Route("config")
 export class ConfigController extends Controller {

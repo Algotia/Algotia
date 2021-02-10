@@ -1,4 +1,4 @@
-export * from "./exchange"
+export * from "./exchange";
 export * from "./methods";
 export * from "./utils/";
-export * from "./types";
+export * from "./strategy";

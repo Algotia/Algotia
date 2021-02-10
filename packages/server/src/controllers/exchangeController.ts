@@ -1,4 +1,4 @@
-import { AllowedExchangeIDs, Exchange, ExchangeID } from "@algotia/core";
+import { AllowedExchangeIDs, Exchange, ExchangeID } from "@algotia/types";
 import { Controller, Get, Path, Query, Route } from "tsoa";
 import { ExchangeService } from "../services";
 

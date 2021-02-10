@@ -1,16 +1,14 @@
 export interface StrategyMetaData {
-    language: "JavaScript" | "TypeScript";
-    modifiedAt: Date;
-    path: string;
+    modifiedAt: number;
     basename: string;
-}
-
-export interface StrategyData extends StrategyMetaData {
-    value: string;
+    path: string;
+    language: "JavaScript" | "TypeScript";
 }
 
 export interface StrategyTemplateOptions {
-    exchangeId: string;
     pair: string;
-    initialBalance: Record<string, number>;
+}
+
+export interface WriteStrategyOptions {
+    contents: string;
 }

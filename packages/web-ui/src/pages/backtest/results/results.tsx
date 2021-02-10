@@ -1,6 +1,6 @@
 import { FC, useContext, useState } from "react";
 import { Column } from "../../../components";
-import { BacktestResults } from "@algotia/core";
+import { BacktestResults } from "@algotia/types";
 import { Tab, Tabs, styled as muiStyled } from "@material-ui/core";
 import { TabContext, TabPanel } from "@material-ui/lab";
 import styled from "styled-components";

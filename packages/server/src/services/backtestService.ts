@@ -1,13 +1,10 @@
+import { backfill, backtest, simulateExchange } from "@algotia/core";
 import {
-    backfill,
-    backtest,
+    Strategy,
     BacktestResults,
     ExchangeID,
     OHLCV_Candle,
-    simulateExchange,
-    AllowedExchangeIDs,
-    Strategy,
-} from "@algotia/core";
+} from "@algotia/types";
 import { ExchangeService } from "./exchangeService";
 import { StrategyService } from "./strategyService";
 import node_path from "path";
@@ -54,9 +51,12 @@ export class BacktestService {
             initialBalance,
         });
 
-        const strategy: Strategy = await this.strategyService.import(strategyPath, {
-                  pair,
-              });
+        const strategy: Strategy = await this.strategyService.import(
+            strategyPath,
+            {
+                pair,
+            }
+        );
 
         const candles = await backfill({
             from,

@@ -2,7 +2,7 @@ import {
 	BacktestResults,
 	BacktestOptions,
 	createStrategyError,
-} from "../types";
+} from "@algotia/types";
 
 /** Backtesting runs a strategy against historical data */
 const backtest = async (options: BacktestOptions): Promise<BacktestResults> => {
@@ -31,7 +31,7 @@ const backtest = async (options: BacktestOptions): Promise<BacktestResults> => {
 			});
 			store.errors.push(formattedErr);
 		} finally {
-			fillOrders(aheadCandle)
+			fillOrders(aheadCandle);
 		}
 	}
 

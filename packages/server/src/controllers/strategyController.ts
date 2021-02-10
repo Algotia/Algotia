@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Path, Post, Route } from "tsoa";
+import { StrategyMetaData, WriteStrategyOptions } from "@algotia/types";
 import { GetStrategyResult, StrategyService } from "../services";
-import { StrategyMetaData, WriteStrategyOptions } from "../types";
 
 @Route("strategy")
 export class StrategyController extends Controller {

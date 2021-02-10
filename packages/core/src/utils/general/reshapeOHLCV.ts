@@ -1,4 +1,4 @@
-import { OHLCV_Candle } from "../../types";
+import { OHLCV_Candle } from "@algotia/types";
 
 const reshapeOHLCV = (rawCandles: number[][]): OHLCV_Candle[] => {
 	return rawCandles.map((ohlcv) => {

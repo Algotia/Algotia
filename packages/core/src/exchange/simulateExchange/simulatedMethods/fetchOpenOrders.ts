@@ -1,5 +1,5 @@
 import { Exchange as CCXT_Exchange, Params, Order } from "@algotia/ccxt";
-import { SimulatedExchangeStore } from "../../../types";
+import { SimulatedExchangeStore } from "@algotia/types";
 
 type FetchOpenOrders = CCXT_Exchange["fetchOpenOrders"];
 

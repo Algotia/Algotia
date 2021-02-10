@@ -1,4 +1,4 @@
-import { Exchange, OHLCV_Candle, SimulatedExchange } from "../../types";
+import { Exchange, OHLCV_Candle, SimulatedExchange } from "@algotia/types";
 import { parsePeriod, reshapeOHLCV } from "../../utils/";
 import fillEmptyCandles from "./fillEmptyCandles";
 
