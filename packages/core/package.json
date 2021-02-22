@@ -21,6 +21,7 @@
 	},
 	"dependencies": {
 		"@algotia/ccxt": "^1.0.0-alpha.0",
+		"@algotia/types": "^1.0.0",
 		"decimal.js": "^10.2.1"
 	},
 	"devDependencies": {

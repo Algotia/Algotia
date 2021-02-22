@@ -1,9 +1,5 @@
-import {
-	paperTrade,
-	Exchange,
-	Strategy,
-	PaperTradeOptions,
-} from "../../src/algotia";
+import { paperTrade } from "../../src/algotia";
+import { Exchange, Strategy, PaperTradeOptions } from "@algotia/types";
 import { reset, initialBalance, simulatedExchanges } from "../test-utils";
 import sinon from "sinon";
 import { EventEmitter } from "events";

@@ -1,6 +1,6 @@
 import { TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 
 interface SelectInitialBalanceProps {
     id: string;
@@ -12,7 +12,6 @@ interface SelectInitialBalanceProps {
     currencyList: string[] | undefined;
     onChange: (value: { currency: string; amount: number }) => void;
     FormItem: FC;
-    focus: boolean;
 }
 
 const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
@@ -25,12 +24,9 @@ const SelectInitialBalance: FC<SelectInitialBalanceProps> = (props) => {
         setCurrency,
         amount,
         setAmount,
-        focus,
     } = props;
 
     const [error, setError] = useState(false);
-
-	const [shouldFocus, setShouldFocus] = useState(focus)
 
     return (
         <>

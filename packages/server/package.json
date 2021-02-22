@@ -5,7 +5,7 @@
     "scripts": {
         "test": "jest",
         "dev": "npm run build && node dist/server.js",
-        "build": "tsoa spec-and-routes && tsc && npm run generate-client",
+        "build": "node ./scripts/build.js",
         "preview-docs": "node ./scripts/preview-swagger.js",
         "generate-client": "openapi-generator-cli generate -i ./spec/swagger.json -o ../client/src -g typescript-axios",
         "install-openapi-generator": "node ./scripts/install-openapi-generator.js"
@@ -39,12 +39,16 @@
         "unexpected-express": "^13.0.1"
     },
     "dependencies": {
+        "@algotia/ccxt": "^1.0.0-alpha.0",
         "@algotia/client": "^1.0.0-alpha.0",
         "@algotia/core": "^1.0.0-alpha.0",
+        "@algotia/strategy-manager": "^0.1.0",
+        "@algotia/types": "^1.0.0",
         "@babel/core": "^7.12.10",
         "@babel/polyfill": "^7.12.1",
         "@babel/register": "^7.12.10",
         "body-parser": "^1.19.0",
+        "chalk": "^4.1.0",
         "concurrently": "^5.3.0",
         "cors": "^2.8.5",
         "env-paths": "^2.2.0",
@@ -63,6 +67,7 @@
         "open": "^7.3.1",
         "patch-package": "^6.2.2",
         "pkg-dir": "^5.0.0",
+        "snake-case": "^3.0.4",
         "socket.io": "^3.0.4",
         "swagger-jsdoc": "^6.0.1",
         "ts-node": "^9.1.1",

@@ -2,10 +2,13 @@ import { Exchange as CCXT_Exchange, IDictionary, Market } from "@algotia/ccxt";
 import {
 	simulateExchange,
 	createExchange,
+} from "../../src/algotia";
+import {
+
 	AllowedExchangeIDs,
 	ExchangeID,
 	SimulatedExchange,
-} from "../../src/algotia";
+} from "@algotia/types"
 
 interface ExchangeObj {
 	originalExchange: CCXT_Exchange;

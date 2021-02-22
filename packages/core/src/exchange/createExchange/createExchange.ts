@@ -1,5 +1,6 @@
 import ccxt from "@algotia/ccxt";
-import { ExchangeID, isExchangeID } from "../../types";
+import { ExchangeID } from "@algotia/types";
+import { isExchangeID } from "../../utils";
 
 const createExchange = (
 	id: ExchangeID,

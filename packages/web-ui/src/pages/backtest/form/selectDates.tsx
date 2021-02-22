@@ -4,7 +4,7 @@ import {
     MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import DateFnUtils from "@date-io/date-fns";
-import { FormControl, makeStyles, TextField } from "@material-ui/core";
+import { FormControl, TextField } from "@material-ui/core";
 
 interface SelectDatesProps {
     exchangeId: string | undefined;

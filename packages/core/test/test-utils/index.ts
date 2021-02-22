@@ -1,8 +1,5 @@
-import {
-	createExchange,
-	simulateExchange,
-	AllowedExchangeIDs,
-} from "../../src/algotia";
+import { createExchange, simulateExchange } from "../../src/algotia";
+import { AllowedExchangeIDs } from "@algotia/types";
 
 export const initialBalance = {
 	BTC: 100,

@@ -199,32 +199,43 @@ const models: TsoaRoute.Models = {
         "additionalProperties": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"string"}]},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "SupportedStrategyLanguages": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["JavaScript"]},{"dataType":"enum","enums":["TypeScript"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyMetaData": {
         "dataType": "refObject",
         "properties": {
-            "modifiedAt": {"dataType":"double","required":true},
-            "basename": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
             "path": {"dataType":"string","required":true},
-            "language": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["JavaScript"]},{"dataType":"enum","enums":["TypeScript"]}],"required":true},
+            "indexFile": {"dataType":"string","required":true},
+            "language": {"ref":"SupportedStrategyLanguages","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "GetStrategyResult": {
-        "dataType": "refObject",
-        "properties": {
-            "value": {"dataType":"string","required":true},
-            "meta": {"ref":"StrategyMetaData","required":true},
-        },
-        "additionalProperties": false,
+    "EditorLanguage": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["JavaScript"]},{"dataType":"enum","enums":["TypeScript"]},{"dataType":"enum","enums":["JSON"]},{"dataType":"enum","enums":["Text"]}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "WriteStrategyOptions": {
+    "StrategyFile": {
         "dataType": "refObject",
         "properties": {
+            "modifiedAt": {"dataType":"double","required":true},
+            "path": {"dataType":"string","required":true},
+            "basename": {"dataType":"string","required":true},
+            "extension": {"dataType":"string","required":true},
             "contents": {"dataType":"string","required":true},
+            "language": {"ref":"EditorLanguage"},
         },
         "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "FileStructure": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"language":{"ref":"EditorLanguage"},"children":{"dataType":"array","array":{"dataType":"refAlias","ref":"FileStructure"}},"fullPath":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -432,7 +443,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/strategy/:fileName',
+        app.get('/api/strategy/file/:fileName',
             function (request: any, response: any, next: any) {
             const args = {
                     fileName: {"in":"path","name":"fileName","required":true,"dataType":"string"},
@@ -450,15 +461,14 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new StrategyController();
 
 
-            const promise = controller.getStrategyByFilename.apply(controller, validatedArgs as any);
+            const promise = controller.readStrategyFile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/strategy/:fileName',
+        app.get('/api/strategy/dir/:strategyDir',
             function (request: any, response: any, next: any) {
             const args = {
-                    fileName: {"in":"path","name":"fileName","required":true,"dataType":"string"},
-                    contents: {"in":"body","name":"contents","required":true,"ref":"WriteStrategyOptions"},
+                    strategyDir: {"in":"path","name":"strategyDir","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -473,7 +483,29 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new StrategyController();
 
 
-            const promise = controller.writeStrategy.apply(controller, validatedArgs as any);
+            const promise = controller.readStrategyDir.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/strategy/file',
+            function (request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"path":{"dataType":"string","required":true},"contents":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new StrategyController();
+
+
+            const promise = controller.writeStrategyFile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

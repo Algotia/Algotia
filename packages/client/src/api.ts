@@ -163,6 +163,18 @@ export interface CreateBacktestResult {
  * @export
  * @enum {string}
  */
+export enum EditorLanguage {
+    JavaScript = 'JavaScript',
+    TypeScript = 'TypeScript',
+    Json = 'JSON',
+    Text = 'Text'
+}
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
 export enum ExchangeID {
     Binance = 'binance',
     Kucoin = 'kucoin',
@@ -238,21 +250,58 @@ export enum FeeTypeEnum {
 /**
  * 
  * @export
- * @interface GetStrategyResult
+ * @interface FileStructure
  */
-export interface GetStrategyResult {
+export interface FileStructure {
+    /**
+     * 
+     * @type {EditorLanguage}
+     * @memberof FileStructure
+     */
+    language?: EditorLanguage;
+    /**
+     * 
+     * @type {Array<FileStructure>}
+     * @memberof FileStructure
+     */
+    children?: Array<FileStructure>;
     /**
      * 
      * @type {string}
-     * @memberof GetStrategyResult
+     * @memberof FileStructure
      */
-    value: string;
+    fullPath: string;
     /**
      * 
-     * @type {StrategyMetaData}
-     * @memberof GetStrategyResult
+     * @type {string}
+     * @memberof FileStructure
      */
-    meta: StrategyMetaData;
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileStructure
+     */
+    name: string;
+}
+/**
+ * 
+ * @export
+ * @interface InlineObject
+ */
+export interface InlineObject {
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    path: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    contents: string;
 }
 /**
  * 
@@ -661,21 +710,58 @@ export interface StrategyError {
 /**
  * 
  * @export
- * @interface StrategyMetaData
+ * @interface StrategyFile
  */
-export interface StrategyMetaData {
+export interface StrategyFile {
     /**
      * 
      * @type {number}
-     * @memberof StrategyMetaData
+     * @memberof StrategyFile
      */
     modifiedAt: number;
     /**
      * 
      * @type {string}
-     * @memberof StrategyMetaData
+     * @memberof StrategyFile
+     */
+    path: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StrategyFile
      */
     basename: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StrategyFile
+     */
+    extension: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StrategyFile
+     */
+    contents: string;
+    /**
+     * 
+     * @type {EditorLanguage}
+     * @memberof StrategyFile
+     */
+    language?: EditorLanguage;
+}
+/**
+ * 
+ * @export
+ * @interface StrategyMetaData
+ */
+export interface StrategyMetaData {
+    /**
+     * 
+     * @type {string}
+     * @memberof StrategyMetaData
+     */
+    name: string;
     /**
      * 
      * @type {string}
@@ -687,14 +773,20 @@ export interface StrategyMetaData {
      * @type {string}
      * @memberof StrategyMetaData
      */
-    language: StrategyMetaDataLanguageEnum;
+    indexFile: string;
+    /**
+     * 
+     * @type {SupportedStrategyLanguages}
+     * @memberof StrategyMetaData
+     */
+    language: SupportedStrategyLanguages;
 }
-
 /**
-    * @export
-    * @enum {string}
-    */
-export enum StrategyMetaDataLanguageEnum {
+ * 
+ * @export
+ * @enum {string}
+ */
+export enum SupportedStrategyLanguages {
     JavaScript = 'JavaScript',
     TypeScript = 'TypeScript'
 }
@@ -802,19 +894,6 @@ export enum TradeTakerOrMakerEnum {
     Maker = 'maker'
 }
 
-/**
- * 
- * @export
- * @interface WriteStrategyOptions
- */
-export interface WriteStrategyOptions {
-    /**
-     * 
-     * @type {string}
-     * @memberof WriteStrategyOptions
-     */
-    contents: string;
-}
 
 /**
  * DefaultApi - axios parameter creator
@@ -1153,48 +1232,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {string} fileName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getStrategyByFilename: async (fileName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'fileName' is not null or undefined
-            if (fileName === null || fileName === undefined) {
-                throw new RequiredError('fileName','Required parameter fileName was null or undefined when calling getStrategyByFilename.');
-            }
-            const localVarPath = `/strategy/{fileName}`
-                .replace(`{${"fileName"}}`, encodeURIComponent(String(fileName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            const queryParameters = new URLSearchParams(localVarUrlObj.search);
-            for (const key in localVarQueryParameter) {
-                queryParameters.set(key, localVarQueryParameter[key]);
-            }
-            for (const key in options.query) {
-                queryParameters.set(key, options.query[key]);
-            }
-            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {ExchangeID} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1237,22 +1274,100 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {string} fileName 
-         * @param {WriteStrategyOptions} writeStrategyOptions 
+         * @param {string} strategyDir 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        writeStrategy: async (fileName: string, writeStrategyOptions: WriteStrategyOptions, options: any = {}): Promise<RequestArgs> => {
+        readStrategyDir: async (strategyDir: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'strategyDir' is not null or undefined
+            if (strategyDir === null || strategyDir === undefined) {
+                throw new RequiredError('strategyDir','Required parameter strategyDir was null or undefined when calling readStrategyDir.');
+            }
+            const localVarPath = `/strategy/dir/{strategyDir}`
+                .replace(`{${"strategyDir"}}`, encodeURIComponent(String(strategyDir)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} fileName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readStrategyFile: async (fileName: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'fileName' is not null or undefined
             if (fileName === null || fileName === undefined) {
-                throw new RequiredError('fileName','Required parameter fileName was null or undefined when calling writeStrategy.');
+                throw new RequiredError('fileName','Required parameter fileName was null or undefined when calling readStrategyFile.');
             }
-            // verify required parameter 'writeStrategyOptions' is not null or undefined
-            if (writeStrategyOptions === null || writeStrategyOptions === undefined) {
-                throw new RequiredError('writeStrategyOptions','Required parameter writeStrategyOptions was null or undefined when calling writeStrategy.');
-            }
-            const localVarPath = `/strategy/{fileName}`
+            const localVarPath = `/strategy/file/{fileName}`
                 .replace(`{${"fileName"}}`, encodeURIComponent(String(fileName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {InlineObject} inlineObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        writeStrategyFile: async (inlineObject: InlineObject, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inlineObject' is not null or undefined
+            if (inlineObject === null || inlineObject === undefined) {
+                throw new RequiredError('inlineObject','Required parameter inlineObject was null or undefined when calling writeStrategyFile.');
+            }
+            const localVarPath = `/strategy/file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -1278,13 +1393,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            const nonString = typeof writeStrategyOptions !== 'string';
+            const nonString = typeof inlineObject !== 'string';
             const needsSerialization = nonString && configuration && configuration.isJsonMime
                 ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
                 : nonString;
             localVarRequestOptions.data =  needsSerialization
-                ? JSON.stringify(writeStrategyOptions !== undefined ? writeStrategyOptions : {})
-                : (writeStrategyOptions || "");
+                ? JSON.stringify(inlineObject !== undefined ? inlineObject : {})
+                : (inlineObject || "");
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -1403,19 +1518,6 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} fileName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getStrategyByFilename(fileName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetStrategyResult>> {
-            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getStrategyByFilename(fileName, options);
-            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
-                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
-                return axios.request(axiosRequestArgs);
-            };
-        },
-        /**
-         * 
          * @param {ExchangeID} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1429,13 +1531,38 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} fileName 
-         * @param {WriteStrategyOptions} writeStrategyOptions 
+         * @param {string} strategyDir 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async writeStrategy(fileName: string, writeStrategyOptions: WriteStrategyOptions, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).writeStrategy(fileName, writeStrategyOptions, options);
+        async readStrategyDir(strategyDir: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileStructure>> {
+            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).readStrategyDir(strategyDir, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} fileName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readStrategyFile(fileName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StrategyFile>> {
+            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).readStrategyFile(fileName, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {InlineObject} inlineObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async writeStrategyFile(inlineObject: InlineObject, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).writeStrategyFile(inlineObject, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -1521,15 +1648,6 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {string} fileName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getStrategyByFilename(fileName: string, options?: any): AxiosPromise<GetStrategyResult> {
-            return DefaultApiFp(configuration).getStrategyByFilename(fileName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {ExchangeID} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1539,13 +1657,30 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {string} fileName 
-         * @param {WriteStrategyOptions} writeStrategyOptions 
+         * @param {string} strategyDir 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        writeStrategy(fileName: string, writeStrategyOptions: WriteStrategyOptions, options?: any): AxiosPromise<void> {
-            return DefaultApiFp(configuration).writeStrategy(fileName, writeStrategyOptions, options).then((request) => request(axios, basePath));
+        readStrategyDir(strategyDir: string, options?: any): AxiosPromise<FileStructure> {
+            return DefaultApiFp(configuration).readStrategyDir(strategyDir, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} fileName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readStrategyFile(fileName: string, options?: any): AxiosPromise<StrategyFile> {
+            return DefaultApiFp(configuration).readStrategyFile(fileName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {InlineObject} inlineObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        writeStrategyFile(inlineObject: InlineObject, options?: any): AxiosPromise<void> {
+            return DefaultApiFp(configuration).writeStrategyFile(inlineObject, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1644,17 +1779,6 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} fileName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public getStrategyByFilename(fileName: string, options?: any) {
-        return DefaultApiFp(this.configuration).getStrategyByFilename(fileName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {ExchangeID} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1666,14 +1790,35 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} fileName 
-     * @param {WriteStrategyOptions} writeStrategyOptions 
+     * @param {string} strategyDir 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public writeStrategy(fileName: string, writeStrategyOptions: WriteStrategyOptions, options?: any) {
-        return DefaultApiFp(this.configuration).writeStrategy(fileName, writeStrategyOptions, options).then((request) => request(this.axios, this.basePath));
+    public readStrategyDir(strategyDir: string, options?: any) {
+        return DefaultApiFp(this.configuration).readStrategyDir(strategyDir, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} fileName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public readStrategyFile(fileName: string, options?: any) {
+        return DefaultApiFp(this.configuration).readStrategyFile(fileName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {InlineObject} inlineObject 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public writeStrategyFile(inlineObject: InlineObject, options?: any) {
+        return DefaultApiFp(this.configuration).writeStrategyFile(inlineObject, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -1,4 +1,4 @@
-import { OHLCV_Candle, SimulatedExchangeStore } from "../../../src/algotia";
+import { OHLCV_Candle, SimulatedExchangeStore } from "@algotia/types";
 import { parsePair } from "../../../src/utils";
 import { simulatedExchanges, initialBalance, reset } from "../../test-utils";
 

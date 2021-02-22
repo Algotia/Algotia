@@ -1,10 +1,9 @@
-import { FC, useContext, useState } from "react";
+import { FC, useState } from "react";
 import { Column } from "../../../components";
-import { BacktestResults } from "@algotia/core";
+import { BacktestResults } from "@algotia/client";
 import { Tab, Tabs, styled as muiStyled } from "@material-ui/core";
 import { TabContext, TabPanel } from "@material-ui/lab";
 import styled from "styled-components";
-import { BacktestContext } from "../context";
 import Balance from "./balance";
 import ClosedOrders from "./closedOrders";
 import Errors from "./errors";
@@ -37,8 +36,6 @@ const Panel = muiStyled(TabPanel)(({ theme }) => ({
 }));
 
 const Results: FC = () => {
-    const { requestResult } = useContext(BacktestContext);
-
     const allGroups: [keyof BacktestResults, string, FC][] = [
         ["balance", "balance", Balance],
         ["closedOrders", "closed orders", ClosedOrders],
@@ -49,10 +46,6 @@ const Results: FC = () => {
     const [activeGroup, setActiveGroup] = useState<keyof BacktestResults>(
         allGroups[0][0]
     );
-
-    const getItems = (key: keyof BacktestResults): number => {
-        return requestResult?.results[key].length;
-    };
 
     return (
         <ResultsTableWrapper>
@@ -68,11 +61,7 @@ const Results: FC = () => {
                             return (
                                 <CustomTab
                                     key={key}
-                                    label={
-                                        <div>
-                                            {label}
-                                        </div>
-                                    }
+                                    label={<div>{label}</div>}
                                     value={key}
                                 />
                             );

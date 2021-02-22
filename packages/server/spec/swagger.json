@@ -568,62 +568,105 @@
 					]
 				}
 			},
+			"SupportedStrategyLanguages": {
+				"type": "string",
+				"enum": [
+					"JavaScript",
+					"TypeScript"
+				]
+			},
 			"StrategyMetaData": {
 				"properties": {
-					"modifiedAt": {
-						"type": "number",
-						"format": "double"
-					},
-					"basename": {
+					"name": {
 						"type": "string"
 					},
 					"path": {
 						"type": "string"
 					},
+					"indexFile": {
+						"type": "string"
+					},
 					"language": {
-						"type": "string",
-						"enum": [
-							"JavaScript",
-							"TypeScript"
-						]
+						"$ref": "#/components/schemas/SupportedStrategyLanguages"
 					}
 				},
 				"required": [
-					"modifiedAt",
-					"basename",
+					"name",
 					"path",
+					"indexFile",
 					"language"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"GetStrategyResult": {
+			"EditorLanguage": {
+				"type": "string",
+				"enum": [
+					"JavaScript",
+					"TypeScript",
+					"JSON",
+					"Text"
+				]
+			},
+			"StrategyFile": {
 				"properties": {
-					"value": {
+					"modifiedAt": {
+						"type": "number",
+						"format": "double"
+					},
+					"path": {
 						"type": "string"
 					},
-					"meta": {
-						"$ref": "#/components/schemas/StrategyMetaData"
-					}
-				},
-				"required": [
-					"value",
-					"meta"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"WriteStrategyOptions": {
-				"properties": {
+					"basename": {
+						"type": "string"
+					},
+					"extension": {
+						"type": "string"
+					},
 					"contents": {
 						"type": "string"
+					},
+					"language": {
+						"$ref": "#/components/schemas/EditorLanguage"
 					}
 				},
 				"required": [
+					"modifiedAt",
+					"path",
+					"basename",
+					"extension",
 					"contents"
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"FileStructure": {
+				"properties": {
+					"language": {
+						"$ref": "#/components/schemas/EditorLanguage"
+					},
+					"children": {
+						"items": {
+							"$ref": "#/components/schemas/FileStructure"
+						},
+						"type": "array"
+					},
+					"fullPath": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"fullPath",
+					"id",
+					"name"
+				],
+				"type": "object"
 			}
 		},
 		"securitySchemes": {}
@@ -882,16 +925,16 @@
 				"parameters": []
 			}
 		},
-		"/strategy/{fileName}": {
+		"/strategy/file/{fileName}": {
 			"get": {
-				"operationId": "GetStrategyByFilename",
+				"operationId": "ReadStrategyFile",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/GetStrategyResult"
+									"$ref": "#/components/schemas/StrategyFile"
 								}
 							}
 						}
@@ -908,31 +951,64 @@
 						}
 					}
 				]
-			},
-			"post": {
-				"operationId": "WriteStrategy",
+			}
+		},
+		"/strategy/dir/{strategyDir}": {
+			"get": {
+				"operationId": "ReadStrategyDir",
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileStructure"
+								}
+							}
+						}
 					}
 				},
 				"security": [],
 				"parameters": [
 					{
 						"in": "path",
-						"name": "fileName",
+						"name": "strategyDir",
 						"required": true,
 						"schema": {
 							"type": "string"
 						}
 					}
-				],
+				]
+			}
+		},
+		"/strategy/file": {
+			"post": {
+				"operationId": "WriteStrategyFile",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/WriteStrategyOptions"
+								"properties": {
+									"path": {
+										"type": "string"
+									},
+									"contents": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"path",
+									"contents"
+								],
+								"type": "object"
 							}
 						}
 					}

@@ -12,7 +12,6 @@ const SelectPair: FC<SelectPairProps> = (props) => {
     const { pairList, setPair, pair } = props;
     return (
         <Autocomplete
-            open={!!pairList && !pair}
             fullWidth={true}
             disabled={!pairList}
             options={pairList || []}
@@ -28,7 +27,7 @@ const SelectPair: FC<SelectPairProps> = (props) => {
                     {...params}
                     label="Pair"
                     variant="filled"
-                    focused={!!pairList && !pair}
+					error={!!pairList && !pair}
                 />
             )}
         />

@@ -1,4 +1,5 @@
-import { AllowedExchangeIDs, Exchange, ExchangeID } from "@algotia/core";
+import { AllowedExchangeIDs, Exchange, ExchangeID } from "@algotia/types";
+import { Market } from "@algotia/ccxt";
 import { Controller, Get, Path, Query, Route } from "tsoa";
 import { ExchangeService } from "../services";
 
@@ -39,7 +40,7 @@ export class ExchangeController extends Controller {
     public async getMarket(
         @Path() id: ExchangeID,
         @Query() pair: string
-    ): Promise<Exchange["markets"][string]> {
+    ): Promise<Market> {
         const exchange = await this.exchangeService.getExchange(id);
         return exchange.markets[pair];
     }
@@ -58,5 +59,13 @@ export class ExchangeController extends Controller {
     ): Promise<Exchange["symbols"]> {
         const exchange = await this.exchangeService.getExchange(id);
         return exchange.symbols;
+    }
+
+    @Get("{id}/currencies")
+    public async getCurrencies(
+        @Path() id: ExchangeID
+    ): Promise<Exchange["currencies"]> {
+        const exchange = await this.exchangeService.getExchange(id);
+        return exchange.currencies;
     }
 }

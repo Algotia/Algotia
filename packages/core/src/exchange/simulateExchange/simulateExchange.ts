@@ -6,7 +6,7 @@ import {
 	ExchangeID,
 	Exchange,
 	InitialBalance,
-} from "../../types/";
+} from "@algotia/types";
 import {
 	createCancelOrder,
 	createCreateOrder,

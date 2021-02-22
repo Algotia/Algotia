@@ -1,5 +1,5 @@
 import { Trade, Order } from "@algotia/ccxt";
-import { SimulatedExchangeStore, OHLCV_Candle } from "../../../types";
+import { SimulatedExchangeStore, OHLCV_Candle } from "@algotia/types";
 import { parsePair } from "../../../utils";
 import Decimal from "decimal.js";
 

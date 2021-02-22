@@ -1,4 +1,4 @@
-import { useTheme, styled as muiStyled } from "@material-ui/core";
+import { useTheme } from "@material-ui/core";
 import React from "react";
 import styled from "styled-components";
 import { Column, Row } from "../shared";
@@ -21,7 +21,6 @@ const ChildContainer = styled.div`
     box-sizing: border-box;
     overflow: hidden;
 `;
-
 
 const Layout: React.FC = (props) => {
     const theme = useTheme();

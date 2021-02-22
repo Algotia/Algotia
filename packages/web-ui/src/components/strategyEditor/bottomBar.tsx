@@ -1,4 +1,4 @@
-import { StrategyMetaData } from "@algotia/client";
+import { StrategyFile, StrategyMetaData } from "@algotia/client";
 import { FC } from "react";
 import styled from "styled-components";
 
@@ -25,30 +25,21 @@ const Modified = styled.p`
     left: 15px;
 `;
 
-const BottomBar: FC<{ height: string; meta: StrategyMetaData | undefined }> = ({
+const BottomBar: FC<{ height: string; meta: StrategyFile | undefined }> = ({
     height,
     meta,
 }) => {
-    const modifiedAtDate: Date = new Date(meta?.modifiedAt || 0);
     return (
         <Wrapper style={{ height }}>
             {meta ? (
                 <>
-                    <Modified>
-                        Modified at{" "}
-                        {modifiedAtDate.toLocaleDateString() +
-                            " " +
-                            modifiedAtDate.toLocaleTimeString()}
-                    </Modified>
                     <Language>{meta.language}</Language>
                 </>
-            ): (
-            	<>
-				<Modified>
-					No strategy loaded
-				</Modified>
-				<Language> Text </Language>
-				</>
+            ) : (
+                <>
+                    <Modified>No strategy loaded</Modified>
+                    <Language> Text </Language>
+                </>
             )}
         </Wrapper>
     );

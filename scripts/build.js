@@ -10,6 +10,8 @@ const runBuild = (path) => {
     await runBuild("packages/ccxt");
     await runBuild("packages/types");
     await runBuild("packages/core");
+    await runBuild("packages/strategy-manager");
     await runBuild("packages/server");
     await runBuild("packages/client");
+    await execa("lerna", ["bootstrap", "--force-local"]);
 })();
