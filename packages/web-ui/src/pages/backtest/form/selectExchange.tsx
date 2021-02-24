@@ -1,10 +1,10 @@
-import { ExchangeID, StrategyMetaData } from "@algotia/client";
+import { ExchangeIDs, StrategyMetaData } from "@algotia/client";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { Dispatch, FC, SetStateAction } from "react";
 
 interface SelectExchangeProps {
     exchangeId: string | undefined;
-    setExchangeId: Dispatch<SetStateAction<ExchangeID>>;
+    setExchangeId: Dispatch<SetStateAction<ExchangeIDs>>;
     strategyMeta: StrategyMetaData | undefined;
 }
 
@@ -24,7 +24,7 @@ const SelectExchange: FC<SelectExchangeProps> = ({
                 value={exchangeId}
                 label="Exchange"
             >
-                {Object.entries(ExchangeID).map(([key, id]) => {
+                {Object.values(ExchangeIDs).map((id) => {
                     return (
                         <MenuItem
                             id={`exchange-select-${id}`}
@@ -34,7 +34,7 @@ const SelectExchange: FC<SelectExchangeProps> = ({
                                 setExchangeId(id);
                             }}
                         >
-                            {key}
+                            {id}
                         </MenuItem>
                     );
                 })}

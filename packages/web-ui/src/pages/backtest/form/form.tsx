@@ -8,7 +8,7 @@ import SelectDate from "./selectDates";
 import SelectInitialBalance from "./selectInitialBalance";
 import SelectPair from "./selectPair";
 import SelectPeriod from "./selectPeriod";
-import { DefaultApi, ExchangeID, StrategyMetaData } from "@algotia/client";
+import { DefaultApi, ExchangeIDs, StrategyMetaData } from "@algotia/client";
 import SelectStrategy from "./selectStrategy";
 
 const FormWrapper = muiStyled(Box)(({ theme }) => ({
@@ -66,7 +66,7 @@ const Form: FC<{
 
     const initialFrom = new Date(now);
 
-    const [exchangeId, setExchangeId] = useState<ExchangeID>("" as ExchangeID);
+    const [exchangeId, setExchangeId] = useState<ExchangeIDs>("" as ExchangeIDs);
     const [pair, setPair] = useState("");
     const [period, setPeriod] = useState<string>("");
     const [to, setTo] = useState<Date>(initialTo);

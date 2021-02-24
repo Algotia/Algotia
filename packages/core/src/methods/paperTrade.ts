@@ -1,11 +1,9 @@
 import {
 	SimulatedExchangeResult,
 	PaperTradeOptions,
-	createStrategyError,
-	StrategyArgs,
-	ExchangeID,
+	ExchangeIDs,
 } from "@algotia/types";
-import { parsePeriod, roundTime } from "../utils";
+import { createStrategyError, parsePeriod, roundTime } from "../utils";
 import { getLiveCandle } from "../exchange";
 import { EventEmitter } from "events";
 
@@ -89,7 +87,7 @@ const paperTrade = async (
 				constants: {
 					period,
 					pair,
-					exchangeId: exchange.id as ExchangeID,
+					exchangeId: ExchangeIDs[exchange.derviesFrom],
 				},
 			});
 		} catch (err) {

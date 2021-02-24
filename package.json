@@ -1,12 +1,14 @@
 {
-    "name": "root",
+    "name": "algotia",
     "private": true,
     "scripts": {
+        "clean": "node ./scripts/clean.js",
         "build": "node ./scripts/build.js",
-        "postinstall": "lerna bootstrap"
+        "bootstrap": "npx lerna bootstrap --hoist"
     },
     "devDependencies": {
-        "execa": "^1.0.0",
-        "lerna": "^3.22.1"
+        "execa": "^5.0.0",
+        "lerna": "^3.22.1",
+        "rimraf": "^3.0.2"
     }
 }

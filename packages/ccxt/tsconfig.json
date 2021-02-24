@@ -5,11 +5,13 @@
 		"module": "CommonJS",
 		"allowJs": true,
 		"declaration": true,
+		"rootDir": "src",
+		"outDir": "dist",
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": ["ccxt.ts"],
+	"include": ["src/ccxt.ts"],
 	"exclude": ["node_modules/"]
 }

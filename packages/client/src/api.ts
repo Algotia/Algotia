@@ -104,10 +104,10 @@ export interface CreateBacktestOptions {
     strategyPath: string;
     /**
      * 
-     * @type {ExchangeID}
+     * @type {ExchangeIDs}
      * @memberof CreateBacktestOptions
      */
-    exchange: ExchangeID;
+    exchange: ExchangeIDs;
     /**
      * 
      * @type {string}
@@ -161,9 +161,40 @@ export interface CreateBacktestResult {
 /**
  * 
  * @export
+ * @interface Currency
+ */
+export interface Currency {
+    /**
+     * 
+     * @type {string}
+     * @memberof Currency
+     */
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Currency
+     */
+    code: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Currency
+     */
+    numericId?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Currency
+     */
+    precision: number;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
-export enum EditorLanguage {
+export enum EditorLanguages {
     JavaScript = 'JavaScript',
     TypeScript = 'TypeScript',
     Json = 'JSON',
@@ -175,7 +206,7 @@ export enum EditorLanguage {
  * @export
  * @enum {string}
  */
-export enum ExchangeID {
+export enum ExchangeIDs {
     Binance = 'binance',
     Kucoin = 'kucoin',
     Bitfinex = 'bitfinex'
@@ -255,10 +286,10 @@ export enum FeeTypeEnum {
 export interface FileStructure {
     /**
      * 
-     * @type {EditorLanguage}
+     * @type {EditorLanguages}
      * @memberof FileStructure
      */
-    language?: EditorLanguage;
+    language?: EditorLanguages;
     /**
      * 
      * @type {Array<FileStructure>}
@@ -745,11 +776,21 @@ export interface StrategyFile {
     contents: string;
     /**
      * 
-     * @type {EditorLanguage}
+     * @type {EditorLanguages}
      * @memberof StrategyFile
      */
-    language?: EditorLanguage;
+    language?: EditorLanguages;
 }
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+export enum StrategyLanguages {
+    JavaScript = 'JavaScript',
+    TypeScript = 'TypeScript'
+}
+
 /**
  * 
  * @export
@@ -776,21 +817,11 @@ export interface StrategyMetaData {
     indexFile: string;
     /**
      * 
-     * @type {SupportedStrategyLanguages}
+     * @type {StrategyLanguages}
      * @memberof StrategyMetaData
      */
-    language: SupportedStrategyLanguages;
+    language: StrategyLanguages;
 }
-/**
- * 
- * @export
- * @enum {string}
- */
-export enum SupportedStrategyLanguages {
-    JavaScript = 'JavaScript',
-    TypeScript = 'TypeScript'
-}
-
 /**
  * 
  * @export
@@ -1025,17 +1056,59 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {'port' | 'appDir'} key 
+         * @param {string} key 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getConfigOptionByKey: async (key: 'port' | 'appDir', options: any = {}): Promise<RequestArgs> => {
+        getConfigOptionByKey: async (key: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'key' is not null or undefined
             if (key === null || key === undefined) {
                 throw new RequiredError('key','Required parameter key was null or undefined when calling getConfigOptionByKey.');
             }
             const localVarPath = `/config/{key}`
                 .replace(`{${"key"}}`, encodeURIComponent(String(key)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {ExchangeIDs} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCurrencies: async (id: ExchangeIDs, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            if (id === null || id === undefined) {
+                throw new RequiredError('id','Required parameter id was null or undefined when calling getCurrencies.');
+            }
+            const localVarPath = `/exchange/{id}/currencies`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -1139,12 +1212,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {string} pair 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMarket: async (id: ExchangeID, pair: string, options: any = {}): Promise<RequestArgs> => {
+        getMarket: async (id: ExchangeIDs, pair: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             if (id === null || id === undefined) {
                 throw new RequiredError('id','Required parameter id was null or undefined when calling getMarket.');
@@ -1190,11 +1263,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPairs: async (id: ExchangeID, options: any = {}): Promise<RequestArgs> => {
+        getPairs: async (id: ExchangeIDs, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             if (id === null || id === undefined) {
                 throw new RequiredError('id','Required parameter id was null or undefined when calling getPairs.');
@@ -1232,11 +1305,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTimeFrames: async (id: ExchangeID, options: any = {}): Promise<RequestArgs> => {
+        getTimeFrames: async (id: ExchangeIDs, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             if (id === null || id === undefined) {
                 throw new RequiredError('id','Required parameter id was null or undefined when calling getTimeFrames.');
@@ -1454,12 +1527,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {'port' | 'appDir'} key 
+         * @param {string} key 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getConfigOptionByKey(key: 'port' | 'appDir', options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string | number>> {
+        async getConfigOptionByKey(key: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string | number>> {
             const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getConfigOptionByKey(key, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {ExchangeIDs} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCurrencies(id: ExchangeIDs, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: Currency; }>> {
+            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getCurrencies(id, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -1470,7 +1556,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getExchangeIds(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+        async getExchangeIds(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ExchangeIDs>>> {
             const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getExchangeIds(options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
@@ -1491,12 +1577,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {string} pair 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMarket(id: ExchangeID, pair: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Market>> {
+        async getMarket(id: ExchangeIDs, pair: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Market>> {
             const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getMarket(id, pair, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
@@ -1505,11 +1591,11 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPairs(id: ExchangeID, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+        async getPairs(id: ExchangeIDs, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
             const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getPairs(id, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
@@ -1518,11 +1604,11 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getTimeFrames(id: ExchangeID, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: number | string; }>> {
+        async getTimeFrames(id: ExchangeIDs, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: number | string; }>> {
             const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getTimeFrames(id, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
@@ -1604,19 +1690,28 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {'port' | 'appDir'} key 
+         * @param {string} key 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getConfigOptionByKey(key: 'port' | 'appDir', options?: any): AxiosPromise<string | number> {
+        getConfigOptionByKey(key: string, options?: any): AxiosPromise<string | number> {
             return DefaultApiFp(configuration).getConfigOptionByKey(key, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ExchangeIDs} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCurrencies(id: ExchangeIDs, options?: any): AxiosPromise<{ [key: string]: Currency; }> {
+            return DefaultApiFp(configuration).getCurrencies(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getExchangeIds(options?: any): AxiosPromise<Array<string>> {
+        getExchangeIds(options?: any): AxiosPromise<Array<ExchangeIDs>> {
             return DefaultApiFp(configuration).getExchangeIds(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1629,30 +1724,30 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {string} pair 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMarket(id: ExchangeID, pair: string, options?: any): AxiosPromise<Market> {
+        getMarket(id: ExchangeIDs, pair: string, options?: any): AxiosPromise<Market> {
             return DefaultApiFp(configuration).getMarket(id, pair, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPairs(id: ExchangeID, options?: any): AxiosPromise<Array<string>> {
+        getPairs(id: ExchangeIDs, options?: any): AxiosPromise<Array<string>> {
             return DefaultApiFp(configuration).getPairs(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {ExchangeID} id 
+         * @param {ExchangeIDs} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTimeFrames(id: ExchangeID, options?: any): AxiosPromise<{ [key: string]: number | string; }> {
+        getTimeFrames(id: ExchangeIDs, options?: any): AxiosPromise<{ [key: string]: number | string; }> {
             return DefaultApiFp(configuration).getTimeFrames(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1725,13 +1820,24 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @param {'port' | 'appDir'} key 
+     * @param {string} key 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getConfigOptionByKey(key: 'port' | 'appDir', options?: any) {
+    public getConfigOptionByKey(key: string, options?: any) {
         return DefaultApiFp(this.configuration).getConfigOptionByKey(key, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ExchangeIDs} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getCurrencies(id: ExchangeIDs, options?: any) {
+        return DefaultApiFp(this.configuration).getCurrencies(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1756,35 +1862,35 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @param {ExchangeID} id 
+     * @param {ExchangeIDs} id 
      * @param {string} pair 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getMarket(id: ExchangeID, pair: string, options?: any) {
+    public getMarket(id: ExchangeIDs, pair: string, options?: any) {
         return DefaultApiFp(this.configuration).getMarket(id, pair, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {ExchangeID} id 
+     * @param {ExchangeIDs} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getPairs(id: ExchangeID, options?: any) {
+    public getPairs(id: ExchangeIDs, options?: any) {
         return DefaultApiFp(this.configuration).getPairs(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {ExchangeID} id 
+     * @param {ExchangeIDs} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getTimeFrames(id: ExchangeID, options?: any) {
+    public getTimeFrames(id: ExchangeIDs, options?: any) {
         return DefaultApiFp(this.configuration).getTimeFrames(id, options).then((request) => request(this.axios, this.basePath));
     }
 

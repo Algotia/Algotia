@@ -1,9 +1,8 @@
 {
+    "npmClient": "yarn",
     "publishConfig": {
         "directory": "dist"
     },
-    "packages": [
-        "packages/*"
-    ],
+    "packages": ["packages/*"],
     "version": "1.0.0-alpha.0"
 }

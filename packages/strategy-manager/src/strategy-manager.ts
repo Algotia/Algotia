@@ -1,4 +1,3 @@
-import dashify from "dashify";
 import fs from "fs";
 import node_path from "path";
 import bootstrap from "./bootstrap";
@@ -6,10 +5,10 @@ import {
     FileStructure,
     StrategyMetaData,
     StrategyFile,
-    SupportedStrategyLanguages,
+    StrategyLanguages,
 } from "@algotia/types";
 import { mkDirIfNotExist, parseLanguageFromExt, walkDir } from "./utils";
-import { rootPackageJsonTemplate } from "./templates";
+import { rootPackageJsonTemplate, strategyTemplates } from "./templates";
 import execa from "execa";
 
 export class StrategyManager {
@@ -32,7 +31,7 @@ export class StrategyManager {
 
     public createStrategy = async (
         name: string,
-        language: SupportedStrategyLanguages
+        language: StrategyLanguages,
     ) => {
         await bootstrap({
             root: this.strategyRoot,

@@ -1,18 +1,9 @@
-import {
-    styled as muiStyled,
-    Paper,
-    ClickAwayListener,
-    Button,
-    makeStyles,
-} from "@material-ui/core";
-import { VscFiles, VscFolder, VscFolderOpened, VscJson } from "react-icons/vsc";
-import { SiJavascript, SiTypescript } from "react-icons/si";
-import { GrDocumentText } from "react-icons/gr";
-import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
+import { Button, makeStyles } from "@material-ui/core";
+import { VscFiles } from "react-icons/vsc";
+import { Dispatch, FC, SetStateAction } from "react";
 import styled from "styled-components";
 import { Row } from "../shared";
-import { DefaultApi, FileStructure, StrategyFile } from "@algotia/client";
-import { TreeItem, TreeView } from "@material-ui/lab";
+import { FileStructure, StrategyFile } from "@algotia/client";
 import ActionPanel from "./actionPanel";
 
 const BarWrapper = styled(Row)`
@@ -32,8 +23,6 @@ const useButtonIconStyles = makeStyles({
         width: "35px",
     },
 });
-
-const client = new DefaultApi();
 
 const TopBar: FC<{
     panelOpen: boolean;
@@ -64,6 +53,7 @@ const TopBar: FC<{
             {panelOpen && (
                 <ActionPanel
                     strategyDir={strategyDir}
+                    strategyFile={strategyFile}
                     setPanelOpen={setPanelOpen}
                     setEditorValue={setEditorValue}
                     setStrategyFile={setStrategyFile}

@@ -1,6 +1,6 @@
 import fs from "fs";
 import node_path from "path";
-import { FileStructure, EditorLanguage } from "@algotia/types";
+import { FileStructure, EditorLanguages } from "@algotia/types";
 import tildify from "tildify";
 
 export const mkDirIfNotExist = (path: string | string[]) => {
@@ -74,18 +74,30 @@ export const walkDir = (dir: string): FileStructure => {
     };
 };
 
-export const parseLanguageFromExt = (extension: string): EditorLanguage => {
+export const parseLanguageFromExt = (extension: string): EditorLanguages => {
     extension = extension.slice(1);
     switch (extension) {
         case "mjs":
         case "cjs":
         case "js":
-            return "JavaScript";
+            return EditorLanguages.JavaScript;
         case "ts":
-            return "TypeScript";
+            return EditorLanguages.TypeScript;
         case "json":
-            return "JSON";
+            return EditorLanguages.JSON;
         case "txt":
-            return "Text";
+            return EditorLanguages.Text;
     }
+};
+
+export const getLocalDependencyPath = (depName: string) => {
+    const node_modules = node_path.resolve(__dirname, "../node_modules/");
+
+    const depPath = node_path.join(node_modules, depName);
+
+    if (!fs.existsSync(depPath)) {
+        throw new Error(`Dependency ${depName} is not installed`);
+    }
+
+    return fs.realpathSync(depPath);
 };

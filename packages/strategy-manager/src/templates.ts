@@ -1,13 +1,18 @@
 import dashify from "dashify";
-import { SupportedStrategyLanguages } from "@algotia/types";
+import node_path from "path";
+import { StrategyLanguages } from "@algotia/types";
+import { getLocalDependencyPath } from "./utils";
 
 interface PackageJsonTemplateArgs {
     name: string;
-    language: SupportedStrategyLanguages;
+    language: StrategyLanguages;
 }
 
 const dependencies = {
-    typescript: `"typescript": "4.1.5"`,
+    typescript: `"typescript": "file:${getLocalDependencyPath("typescript")}"`,
+    algotia_types: `"@algotia/types": "file:${getLocalDependencyPath(
+        "@algotia/types"
+    )}"`,
 } as const;
 
 const rootPackageJsonTemplate = () => {
@@ -16,6 +21,7 @@ const rootPackageJsonTemplate = () => {
 		"private": true,
 		"workspaces": ["strategies/*"],
 		"devDependencies": {
+			${dependencies.algotia_types},
 			${dependencies.typescript}
 		}
 	}`;
@@ -28,9 +34,9 @@ const packageJsonTemplate = async ({
     return `{
 		"name": "${dashify(name)}",
 		"main": "src/index.${
-            language === "JavaScript"
+            language === StrategyLanguages.JavaScript
                 ? "js"
-                : language === "TypeScript"
+                : language === StrategyLanguages.TypeScript
                 ? "ts"
                 : ""
         }",
@@ -68,4 +74,40 @@ const tsconfigTemplate = (): string => {
 	}`;
 };
 
-export { packageJsonTemplate, rootPackageJsonTemplate, tsconfigTemplate };
+interface LanguageTemplate {
+    default: string;
+    [key: string]: string;
+}
+
+const JavaScriptTemplates: LanguageTemplate = {
+    default: `const strategy = async ({ exchange, constants }) => {
+		
+	};
+
+	export default strategy;
+	`,
+};
+
+const TypeScriptTemplates: LanguageTemplate = {
+    default: `import { Strategy } from "@algotia/types";
+const strategy: Strategy = ({ exchange, constants }) => {
+
+};
+
+export default strategy;`,
+};
+
+const js = StrategyLanguages.JavaScript;
+const ts = StrategyLanguages.TypeScript;
+
+const strategyTemplates: Record<StrategyLanguages, LanguageTemplate> = {
+    [ts]: TypeScriptTemplates,
+    [js]: JavaScriptTemplates,
+};
+
+export {
+    packageJsonTemplate,
+    rootPackageJsonTemplate,
+    tsconfigTemplate,
+    strategyTemplates,
+};

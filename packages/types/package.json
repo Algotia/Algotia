@@ -2,15 +2,20 @@
     "name": "@algotia/types",
     "version": "1.0.0",
     "description": "",
-    "main": "dist/types.js",
-    "types": "dist/types.d.ts",
-    "scripts": {
-        "build": "tsc"
-    },
+    "types": "types.d.ts",
+    "main": "dist/index.js",
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "scripts": {
+        "build": "node ./scripts/build.js"
+    },
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^4.15.1",
+        "@typescript-eslint/parser": "^4.15.1",
+        "eslint": "^7.20.0",
+        "execa": "^5.0.0",
+        "prettier": "^2.2.1",
         "typescript": "^4.1.5"
     },
     "dependencies": {

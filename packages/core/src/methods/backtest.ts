@@ -1,8 +1,5 @@
-import {
-	BacktestResults,
-	BacktestOptions,
-	createStrategyError,
-} from "@algotia/types";
+import { BacktestResults, BacktestOptions } from "@algotia/types";
+import { createStrategyError } from "../utils";
 
 /** Backtesting runs a strategy against historical data */
 const backtest = async (options: BacktestOptions): Promise<BacktestResults> => {

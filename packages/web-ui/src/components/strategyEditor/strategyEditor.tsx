@@ -50,7 +50,7 @@ const Container = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-	position: relative;
+    position: relative;
 `;
 const InnerEditorWrapper = styled.div`
     flex: 1;
@@ -72,6 +72,9 @@ const StrategyEditor: FC<{
     const [strategyDir, setStrategyDir] = useState<FileStructure>();
     const [panelOpen, setPanelOpen] = useState(false);
 
+    const [saving, setSaving] = useState(false);
+    const [modifiedAt, setModifiedAt] = useState<Date>();
+
     const rootRef = useRef<HTMLDivElement | null>(null);
     const editorRef = useRef<any>();
 
@@ -81,18 +84,20 @@ const StrategyEditor: FC<{
 
     editorRef.current?.addCommand(CtrlCmd | KEY_S, () => {
         if (editorRef.current && strategyFile) {
+            setSaving(true);
             client
-                .writeStrategyFile(
-					{
+                .writeStrategyFile({
                     path: strategyFile.path,
                     contents: editorRef.current.getValue(),
-					}
-                )
+                })
                 .then(() => {
-                    alert("saved");
+                    setModifiedAt(new Date());
                 })
                 .catch((err) => {
                     alert(err.toString());
+                })
+                .finally(() => {
+                    setSaving(false);
                 });
         } else {
             alert("no strategy");
@@ -119,7 +124,7 @@ const StrategyEditor: FC<{
     }, [strategyMeta]);
 
     useEffect(() => {
-        console.log(strategyFile);
+        if (strategyFile) setModifiedAt(new Date(strategyFile.modifiedAt));
     }, [strategyFile]);
 
     const theme = useTheme();
@@ -154,7 +159,12 @@ const StrategyEditor: FC<{
                     />
                 </InnerEditorWrapper>
             </SideBarRow>
-            <BottomBar height="20px" meta={strategyFile} />
+            <BottomBar
+                height="20px"
+                meta={strategyFile}
+                modifiedAt={modifiedAt}
+				saving={saving}
+            />
         </Container>
     );
 };

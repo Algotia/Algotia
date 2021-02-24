@@ -1,5 +1,6 @@
-import { StrategyFile, StrategyMetaData } from "@algotia/client";
-import { FC } from "react";
+import { StrategyFile } from "@algotia/client";
+import { CircularProgress } from "@material-ui/core";
+import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -25,22 +26,24 @@ const Modified = styled.p`
     left: 15px;
 `;
 
-const BottomBar: FC<{ height: string; meta: StrategyFile | undefined }> = ({
-    height,
-    meta,
-}) => {
+const BottomBar: FC<{
+    height: string;
+    meta: StrategyFile | undefined;
+    modifiedAt: Date | undefined;
+    saving: boolean;
+}> = ({ height, meta, saving, modifiedAt }) => {
     return (
         <Wrapper style={{ height }}>
-            {meta ? (
-                <>
-                    <Language>{meta.language}</Language>
-                </>
-            ) : (
-                <>
-                    <Modified>No strategy loaded</Modified>
-                    <Language> Text </Language>
-                </>
-            )}
+            <Modified>
+                {saving ? (
+                    <CircularProgress />
+                ) : modifiedAt ? (
+                    "Last saved: " + modifiedAt.toLocaleString()
+                ) : (
+                    "No strategy loaded"
+                )}
+            </Modified>
+            <Language>{meta ? meta.language : "Text"}</Language>
         </Wrapper>
     );
 };

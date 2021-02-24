@@ -1,15 +1,11 @@
-import ccxt from "@algotia/ccxt";
-import { ExchangeID } from "@algotia/types";
-import { isExchangeID } from "../../utils";
+import Ccxt, { Exchange } from "@algotia/ccxt";
+import { ExchangeIDs } from "@algotia/types";
 
 const createExchange = (
-	id: ExchangeID,
-	params?: ConstructorParameters<typeof ccxt[ExchangeID]>
+	id: ExchangeIDs,
+	...params: ConstructorParameters<typeof Exchange>
 ) => {
-	if (isExchangeID(id)) {
-		if (params) return new ccxt[id](...params);
-		return new ccxt[id]();
-	}
+	return new Ccxt[id](params ? params : {});
 };
 
 export default createExchange;

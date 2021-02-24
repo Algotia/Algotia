@@ -1,17 +1,18 @@
 const execa = require("execa");
+const node_path = require("path");
 
 const runBuild = (path) => {
-    return execa("npm", ["run", "build", "--prefix", path], {
+	path = node_path.resolve(__dirname, "../", path)
+    return execa.command(`npm run build --prefix ${path}`, {
         stdout: process.stdout,
     });
 };
 
-(async () => {
-    await runBuild("packages/ccxt");
-    await runBuild("packages/types");
-    await runBuild("packages/core");
-    await runBuild("packages/strategy-manager");
-    await runBuild("packages/server");
-    await runBuild("packages/client");
-    await execa("lerna", ["bootstrap", "--force-local"]);
-})();
+runBuild("packages/ccxt");
+runBuild("packages/types");
+runBuild("packages/core");
+runBuild("packages/strategy-manager");
+runBuild("packages/server");
+runBuild("packages/client");
+
+execa.commandSync("lerna bootstrap --force-local");

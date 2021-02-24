@@ -350,13 +350,13 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ExchangeID": {
-				"type": "string",
+			"ExchangeIDs": {
 				"enum": [
 					"binance",
 					"kucoin",
 					"bitfinex"
-				]
+				],
+				"type": "string"
 			},
 			"CreateBacktestOptions": {
 				"properties": {
@@ -364,7 +364,7 @@
 						"type": "string"
 					},
 					"exchange": {
-						"$ref": "#/components/schemas/ExchangeID"
+						"$ref": "#/components/schemas/ExchangeIDs"
 					},
 					"period": {
 						"type": "string"
@@ -568,12 +568,45 @@
 					]
 				}
 			},
-			"SupportedStrategyLanguages": {
-				"type": "string",
+			"Currency": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"code": {
+						"type": "string"
+					},
+					"numericId": {
+						"type": "number",
+						"format": "double"
+					},
+					"precision": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"code",
+					"precision"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IDictionary_Currency_": {
+				"description": "Represents an associative array of a same type.",
+				"properties": {},
+				"type": "object",
+				"additionalProperties": {
+					"$ref": "#/components/schemas/Currency"
+				}
+			},
+			"StrategyLanguages": {
 				"enum": [
 					"JavaScript",
 					"TypeScript"
-				]
+				],
+				"type": "string"
 			},
 			"StrategyMetaData": {
 				"properties": {
@@ -587,7 +620,7 @@
 						"type": "string"
 					},
 					"language": {
-						"$ref": "#/components/schemas/SupportedStrategyLanguages"
+						"$ref": "#/components/schemas/StrategyLanguages"
 					}
 				},
 				"required": [
@@ -599,14 +632,14 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"EditorLanguage": {
-				"type": "string",
+			"EditorLanguages": {
 				"enum": [
 					"JavaScript",
 					"TypeScript",
 					"JSON",
 					"Text"
-				]
+				],
+				"type": "string"
 			},
 			"StrategyFile": {
 				"properties": {
@@ -627,7 +660,7 @@
 						"type": "string"
 					},
 					"language": {
-						"$ref": "#/components/schemas/EditorLanguage"
+						"$ref": "#/components/schemas/EditorLanguages"
 					}
 				},
 				"required": [
@@ -643,7 +676,7 @@
 			"FileStructure": {
 				"properties": {
 					"language": {
-						"$ref": "#/components/schemas/EditorLanguage"
+						"$ref": "#/components/schemas/EditorLanguages"
 					},
 					"children": {
 						"items": {
@@ -757,11 +790,7 @@
 						"name": "key",
 						"required": true,
 						"schema": {
-							"type": "string",
-							"enum": [
-								"port",
-								"appDir"
-							]
+							"type": "string"
 						}
 					}
 				]
@@ -777,7 +806,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"type": "string"
+										"$ref": "#/components/schemas/ExchangeIDs"
 									},
 									"type": "array"
 								}
@@ -830,7 +859,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"$ref": "#/components/schemas/ExchangeID"
+							"$ref": "#/components/schemas/ExchangeIDs"
 						}
 					},
 					{
@@ -866,7 +895,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"$ref": "#/components/schemas/ExchangeID"
+							"$ref": "#/components/schemas/ExchangeIDs"
 						}
 					}
 				]
@@ -897,7 +926,35 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"$ref": "#/components/schemas/ExchangeID"
+							"$ref": "#/components/schemas/ExchangeIDs"
+						}
+					}
+				]
+			}
+		},
+		"/exchange/{id}/currencies": {
+			"get": {
+				"operationId": "GetCurrencies",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IDictionary_Currency_"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/ExchangeIDs"
 						}
 					}
 				]

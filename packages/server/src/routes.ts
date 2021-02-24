@@ -133,16 +133,16 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ExchangeID": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["binance"]},{"dataType":"enum","enums":["kucoin"]},{"dataType":"enum","enums":["bitfinex"]}],"validators":{}},
+    "ExchangeIDs": {
+        "dataType": "refEnum",
+        "enums": ["binance","kucoin","bitfinex"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CreateBacktestOptions": {
         "dataType": "refObject",
         "properties": {
             "strategyPath": {"dataType":"string","required":true},
-            "exchange": {"ref":"ExchangeID","required":true},
+            "exchange": {"ref":"ExchangeIDs","required":true},
             "period": {"dataType":"string","required":true},
             "pair": {"dataType":"string","required":true},
             "from": {"dataType":"double","required":true},
@@ -199,9 +199,27 @@ const models: TsoaRoute.Models = {
         "additionalProperties": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"string"}]},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SupportedStrategyLanguages": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["JavaScript"]},{"dataType":"enum","enums":["TypeScript"]}],"validators":{}},
+    "Currency": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string","required":true},
+            "code": {"dataType":"string","required":true},
+            "numericId": {"dataType":"double"},
+            "precision": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IDictionary_Currency_": {
+        "dataType": "refObject",
+        "properties": {
+        },
+        "additionalProperties": {"ref":"Currency"},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "StrategyLanguages": {
+        "dataType": "refEnum",
+        "enums": ["JavaScript","TypeScript"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyMetaData": {
@@ -210,14 +228,14 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"string","required":true},
             "path": {"dataType":"string","required":true},
             "indexFile": {"dataType":"string","required":true},
-            "language": {"ref":"SupportedStrategyLanguages","required":true},
+            "language": {"ref":"StrategyLanguages","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "EditorLanguage": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["JavaScript"]},{"dataType":"enum","enums":["TypeScript"]},{"dataType":"enum","enums":["JSON"]},{"dataType":"enum","enums":["Text"]}],"validators":{}},
+    "EditorLanguages": {
+        "dataType": "refEnum",
+        "enums": ["JavaScript","TypeScript","JSON","Text"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyFile": {
@@ -228,14 +246,14 @@ const models: TsoaRoute.Models = {
             "basename": {"dataType":"string","required":true},
             "extension": {"dataType":"string","required":true},
             "contents": {"dataType":"string","required":true},
-            "language": {"ref":"EditorLanguage"},
+            "language": {"ref":"EditorLanguages"},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "FileStructure": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"language":{"ref":"EditorLanguage"},"children":{"dataType":"array","array":{"dataType":"refAlias","ref":"FileStructure"}},"fullPath":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"language":{"ref":"EditorLanguages"},"children":{"dataType":"array","array":{"dataType":"refAlias","ref":"FileStructure"}},"fullPath":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -294,7 +312,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/config/:key',
             function (request: any, response: any, next: any) {
             const args = {
-                    key: {"in":"path","name":"key","required":true,"dataType":"union","subSchemas":[{"dataType":"enum","enums":["port"]},{"dataType":"enum","enums":["appDir"]}]},
+                    key: {"in":"path","name":"key","required":true,"dataType":"any"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -358,7 +376,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/exchange/:id/market',
             function (request: any, response: any, next: any) {
             const args = {
-                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeID"},
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
                     pair: {"in":"query","name":"pair","required":true,"dataType":"string"},
             };
 
@@ -381,7 +399,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/exchange/:id/timeframes',
             function (request: any, response: any, next: any) {
             const args = {
-                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeID"},
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -403,7 +421,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/exchange/:id/pairs',
             function (request: any, response: any, next: any) {
             const args = {
-                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeID"},
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -419,6 +437,28 @@ export function RegisterRoutes(app: express.Router) {
 
 
             const promise = controller.getPairs.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/exchange/:id/currencies',
+            function (request: any, response: any, next: any) {
+            const args = {
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new ExchangeController();
+
+
+            const promise = controller.getCurrencies.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -544,7 +584,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         if (data && typeof data.pipe === 'function' && data.readable && typeof data._read === 'function') {
             data.pipe(response);
-        } else if (data || data === false) { // === false allows boolean result
+        } else if (data !== null && data !== undefined) {
             response.status(statusCode || 200).json(data);
         } else {
             response.status(statusCode || 204).end();

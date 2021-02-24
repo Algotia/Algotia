@@ -1,16 +1,29 @@
 import { Exchange, Order, Balances } from "@algotia/ccxt";
 
-// Errors
+export enum ExchangeIDs {
+    binance = "binance",
+    kucoin = "kucoin",
+    bitfinex = "bitfinex",
+}
 
+export enum EditorLanguages {
+    "JavaScript" = "JavaScript",
+    "TypeScript" = "TypeScript",
+    "JSON" = "JSON",
+    "Text" = "Text",
+}
+
+export enum StrategyLanguages {
+    "JavaScript" = "JavaScript",
+    "TypeScript" = "TypeScript",
+}
+
+// Errors
 export interface StrategyError {
     timestamp: number;
     message: string;
     balance: Balances;
 }
-
-export const createStrategyError = (args: StrategyError): StrategyError => {
-    return args;
-};
 
 export interface StrategyArgs {
     exchange: Exchange | SimulatedExchange;
@@ -18,7 +31,7 @@ export interface StrategyArgs {
     constants: {
         pair: string;
         period: string;
-        exchangeId: ExchangeID;
+        exchangeId: ExchangeIDs;
     };
 }
 
@@ -30,24 +43,7 @@ export interface StrategyMetaData {
     name: string;
     path: string;
     indexFile: string;
-    language: SupportedStrategyLanguages;
-}
-
-export const editorLanguages = [
-    "JavaScript",
-    "TypeScript",
-    "JSON",
-    "Text",
-] as const;
-
-export type EditorLanguage = typeof editorLanguages[number];
-
-export const supportedStrategyLanguages = ["JavaScript", "TypeScript"] as const;
-
-export type SupportedStrategyLanguages = typeof supportedStrategyLanguages[number];
-
-export interface StrategyTemplateOptions {
-    pair: string;
+    language: StrategyLanguages;
 }
 
 export interface WriteStrategyOptions {
@@ -61,7 +57,7 @@ export interface StrategyFile {
     basename: string;
     extension: string;
     contents: string;
-    language?: EditorLanguage;
+    language?: EditorLanguages;
 }
 
 export type FileStructure = {
@@ -69,14 +65,17 @@ export type FileStructure = {
     id: string;
     fullPath: string;
     children?: FileStructure[];
-    language?: EditorLanguage;
+    language?: EditorLanguages;
 };
 
+interface StrategyTemplate {
+    default: string;
+    [key: string]: string;
+}
+
+export type StrategyTemplates = Record<StrategyLanguages, StrategyTemplate>;
+
 // Exchange
-
-export const AllowedExchangeIDs = ["binance", "kucoin", "bitfinex"] as const;
-
-export type ExchangeID = typeof AllowedExchangeIDs[number];
 
 export type InitialBalance = Record<string, number>;
 
@@ -93,7 +92,7 @@ export { Exchange };
 
 export interface SimulatedExchange extends Exchange {
     simulated: true;
-    derviesFrom?: ExchangeID;
+    derviesFrom?: ExchangeIDs;
 }
 
 export interface SimulatedExchangeStore {

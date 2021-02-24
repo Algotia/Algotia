@@ -3,7 +3,7 @@ import {
 	SimulatedExchangeStore,
 	SimulatedExchangeResult,
 	SimulatedExchange,
-	ExchangeID,
+	ExchangeIDs,
 	Exchange,
 	InitialBalance,
 } from "@algotia/types";
@@ -46,7 +46,7 @@ const simulateExchange = (
 	};
 
 	const exchange: SimulatedExchange = Object.assign(derivesFrom, {
-		id: derivesFrom.id as ExchangeID,
+		id: ExchangeIDs[derivesFrom.id],
 		simulated: true as true,
 		fetchOHLCV: createFetchOHLCV(derivesFrom),
 		fetchOrderBook: createFetchOrderBook(store, derivesFrom),

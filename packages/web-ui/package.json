@@ -4,6 +4,7 @@
     "license": "AGPL-3.0",
     "proxy": "http://localhost:2008/",
     "dependencies": {
+        "@algotia/ccxt": "^1.0.0-alpha.0",
         "@algotia/client": "^1.0.0-alpha.0",
         "@algotia/core": "^1.0.0-alpha.0",
         "@algotia/server": "^1.0.0-alpha.0",
@@ -81,7 +82,7 @@
         "@types/react-router-dom": "^5.1.7",
         "@types/styled-components": "^5.1.7",
         "@types/swagger-ui-react": "^3.35.0",
-        "ccxt": "^1.40.80",
+        "prettier": "^2.2.1",
         "puppeteer-core": "^6.0.0",
         "which": "^2.0.2"
     }

@@ -1,9 +1,9 @@
 import { createExchange } from "@algotia/core";
-import { Exchange, ExchangeID } from "@algotia/types";
+import { Exchange, ExchangeIDs } from "@algotia/types";
 import { exchangeCache } from "../utils";
 
 export class ExchangeService {
-    public async getExchange(id: ExchangeID): Promise<Exchange> {
+    public async getExchange(id: ExchangeIDs): Promise<Exchange> {
         if (!exchangeCache.has(id)) {
             const exchange = createExchange(id);
 

@@ -5,14 +5,12 @@
 		"module": "CommonJS",
 		"allowJs": true,
 		"outDir": "./dist",
-		"declaration": true,
-		"declarationMap": true,
 		"rootDir": "./src",
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["./src/**/*.ts"],
 	"exclude": ["node_modules/"]
 }

@@ -2,17 +2,31 @@ import {
     styled as muiStyled,
     Paper,
     ClickAwayListener,
+    makeStyles,
 } from "@material-ui/core";
-import { VscFolder, VscFolderOpened, VscJson } from "react-icons/vsc";
+import {
+    VscCircleFilled,
+    VscFolder,
+    VscFolderOpened,
+    VscJson,
+} from "react-icons/vsc";
 import { SiJavascript, SiTypescript } from "react-icons/si";
 import { GrDocumentText } from "react-icons/gr";
-import { FC, useState, ChangeEvent, SetStateAction, Dispatch } from "react";
+import {
+    FC,
+    useState,
+    ChangeEvent,
+    SetStateAction,
+    Dispatch,
+    useEffect,
+} from "react";
 import { DefaultApi, FileStructure, StrategyFile } from "@algotia/client";
 import { TreeItem, TreeView } from "@material-ui/lab";
 
 const Panel = muiStyled(Paper)(({ theme }) => ({
     margin: 0,
     position: "absolute",
+    padding: theme.spacing(2),
     top: "calc(50% - 100px)",
     left: "25%",
     zIndex: 2000,
@@ -25,19 +39,31 @@ const client = new DefaultApi();
 
 const ActionPanel: FC<{
     strategyDir: FileStructure | undefined;
+    strategyFile: StrategyFile | undefined;
     setStrategyFile: Dispatch<SetStateAction<StrategyFile | undefined>>;
     setEditorValue: Dispatch<SetStateAction<string>>;
     setPanelOpen: Dispatch<SetStateAction<boolean>>;
-}> = ({ strategyDir, setStrategyFile, setEditorValue, setPanelOpen }) => {
+}> = ({
+    strategyDir,
+    setStrategyFile,
+    setEditorValue,
+    setPanelOpen,
+    strategyFile,
+}) => {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (strategyDir) {
+            setExpanded([strategyDir.id]);
+        }
+    }, [strategyDir]);
 
     const handleToggle = (_: ChangeEvent<{}>, nodeIds: string[]) => {
         setExpanded(nodeIds);
     };
 
     const handleSelect = (_: ChangeEvent<{}>, nodeIds: string[]) => {
-        console.log(nodeIds);
         setSelected(nodeIds);
     };
 
@@ -62,16 +88,31 @@ const ActionPanel: FC<{
                 }}
                 icon={
                     nodes.language === "TypeScript" ? (
-                        <SiTypescript />
+                        <SiTypescript color="#3178C6" />
                     ) : nodes.language === "JavaScript" ? (
-                        <SiJavascript />
+                        <SiJavascript color="#F4DF4F" />
                     ) : nodes.language === "JSON" ? (
                         <VscJson />
                     ) : nodes.language === "Text" ? (
                         <GrDocumentText />
                     ) : null
                 }
-                label={nodes.name}
+                label={
+                    strategyFile?.path === nodes.fullPath ? (
+                        <div
+                            style={{
+                                display: "flex",
+                                height: "100%",
+                                alignItems: "center",
+                            }}
+                        >
+                            {nodes.name}{" "}
+                            <VscCircleFilled size={24} color={"green"} />
+                        </div>
+                    ) : (
+                        nodes.name
+                    )
+                }
             >
                 {Array.isArray(nodes.children)
                     ? nodes?.children

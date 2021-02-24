@@ -2,7 +2,7 @@ import { backfill, backtest, simulateExchange } from "@algotia/core";
 import {
     Strategy,
     BacktestResults,
-    ExchangeID,
+    ExchangeIDs,
     OHLCV_Candle,
 } from "@algotia/types";
 import { strategyManager } from "../utils";
@@ -10,7 +10,7 @@ import { ExchangeService } from "./exchangeService";
 
 export interface CreateBacktestOptions {
     strategyPath: string;
-    exchange: ExchangeID;
+    exchange: ExchangeIDs;
     period: string;
     pair: string;
     from: number;
@@ -65,10 +65,10 @@ export class BacktestService {
             data: candles,
             strategy,
             simulatedExchange: simulated,
-			backtestConstants: {
-				period,
-				pair,
-			}
+            backtestConstants: {
+                period,
+                pair,
+            },
         });
 
         return {

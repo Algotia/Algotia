@@ -1,13 +1,13 @@
 import node_path from "path";
 import fs from "fs";
-import { SupportedStrategyLanguages } from "@algotia/types";
+import { StrategyLanguages } from "@algotia/types";
 import { packageJsonTemplate, tsconfigTemplate } from "./templates";
 import dashify from "dashify";
 
 interface BootstrapArgs {
     root: string;
     name: string;
-    language: SupportedStrategyLanguages;
+    language: StrategyLanguages;
 }
 
 const bootstrap = async ({
