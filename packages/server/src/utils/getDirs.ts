@@ -15,3 +15,4 @@ export const getStrategyDir = (): string => {
 export const getCacheDir = (): string => {
     return node_path.join(getInternalDir(), "cache/");
 };
+

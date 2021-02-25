@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { Dispatch, FC, SetStateAction, useContext } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 
 interface SelectPeriodProps {
     periodList: string[] | undefined;
@@ -14,28 +14,28 @@ const SelectPeriod: FC<SelectPeriodProps> = (props) => {
         <FormControl
             fullWidth={true}
             variant="filled"
-			focused={!!periodList && !!pair && !period}
+            focused={!!pair && !period}
         >
             <InputLabel id="select-period-label">Period</InputLabel>
             <Select
+                error={!!pair && !period}
                 disabled={!periodList}
                 labelId="select-period-label"
                 id="select-exchange"
                 value={period}
                 label="Period"
-				open={!!periodList && !!pair && !period}
             >
                 {periodList &&
-                    periodList.map((tf) => {
+                    periodList.map((period) => {
                         return (
                             <MenuItem
-                                key={"select-" + tf}
-                                value={tf}
+                                key={"select-" + period}
+                                value={period}
                                 onClick={() => {
-                                    setPeriod(tf);
+                                    setPeriod(period);
                                 }}
                             >
-                                {tf}
+                                {period}
                             </MenuItem>
                         );
                     })}

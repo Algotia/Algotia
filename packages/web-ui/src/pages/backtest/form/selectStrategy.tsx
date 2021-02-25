@@ -1,8 +1,7 @@
-import { DefaultApi, ExchangeID, StrategyMetaData } from "@algotia/client";
+import { DefaultApi, StrategyMetaData } from "@algotia/client";
 import {
     FormControl,
     InputLabel,
-    makeStyles,
     MenuItem,
     Select,
 } from "@material-ui/core";
@@ -10,27 +9,15 @@ import {
     Dispatch,
     FC,
     SetStateAction,
-    useContext,
-    useEffect,
+	useEffect,
     useState,
 } from "react";
-import { BacktestContext } from "../context";
-
-const useButtonStyles = makeStyles({
-    root: {
-        height: "25px",
-        width: "45px",
-        backgroundColor: "#72a56f",
-        position: "absolute",
-        right: "15px",
-    },
-});
 
 const client = new DefaultApi();
 
 const SelectStrategy: FC<{
-    setStrategyPath: Dispatch<SetStateAction<string | undefined>>;
-}> = ({ setStrategyPath }) => {
+    setStrategyMeta: Dispatch<SetStateAction<StrategyMetaData | undefined>>;
+}> = ({ setStrategyMeta }) => {
     const [allStrategies, setAllStrategies] = useState<StrategyMetaData[]>();
     const [selectVal, setSelectVal] = useState<string>();
 
@@ -47,50 +34,13 @@ const SelectStrategy: FC<{
             });
     }, []);
 
-    const onNewStrategyClick = () => {
-        // setModalOpen(true);
-    };
-
-    const onNewStrategy = (fileName: string) => {
-        fetch("/api/strategy", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                fileName,
-                value: "",
-            }),
-        })
-            .then((res) => res.json())
-            .then((json) => {
-                if (json && !json.errors) {
-                    fetch("/api/strategy")
-                        .then((res) => res.json())
-                        .then((json) => {
-                            if (json.strategies) {
-                                setAllStrategies(json.strategies);
-                                // setModalOpen(false);
-                            }
-                        })
-                        .catch((err) => {
-                            alert(err.message);
-                        });
-                }
-            })
-            .catch((err) => {
-                alert(err.message);
-            });
-    };
-
     return (
         <FormControl fullWidth={true} variant="filled">
             <InputLabel>Strategy</InputLabel>
             <Select
                 id="strategy-selector"
                 displayEmpty
-                value={selectVal}
+                value={selectVal || ""}
                 label="Strategy"
             >
                 {allStrategies &&
@@ -98,14 +48,14 @@ const SelectStrategy: FC<{
                         return (
                             <MenuItem
                                 id={`select-strategy-${i}`}
-                                key={"select-strategy-" + data.basename}
-                                value={data.basename}
+                                key={"select-strategy-" + data.name}
+                                value={data.name}
                                 onClick={() => {
-                                    setSelectVal(data.basename);
-                                    setStrategyPath(data.basename);
+                                    setSelectVal(data.name);
+                                    setStrategyMeta(data);
                                 }}
                             >
-                                {data.basename}
+                                {data.name}
                             </MenuItem>
                         );
                     })}

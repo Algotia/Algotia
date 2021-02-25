@@ -1,26 +1,30 @@
 import { Body, Controller, Get, Path, Post, Route } from "tsoa";
-import { StrategyMetaData, WriteStrategyOptions } from "@algotia/types";
-import { GetStrategyResult, StrategyService } from "../services";
+import { FileStructure, StrategyFile, StrategyMetaData } from "@algotia/types";
+import { strategyManager } from "../utils";
 
 @Route("strategy")
 export class StrategyController extends Controller {
-    strategyService = new StrategyService();
+    strategyManager = strategyManager;
 
     @Get()
     public getAllStrategies(): StrategyMetaData[] {
-        return this.strategyService.getAllStrategies();
+        return this.strategyManager.getAllStrategies();
     }
 
-    @Get("{fileName}")
-    public getStrategyByFilename(@Path() fileName: string): GetStrategyResult {
-        return this.strategyService.getStrategy(fileName);
+    @Get("file/{fileName}")
+    public readStrategyFile(@Path() fileName: string): StrategyFile {
+        return this.strategyManager.readStrategyFile(fileName);
     }
 
-    @Post("{fileName}")
-    public writeStrategy(
-        @Path() fileName: string,
-        @Body() contents: WriteStrategyOptions
+    @Get("dir/{strategyDir}")
+    public readStrategyDir(@Path() strategyDir: string): FileStructure {
+        return this.strategyManager.readStrategyDir(strategyDir);
+    }
+
+    @Post("file")
+    public writeStrategyFile(
+        @Body() body: { contents: string; path: string }
     ): void {
-        return this.strategyService.writeStrategy(fileName, contents);
+        return this.strategyManager.writeStrategyFile(body.path, body.contents);
     }
 }

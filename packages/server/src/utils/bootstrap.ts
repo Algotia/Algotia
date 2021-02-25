@@ -1,5 +1,6 @@
-import { getCacheDir, getInternalDir } from "./getDirs";
+import { getCacheDir, getInternalDir, getStrategyDir } from "./getDirs";
 import fs from "fs";
+import { strategyManager } from "./strategyManager";
 
 const mkdirIfNotExists = (path: string) => {
     if (!fs.existsSync(path)) {
@@ -7,7 +8,11 @@ const mkdirIfNotExists = (path: string) => {
     }
 };
 
-export const bootstrap = () => {
+export const bootstrap = async () => {
     mkdirIfNotExists(getInternalDir());
+    mkdirIfNotExists(getStrategyDir());
     mkdirIfNotExists(getCacheDir());
+    console.log("Installing strategy dependencies");
+    await strategyManager.installDeps();
+    console.log("Done installing strategy dependencies");
 };

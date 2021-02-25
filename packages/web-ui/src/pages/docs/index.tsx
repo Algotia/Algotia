@@ -7,6 +7,7 @@ const Wrapper = styled(Paper)({
     height: "100%",
     width: "100%",
     overflowY: "scroll",
+    backgroundColor: "#fff",
 });
 
 const Docs = () => {

@@ -4,6 +4,7 @@ import { Chart } from "klinecharts";
 import styled from "styled-components";
 import { Button, makeStyles } from "@material-ui/core";
 import DrawToolsMenu from "./DrawToolsMenu";
+import { BsPencil, BsTrash } from "react-icons/bs";
 
 const Bar = styled.div`
     height: 100%;
@@ -18,6 +19,8 @@ const Bar = styled.div`
 const useButtonStyles = makeStyles({
     root: {
         minWidth: "45px",
+		width: "45px",
+        height: "45px",
     },
 });
 
@@ -41,7 +44,7 @@ const SideBar: FC<{ chart: Chart | null; disabled: boolean }> = ({
                     setShowDrawingTools(!showDrawingTools);
                 }}
             >
-                D
+                <BsPencil size={22} />
             </Button>
             {showDrawingTools && (
                 <DrawToolsMenu
@@ -49,13 +52,17 @@ const SideBar: FC<{ chart: Chart | null; disabled: boolean }> = ({
                     setShowPopper={setShowDrawingTools}
                 />
             )}
-            <button
+            <Button
+                disabled={disabled}
+                fullWidth
+                classes={buttonClasses}
+                style={{ width: 45 }}
                 onClick={() => {
                     chart?.removeAllGraphicMark();
                 }}
             >
-                T
-            </button>
+                <BsTrash size={22} />
+            </Button>
         </Bar>
     );
 };

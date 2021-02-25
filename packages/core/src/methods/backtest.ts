@@ -1,12 +1,9 @@
-import {
-	BacktestResults,
-	BacktestOptions,
-	createStrategyError,
-} from "@algotia/types";
+import { BacktestResults, BacktestOptions } from "@algotia/types";
+import { createStrategyError } from "../utils";
 
 /** Backtesting runs a strategy against historical data */
 const backtest = async (options: BacktestOptions): Promise<BacktestResults> => {
-	const { simulatedExchange, data, strategy } = options;
+	const { simulatedExchange, data, strategy, backtestConstants } = options;
 	const { fillOrders, updateContext, store, exchange } = simulatedExchange;
 
 	for (let i = 0; i < data.length; i++) {
@@ -22,7 +19,14 @@ const backtest = async (options: BacktestOptions): Promise<BacktestResults> => {
 		updateContext(aheadCandle.timestamp, aheadCandle.open);
 
 		try {
-			await strategy(exchange, candle);
+			await strategy({
+				exchange,
+				data: candle,
+				constants: {
+					...backtestConstants,
+					exchangeId: exchange.derviesFrom,
+				},
+			});
 		} catch (err) {
 			const formattedErr = createStrategyError({
 				timestamp: candle.timestamp,

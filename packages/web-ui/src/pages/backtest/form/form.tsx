@@ -8,7 +8,7 @@ import SelectDate from "./selectDates";
 import SelectInitialBalance from "./selectInitialBalance";
 import SelectPair from "./selectPair";
 import SelectPeriod from "./selectPeriod";
-import { DefaultApi, ExchangeID } from "@algotia/client";
+import { DefaultApi, ExchangeIDs, StrategyMetaData } from "@algotia/client";
 import SelectStrategy from "./selectStrategy";
 
 const FormWrapper = muiStyled(Box)(({ theme }) => ({
@@ -47,9 +47,9 @@ const client = new DefaultApi();
 
 const Form: FC<{
     setOptions: Dispatch<SetStateAction<any | undefined>>;
-    setStrategyPath: Dispatch<SetStateAction<string | undefined>>;
-	strategyPath: string | undefined;
-}> = ({ setStrategyPath, strategyPath, setOptions }) => {
+    setStrategyMeta: Dispatch<SetStateAction<StrategyMetaData | undefined>>;
+    strategyMeta: StrategyMetaData | undefined;
+}> = ({ setStrategyMeta, strategyMeta, setOptions }) => {
     const [pairList, setPairList] = useState<string[]>();
     const [periodList, setTimeframeList] = useState<string[]>();
     const [currencyList, setCurrencyList] = useState<string[]>();
@@ -66,7 +66,7 @@ const Form: FC<{
 
     const initialFrom = new Date(now);
 
-    const [exchangeId, setExchangeId] = useState<ExchangeID>("" as ExchangeID);
+    const [exchangeId, setExchangeId] = useState<ExchangeIDs>("" as ExchangeIDs);
     const [pair, setPair] = useState("");
     const [period, setPeriod] = useState<string>("");
     const [to, setTo] = useState<Date>(initialTo);
@@ -114,14 +114,14 @@ const Form: FC<{
     }, [to, from, pair, period]);
 
     const run = () => {
-        if (strategyPath && exchangeId && to && from && period && pair) {
+        if (strategyMeta && exchangeId && to && from && period && pair) {
             const body = {
                 exchange: exchangeId,
                 to: new Date(to.toUTCString()).getTime(),
                 from: new Date(from.toUTCString()).getTime(),
                 pair: pair,
                 period,
-				strategyPath,
+                strategyPath: strategyMeta.path,
                 initialBalance: {
                     [baseCurrency]: baseAmount,
                     [quoteCurrency]: quoteAmount,
@@ -136,15 +136,13 @@ const Form: FC<{
             <FormBody>
                 <RowItem>
                     <FormItem>
-                        <SelectStrategy
-							setStrategyPath={setStrategyPath}
-                        />
+                        <SelectStrategy setStrategyMeta={setStrategyMeta} />
                     </FormItem>
                     <FormItem>
                         <SelectExchange
                             exchangeId={exchangeId}
                             setExchangeId={setExchangeId}
-                            strategyPath={strategyPath}
+                            strategyMeta={strategyMeta}
                         />
                     </FormItem>
                 </RowItem>
@@ -175,7 +173,7 @@ const Form: FC<{
                             pairList={pairList}
                             setPair={setPair}
                             pair={pair}
-                        />{" "}
+                        />
                     </FormItem>
                     <FormItem>
                         <SelectPeriod
@@ -199,12 +197,10 @@ const Form: FC<{
                         onChange={({ amount }) => {
                             setBaseAmount(amount);
                         }}
-                        focus={!!period}
                     />
                 </RowItem>
                 <RowItem>
                     <SelectInitialBalance
-                        focus={!!pair}
                         FormItem={FormItem}
                         id="quote"
                         currency={quoteCurrency}

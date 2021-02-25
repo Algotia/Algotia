@@ -7,11 +7,12 @@ import bodyParser from "body-parser";
 import { ValidateError } from "tsoa";
 import cors from "cors";
 import { RegisterRoutes } from "./routes";
-import { bootstrap } from "./utils";
-
-bootstrap();
+import chalk from "chalk";
+import { Counter } from "./utils";
 
 export const app = express();
+
+const errCounter = new Counter();
 
 app.use(
     bodyParser.urlencoded({
@@ -32,7 +33,19 @@ app.use(function errorHandler(
     res: ExResponse,
     next: NextFunction
 ): ExResponse | void {
-    console.log(err);
+    errCounter.incr();
+    console.log(
+        `Error #${errCounter.getCount()}-------------------------------------`
+    );
+    console.log(chalk.red(`Error (${res.statusCode})`));
+    console.log(chalk.yellow("Path: "), req.path);
+    Object.keys(req.params).length &&
+        console.log(chalk.yellow("Params: "), req.params);
+    Object.keys(req.body).length &&
+        console.log(chalk.yellow("Body: "), req.body);
+    Object.keys(req.query).length &&
+        console.log(chalk.yellow("Query: "), req.query);
+    console.error(err);
     if (err instanceof ValidateError) {
         console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
         return res.status(422).json({
@@ -45,6 +58,9 @@ app.use(function errorHandler(
             message: "Internal Server Error",
         });
     }
+    console.log(
+        `Error #${errCounter.getCount()}-------------------------------------`
+    );
 
     next();
 });

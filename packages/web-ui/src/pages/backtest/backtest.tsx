@@ -12,7 +12,8 @@ import { BacktestContext, RequestResult } from "./context";
 import {
     CreateBacktestOptions,
     DefaultApi,
-	ExchangeID,
+    FileStructure,
+    StrategyFile,
     StrategyMetaData,
 } from "@algotia/client";
 import Form from "./form";
@@ -53,9 +54,7 @@ const BacktestPage: FC = () => {
     const [requestResult, setRequestResult] = useState<RequestResult>();
     const [options, setOptions] = useState<CreateBacktestOptions>();
     const [loading, setLoading] = useState(false);
-    const [strategyPath, setStrategyPath] = useState<string>();
     const [strategyMeta, setStrategyMeta] = useState<StrategyMetaData>();
-    const [editorValue, setEditorValue] = useState<string>();
 
     useEffect(() => {
         if (options) {
@@ -79,19 +78,6 @@ const BacktestPage: FC = () => {
         }
     }, [options]);
 
-    useEffect(() => {
-        if (strategyPath) {
-            client
-                .getStrategyByFilename(strategyPath)
-                .then(({ data }) => {
-                    setStrategyMeta(data.meta);
-                    setEditorValue(data.value);
-                })
-                .catch((err) => {
-                    alert(err.message);
-                });
-        }
-    }, [strategyPath]);
 
     return (
         <BacktestContext.Provider
@@ -100,7 +86,6 @@ const BacktestPage: FC = () => {
                 options,
                 loading,
                 strategyMeta,
-                strategyPath,
             }}
         >
             <Wrapper>
@@ -113,7 +98,6 @@ const BacktestPage: FC = () => {
                 <BottomLeft>
                     <StrategyEditor
                         onStrategySaved={() => {}}
-                        editorValue={editorValue}
                         strategyMeta={strategyMeta}
                     />
                 </BottomLeft>
@@ -122,8 +106,8 @@ const BacktestPage: FC = () => {
                         <Results />
                         <Form
                             setOptions={setOptions}
-                            setStrategyPath={setStrategyPath}
-							strategyPath={strategyPath}
+                            setStrategyMeta={setStrategyMeta}
+                            strategyMeta={strategyMeta}
                         />
                     </FormAndResults>
                 </RightHalf>

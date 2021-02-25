@@ -1,13 +1,29 @@
 import {
 	SimulatedExchangeResult,
-	pollingPeriodTable,
 	PaperTradeOptions,
-	createStrategyError,
+	ExchangeIDs,
 } from "@algotia/types";
-import { parsePeriod, roundTime } from "../utils";
+import { createStrategyError, parsePeriod, roundTime } from "../utils";
 import { getLiveCandle } from "../exchange";
 import { EventEmitter } from "events";
 
+const pollingPeriodTable = {
+	"1m": "10s",
+	"3m": "1m",
+	"5m": "1m",
+	"15m": "1m",
+	"30m": "3m",
+	"1h": "3m",
+	"2h": "5m",
+	"4h": "5m",
+	"6h": "10m",
+	"8h": "10m",
+	"12h": "10m",
+	"1d": "30m",
+	"3d": "1h",
+	"1w": "2h",
+	"1M": "1d",
+} as const;
 /** Paper trading is like live trading, but uses a simulated
  * exchange instead of a real one. */
 const paperTrade = async (
@@ -65,7 +81,15 @@ const paperTrade = async (
 		updateContext(candle.timestamp, candle.close);
 
 		try {
-			await strategy(exchange, candle);
+			await strategy({
+				exchange,
+				data: candle,
+				constants: {
+					period,
+					pair,
+					exchangeId: ExchangeIDs[exchange.derviesFrom],
+				},
+			});
 		} catch (err) {
 			const formattedErr = createStrategyError({
 				timestamp: candle.timestamp,

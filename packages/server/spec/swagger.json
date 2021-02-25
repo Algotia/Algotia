@@ -350,13 +350,13 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ExchangeID": {
-				"type": "string",
+			"ExchangeIDs": {
 				"enum": [
 					"binance",
 					"kucoin",
 					"bitfinex"
-				]
+				],
+				"type": "string"
 			},
 			"CreateBacktestOptions": {
 				"properties": {
@@ -364,7 +364,7 @@
 						"type": "string"
 					},
 					"exchange": {
-						"$ref": "#/components/schemas/ExchangeID"
+						"$ref": "#/components/schemas/ExchangeIDs"
 					},
 					"period": {
 						"type": "string"
@@ -568,62 +568,138 @@
 					]
 				}
 			},
-			"StrategyMetaData": {
+			"Currency": {
 				"properties": {
-					"modifiedAt": {
+					"id": {
+						"type": "string"
+					},
+					"code": {
+						"type": "string"
+					},
+					"numericId": {
 						"type": "number",
 						"format": "double"
 					},
-					"basename": {
+					"precision": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"code",
+					"precision"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IDictionary_Currency_": {
+				"description": "Represents an associative array of a same type.",
+				"properties": {},
+				"type": "object",
+				"additionalProperties": {
+					"$ref": "#/components/schemas/Currency"
+				}
+			},
+			"StrategyLanguages": {
+				"enum": [
+					"JavaScript",
+					"TypeScript"
+				],
+				"type": "string"
+			},
+			"StrategyMetaData": {
+				"properties": {
+					"name": {
 						"type": "string"
 					},
 					"path": {
 						"type": "string"
 					},
+					"indexFile": {
+						"type": "string"
+					},
 					"language": {
-						"type": "string",
-						"enum": [
-							"JavaScript",
-							"TypeScript"
-						]
+						"$ref": "#/components/schemas/StrategyLanguages"
 					}
 				},
 				"required": [
-					"modifiedAt",
-					"basename",
+					"name",
 					"path",
+					"indexFile",
 					"language"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"GetStrategyResult": {
+			"EditorLanguages": {
+				"enum": [
+					"JavaScript",
+					"TypeScript",
+					"JSON",
+					"Text"
+				],
+				"type": "string"
+			},
+			"StrategyFile": {
 				"properties": {
-					"value": {
+					"modifiedAt": {
+						"type": "number",
+						"format": "double"
+					},
+					"path": {
 						"type": "string"
 					},
-					"meta": {
-						"$ref": "#/components/schemas/StrategyMetaData"
-					}
-				},
-				"required": [
-					"value",
-					"meta"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"WriteStrategyOptions": {
-				"properties": {
+					"basename": {
+						"type": "string"
+					},
+					"extension": {
+						"type": "string"
+					},
 					"contents": {
 						"type": "string"
+					},
+					"language": {
+						"$ref": "#/components/schemas/EditorLanguages"
 					}
 				},
 				"required": [
+					"modifiedAt",
+					"path",
+					"basename",
+					"extension",
 					"contents"
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"FileStructure": {
+				"properties": {
+					"language": {
+						"$ref": "#/components/schemas/EditorLanguages"
+					},
+					"children": {
+						"items": {
+							"$ref": "#/components/schemas/FileStructure"
+						},
+						"type": "array"
+					},
+					"fullPath": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"fullPath",
+					"id",
+					"name"
+				],
+				"type": "object"
 			}
 		},
 		"securitySchemes": {}
@@ -714,11 +790,7 @@
 						"name": "key",
 						"required": true,
 						"schema": {
-							"type": "string",
-							"enum": [
-								"port",
-								"appDir"
-							]
+							"type": "string"
 						}
 					}
 				]
@@ -734,7 +806,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"type": "string"
+										"$ref": "#/components/schemas/ExchangeIDs"
 									},
 									"type": "array"
 								}
@@ -787,7 +859,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"$ref": "#/components/schemas/ExchangeID"
+							"$ref": "#/components/schemas/ExchangeIDs"
 						}
 					},
 					{
@@ -823,7 +895,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"$ref": "#/components/schemas/ExchangeID"
+							"$ref": "#/components/schemas/ExchangeIDs"
 						}
 					}
 				]
@@ -854,7 +926,35 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"$ref": "#/components/schemas/ExchangeID"
+							"$ref": "#/components/schemas/ExchangeIDs"
+						}
+					}
+				]
+			}
+		},
+		"/exchange/{id}/currencies": {
+			"get": {
+				"operationId": "GetCurrencies",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IDictionary_Currency_"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/ExchangeIDs"
 						}
 					}
 				]
@@ -882,16 +982,16 @@
 				"parameters": []
 			}
 		},
-		"/strategy/{fileName}": {
+		"/strategy/file/{fileName}": {
 			"get": {
-				"operationId": "GetStrategyByFilename",
+				"operationId": "ReadStrategyFile",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/GetStrategyResult"
+									"$ref": "#/components/schemas/StrategyFile"
 								}
 							}
 						}
@@ -908,31 +1008,64 @@
 						}
 					}
 				]
-			},
-			"post": {
-				"operationId": "WriteStrategy",
+			}
+		},
+		"/strategy/dir/{strategyDir}": {
+			"get": {
+				"operationId": "ReadStrategyDir",
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileStructure"
+								}
+							}
+						}
 					}
 				},
 				"security": [],
 				"parameters": [
 					{
 						"in": "path",
-						"name": "fileName",
+						"name": "strategyDir",
 						"required": true,
 						"schema": {
 							"type": "string"
 						}
 					}
-				],
+				]
+			}
+		},
+		"/strategy/file": {
+			"post": {
+				"operationId": "WriteStrategyFile",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/WriteStrategyOptions"
+								"properties": {
+									"path": {
+										"type": "string"
+									},
+									"contents": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"path",
+									"contents"
+								],
+								"type": "object"
 							}
 						}
 					}

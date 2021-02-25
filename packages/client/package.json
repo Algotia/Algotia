@@ -15,5 +15,8 @@
     },
     "keywords": [],
     "author": "",
-    "license": "AGPL-3.0"
+    "license": "AGPL-3.0",
+    "devDependencies": {
+        "prettier": "^2.2.1"
+    }
 }

@@ -133,16 +133,16 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ExchangeID": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["binance"]},{"dataType":"enum","enums":["kucoin"]},{"dataType":"enum","enums":["bitfinex"]}],"validators":{}},
+    "ExchangeIDs": {
+        "dataType": "refEnum",
+        "enums": ["binance","kucoin","bitfinex"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CreateBacktestOptions": {
         "dataType": "refObject",
         "properties": {
             "strategyPath": {"dataType":"string","required":true},
-            "exchange": {"ref":"ExchangeID","required":true},
+            "exchange": {"ref":"ExchangeIDs","required":true},
             "period": {"dataType":"string","required":true},
             "pair": {"dataType":"string","required":true},
             "from": {"dataType":"double","required":true},
@@ -199,32 +199,61 @@ const models: TsoaRoute.Models = {
         "additionalProperties": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"string"}]},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Currency": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string","required":true},
+            "code": {"dataType":"string","required":true},
+            "numericId": {"dataType":"double"},
+            "precision": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IDictionary_Currency_": {
+        "dataType": "refObject",
+        "properties": {
+        },
+        "additionalProperties": {"ref":"Currency"},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "StrategyLanguages": {
+        "dataType": "refEnum",
+        "enums": ["JavaScript","TypeScript"],
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyMetaData": {
         "dataType": "refObject",
         "properties": {
-            "modifiedAt": {"dataType":"double","required":true},
-            "basename": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
             "path": {"dataType":"string","required":true},
-            "language": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["JavaScript"]},{"dataType":"enum","enums":["TypeScript"]}],"required":true},
+            "indexFile": {"dataType":"string","required":true},
+            "language": {"ref":"StrategyLanguages","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "GetStrategyResult": {
-        "dataType": "refObject",
-        "properties": {
-            "value": {"dataType":"string","required":true},
-            "meta": {"ref":"StrategyMetaData","required":true},
-        },
-        "additionalProperties": false,
+    "EditorLanguages": {
+        "dataType": "refEnum",
+        "enums": ["JavaScript","TypeScript","JSON","Text"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "WriteStrategyOptions": {
+    "StrategyFile": {
         "dataType": "refObject",
         "properties": {
+            "modifiedAt": {"dataType":"double","required":true},
+            "path": {"dataType":"string","required":true},
+            "basename": {"dataType":"string","required":true},
+            "extension": {"dataType":"string","required":true},
             "contents": {"dataType":"string","required":true},
+            "language": {"ref":"EditorLanguages"},
         },
         "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "FileStructure": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"language":{"ref":"EditorLanguages"},"children":{"dataType":"array","array":{"dataType":"refAlias","ref":"FileStructure"}},"fullPath":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -283,7 +312,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/config/:key',
             function (request: any, response: any, next: any) {
             const args = {
-                    key: {"in":"path","name":"key","required":true,"dataType":"union","subSchemas":[{"dataType":"enum","enums":["port"]},{"dataType":"enum","enums":["appDir"]}]},
+                    key: {"in":"path","name":"key","required":true,"dataType":"any"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -347,7 +376,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/exchange/:id/market',
             function (request: any, response: any, next: any) {
             const args = {
-                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeID"},
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
                     pair: {"in":"query","name":"pair","required":true,"dataType":"string"},
             };
 
@@ -370,7 +399,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/exchange/:id/timeframes',
             function (request: any, response: any, next: any) {
             const args = {
-                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeID"},
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -392,7 +421,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/exchange/:id/pairs',
             function (request: any, response: any, next: any) {
             const args = {
-                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeID"},
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -408,6 +437,28 @@ export function RegisterRoutes(app: express.Router) {
 
 
             const promise = controller.getPairs.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/exchange/:id/currencies',
+            function (request: any, response: any, next: any) {
+            const args = {
+                    id: {"in":"path","name":"id","required":true,"ref":"ExchangeIDs"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new ExchangeController();
+
+
+            const promise = controller.getCurrencies.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -432,7 +483,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/strategy/:fileName',
+        app.get('/api/strategy/file/:fileName',
             function (request: any, response: any, next: any) {
             const args = {
                     fileName: {"in":"path","name":"fileName","required":true,"dataType":"string"},
@@ -450,15 +501,14 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new StrategyController();
 
 
-            const promise = controller.getStrategyByFilename.apply(controller, validatedArgs as any);
+            const promise = controller.readStrategyFile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/strategy/:fileName',
+        app.get('/api/strategy/dir/:strategyDir',
             function (request: any, response: any, next: any) {
             const args = {
-                    fileName: {"in":"path","name":"fileName","required":true,"dataType":"string"},
-                    contents: {"in":"body","name":"contents","required":true,"ref":"WriteStrategyOptions"},
+                    strategyDir: {"in":"path","name":"strategyDir","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -473,7 +523,29 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new StrategyController();
 
 
-            const promise = controller.writeStrategy.apply(controller, validatedArgs as any);
+            const promise = controller.readStrategyDir.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/strategy/file',
+            function (request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"path":{"dataType":"string","required":true},"contents":{"dataType":"string","required":true}}},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new StrategyController();
+
+
+            const promise = controller.writeStrategyFile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -512,7 +584,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         if (data && typeof data.pipe === 'function' && data.readable && typeof data._read === 'function') {
             data.pipe(response);
-        } else if (data || data === false) { // === false allows boolean result
+        } else if (data !== null && data !== undefined) {
             response.status(statusCode || 200).json(data);
         } else {
             response.status(statusCode || 204).end();

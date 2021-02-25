@@ -2,17 +2,15 @@ import { backfill, backtest, simulateExchange } from "@algotia/core";
 import {
     Strategy,
     BacktestResults,
-    ExchangeID,
+    ExchangeIDs,
     OHLCV_Candle,
 } from "@algotia/types";
+import { strategyManager } from "../utils";
 import { ExchangeService } from "./exchangeService";
-import { StrategyService } from "./strategyService";
-import node_path from "path";
-import importFresh from "import-fresh";
 
 export interface CreateBacktestOptions {
     strategyPath: string;
-    exchange: ExchangeID;
+    exchange: ExchangeIDs;
     period: string;
     pair: string;
     from: number;
@@ -29,7 +27,7 @@ export interface CreateBacktestResult {
 
 export class BacktestService {
     private exchangeService = new ExchangeService();
-    private strategyService = new StrategyService();
+    private strategyService = strategyManager;
 
     public async create(
         options: CreateBacktestOptions
@@ -51,11 +49,8 @@ export class BacktestService {
             initialBalance,
         });
 
-        const strategy: Strategy = await this.strategyService.import(
-            strategyPath,
-            {
-                pair,
-            }
+        const strategy: Strategy = await this.strategyService.importStrategy(
+            strategyPath
         );
 
         const candles = await backfill({
@@ -70,6 +65,10 @@ export class BacktestService {
             data: candles,
             strategy,
             simulatedExchange: simulated,
+            backtestConstants: {
+                period,
+                pair,
+            },
         });
 
         return {

@@ -1,16 +1,16 @@
 {
 	"compilerOptions": {
-		"target": "ES6",
 		"lib": ["ES2019"],
+		"target": "ES6",
 		"module": "CommonJS",
-		"rootDir": "./src",
-		"declaration": true,
+		"allowJs": true,
 		"outDir": "./dist",
+		"rootDir": "./src",
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["./src/**/*.ts"],
 	"exclude": ["node_modules/"]
 }
