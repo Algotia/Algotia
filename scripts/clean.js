@@ -5,8 +5,8 @@ const execa = require("execa");
 const cleanDist = (packageName) => {
     const distPath = path.join(packageName, "dist/");
     rimraf.sync(distPath);
-	const pl = path.join(packageName, "package-lock.json")
-	rimraf.sync(pl)
+    const pl = path.join(packageName, "yarn.lock");
+    rimraf.sync(pl);
 };
 
 execa.commandSync("lerna clean --yes"); // Cleans node_modules

@@ -102,9 +102,9 @@ cache-base@^1.0.1:
     unset-value "^1.0.0"
 
 ccxt@^1.41.5:
-  version "1.42.25"
-  resolved "https://registry.yarnpkg.com/ccxt/-/ccxt-1.42.25.tgz#92105ce4e74be7a74082c1918dcdc93f90535ace"
-  integrity sha512-pPXk+HdZkqmeS9ktd9hk+epNIIVwWrTNC8j30HXUCXvvfnYGGs0hMLyXqSulrntWs38F4x88q7DJuzwTY/ddOQ==
+  version "1.42.37"
+  resolved "https://registry.yarnpkg.com/ccxt/-/ccxt-1.42.37.tgz#f4c4b991d7ab557457d165da5c52e79ba0d69ab9"
+  integrity sha512-vTTAnydgKm7t5JPNgD1Q0n0gypy5rFLhBRfL21Fb3jpsIJZBy+geMDy2suKoelax25RfsjTG6YxMP4KvAURnQg==
 
 chalk@^2.4.2:
   version "2.4.2"
