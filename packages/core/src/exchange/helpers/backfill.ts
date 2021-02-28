@@ -1,8 +1,8 @@
-import { BackfillArgs, OHLCV_Candle, SimulatedExchange } from "@algotia/types";
+import { BackfillArgs, OHLCV_Candle } from "@algotia/types";
 import { parsePeriod, reshapeOHLCV } from "../../utils/";
 import fillEmptyCandles from "./fillEmptyCandles";
 
-/** This helper function is a wrapper around the CCXT method fetchOHLCV. It handles pagination and filling periods where no candles were returned with dummy candles. */
+/** Wrapper around the CCXT method fetchOHLCV. It handles pagination and filling periods where no candles were returned with dummy candles. */
 const backfill = async (args: BackfillArgs): Promise<OHLCV_Candle[]> => {
 	const { from, to, pair, period, exchange } = args;
 	const { periodMs } = parsePeriod(period);
@@ -47,5 +47,3 @@ const backfill = async (args: BackfillArgs): Promise<OHLCV_Candle[]> => {
 };
 
 export default backfill;
-
-export { fillEmptyCandles };

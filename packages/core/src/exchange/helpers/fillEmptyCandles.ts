@@ -1,7 +1,10 @@
 import { OHLCV_Candle } from "@algotia/types";
 
 /** If no candles were returned (e.g.: downtime, no volume), fill period with last known candle prices, with timestamp value incremented to create continuous time series */
-const fillEmptyCandles = (candles: OHLCV_Candle[], periodMs: number): OHLCV_Candle[] => {
+const fillEmptyCandles = (
+	candles: OHLCV_Candle[],
+	periodMs: number
+): OHLCV_Candle[] => {
 	if (!candles) return [];
 
 	let fullCandleSet: OHLCV_Candle[] = [];

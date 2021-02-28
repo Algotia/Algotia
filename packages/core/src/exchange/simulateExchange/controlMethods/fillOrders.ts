@@ -1,4 +1,4 @@
-import { Trade, Order } from "@algotia/ccxt";
+import { Trade, Order, Balance } from "@algotia/ccxt";
 import { SimulatedExchangeStore, OHLCV_Candle } from "@algotia/types";
 import { parsePair } from "../../../utils";
 import Decimal from "decimal.js";
@@ -43,8 +43,6 @@ const closeOrder = (store: SimulatedExchangeStore, order: Order): Order => {
 		trades: [trade],
 	};
 
-	closedOrder.info = { ...closedOrder };
-
 	store.openOrders.splice(index, 1);
 	store.closedOrders.push(closedOrder);
 
@@ -56,9 +54,6 @@ const closeOrder = (store: SimulatedExchangeStore, order: Order): Order => {
 const createTrade = (store: SimulatedExchangeStore, order: Order): Trade => {
 	const { currentTime } = store;
 
-	const datetime = new Date(currentTime).toISOString();
-	const timestamp = currentTime;
-
 	const { id, symbol, side, amount, fee, price, type } = order;
 
 	const trade: Omit<Trade, "info"> = {
@@ -66,11 +61,11 @@ const createTrade = (store: SimulatedExchangeStore, order: Order): Trade => {
 		symbol,
 		side,
 		amount,
-		datetime,
-		timestamp,
 		type,
 		fee,
 		price,
+		datetime: new Date(currentTime).toISOString(),
+		timestamp: currentTime,
 		cost: new Decimal(price).mul(amount).toNumber(),
 		takerOrMaker: fee.type,
 	};
@@ -81,75 +76,78 @@ const createTrade = (store: SimulatedExchangeStore, order: Order): Trade => {
 	};
 };
 
+interface BalanceArithmaticArgs {
+	balance: Balance;
+	amount: number;
+}
+
+type BalanceArithmaticFn = (args: BalanceArithmaticArgs) => Balance;
+
+const subtractFee = (args: { balance: Balance; order: Order }): Balance => {
+	const { order, balance } = args;
+	const { cost } = order.fee;
+
+	return {
+		free: balance.free,
+		used: new Decimal(balance.used).minus(cost).toNumber(),
+		total: new Decimal(balance.total).minus(cost).toNumber(),
+	};
+};
+
+const addBalance: BalanceArithmaticFn = (args) => {
+	const { balance, amount } = args;
+	return {
+		free: new Decimal(balance.free).plus(amount).toNumber(),
+		used: balance.used,
+		total: new Decimal(balance.free).plus(amount).toNumber(),
+	};
+};
+
+const subtractBalance: BalanceArithmaticFn = (args) => {
+	const { balance, amount } = args;
+	return {
+		free: balance.free,
+		used: new Decimal(balance.used).minus(amount).toNumber(),
+		total: new Decimal(balance.total).minus(amount).toNumber(),
+	};
+};
+
 const updateBalance = (store: SimulatedExchangeStore, closedOrder: Order) => {
 	for (const trade of closedOrder.trades) {
 		const [base, quote] = parsePair(trade.symbol);
 
-		const oldBaseBalance = store.balance[base];
-		const oldQuoteBalance = store.balance[quote];
+		const baseBalance = store.balance[base];
+		const quoteBalance = store.balance[quote];
+
+		const quoteBalanceLessFees = subtractFee({
+			balance: quoteBalance,
+			order: closedOrder,
+		});
 
 		if (trade.side === "buy") {
-			const newBaseBalance = {
-				free: new Decimal(oldBaseBalance.free)
-					.plus(trade.amount)
-					.toNumber(),
-				used: oldBaseBalance.used,
-				total: new Decimal(oldBaseBalance.total)
-					.plus(trade.amount)
-					.toNumber(),
-			};
-
-			const newQuoteBalance = {
-				free: oldQuoteBalance.free,
-				used: new Decimal(oldQuoteBalance.used)
-					.minus(new Decimal(trade.cost).plus(trade.fee.cost))
-					.toNumber(),
-				total: new Decimal(oldQuoteBalance.total)
-					.minus(new Decimal(trade.cost).plus(trade.fee.cost))
-					.toNumber(),
-			};
-
-			const newBalance = Object.assign({}, store.balance, {
-				[base]: newBaseBalance,
-				[quote]: newQuoteBalance,
+			store.balance = Object.assign({}, store.balance, {
+				[base]: addBalance({
+					balance: baseBalance,
+					amount: trade.amount,
+				}),
+				[quote]: subtractBalance({
+					balance: quoteBalanceLessFees,
+					amount: trade.cost,
+				}),
 			});
-
-			newBalance.info = { ...newBalance };
-
-			store.balance = newBalance;
 		}
 
 		if (trade.side === "sell") {
-			const newBaseBalance = {
-				free: oldBaseBalance.free,
-				used: new Decimal(oldBaseBalance.used)
-					.minus(trade.amount)
-					.toNumber(),
-				total: new Decimal(oldBaseBalance.total)
-					.minus(trade.amount)
-					.toNumber(),
-			};
-
-			const newQuoteBalance = {
-				free: new Decimal(oldQuoteBalance.free)
-					.plus(trade.cost)
-					.toNumber(),
-				used: new Decimal(oldQuoteBalance.used)
-					.minus(trade.fee.cost)
-					.toNumber(),
-				total: new Decimal(oldQuoteBalance.total)
-					.plus(new Decimal(trade.cost).minus(trade.fee.cost))
-					.toNumber(),
-			};
-
-			const newBalance = Object.assign({}, store.balance, {
-				[base]: newBaseBalance,
-				[quote]: newQuoteBalance,
+			store.balance = Object.assign({}, store.balance, {
+				[base]: subtractBalance({
+					balance: baseBalance,
+					amount: trade.amount,
+				}),
+				[quote]: addBalance({
+					balance: quoteBalanceLessFees,
+					amount: trade.cost,
+				}),
 			});
-
-			newBalance.info = { ...newBalance };
-
-			store.balance = newBalance;
 		}
 	}
 };
