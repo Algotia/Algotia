@@ -90,9 +90,9 @@ describe.each(simulatedExchanges)("paperTrade", (simulatedExchange) => {
 
 		clock.tick(startDate);
 
-		const strategy = sinon.fake(async (exchange: Exchange, data) => {
+		const strategy = sinon.fake(async ({ exchange, constants }) => {
 			const order = await exchange.createOrder(
-				"ETH/BTC",
+				constants.pair,
 				"market",
 				"buy",
 				1

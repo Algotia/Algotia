@@ -3,17 +3,16 @@
     "version": "1.0.0-alpha.0",
     "description": "Patches for ccxt",
     "main": "dist/ccxt.js",
-	"types": "dist/ccxt.d.ts",
+    "types": "dist/ccxt.d.ts",
     "scripts": {
-        "patch": "patch-package && patch-package ccxt",
-        "build": "npm run patch && tsc",
-        "postinstall": "npm run patch"
+        "patch": "patch-package && patch-package",
+        "build": "npm run patch && tsc"
     },
     "keywords": [],
     "author": "",
     "license": "AGPL-3.0",
     "dependencies": {
-        "ccxt": "^1.41.5",
+        "ccxt": "^1.42.49",
         "patch-package": "^6.2.2"
     },
     "devDependencies": {

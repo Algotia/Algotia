@@ -1,113 +1,112 @@
 import dashify from "dashify";
-import node_path from "path";
 import { StrategyLanguages } from "@algotia/types";
 import { getLocalDependencyPath } from "./utils";
-
-interface PackageJsonTemplateArgs {
-    name: string;
-    language: StrategyLanguages;
-}
+import prettier from "prettier";
 
 const dependencies = {
-    typescript: `"typescript": "file:${getLocalDependencyPath("typescript")}"`,
+    typescript: `"typescript": "^4.0.0"`,
     algotia_types: `"@algotia/types": "file:${getLocalDependencyPath(
         "@algotia/types"
     )}"`,
 } as const;
 
-const rootPackageJsonTemplate = () => {
-    return `{
-		"name": "algotia-strategies",
-		"private": true,
-		"workspaces": ["strategies/*"],
-		"devDependencies": {
-			${dependencies.algotia_types},
-			${dependencies.typescript}
-		}
-	}`;
+const format = {
+    json: (str: string) => prettier.format(str, { parser: "json" }),
+    typescript: (str: string) => prettier.format(str, { parser: "babel-ts" }),
+    javascript: (str: string) => prettier.format(str, { parser: "babel" }),
 };
 
-const packageJsonTemplate = async ({
+export const rootPackageJsonTemplate = format.json(
+    `{
+			"name": "algotia-strategies",
+			"workspaces": ["strategies/*"],
+			"private": true
+		}`
+);
+
+export const packageJsonTemplate = ({
     name,
     language,
-}: PackageJsonTemplateArgs): Promise<string> => {
-    return `{
-		"name": "${dashify(name)}",
-		"main": "src/index.${
-            language === StrategyLanguages.JavaScript
-                ? "js"
-                : language === StrategyLanguages.TypeScript
-                ? "ts"
-                : ""
-        }",
-		"algotia": {
-			"language": "${language}",
-			"name": "${name}"
-		},
-		"scripts": {
-			"build": "tsc"
-		},
-		"devDependencies": {
-			${dependencies.typescript}
-		}
-	}`;
+}: {
+    name: string;
+    language: StrategyLanguages;
+}): string => {
+    const extension =
+        (language === StrategyLanguages.TypeScript && "ts") ||
+        (language === StrategyLanguages.JavaScript && "js");
+    return format.json(
+        `{
+				"name": "${dashify(name)}",
+				"main": "dist/index.js",
+				"version": "1.0.0",
+				"algotia": {
+					"language": "${language}",
+					"index": "src/index.${extension}",
+					"name": "${name}"
+				},
+				"scripts": {
+					"build": "tsc"
+				},
+				"dependencies": {
+					${dependencies.algotia_types}
+				},
+				"devDependencies": {
+					${dependencies.typescript}
+				}
+			}`
+    );
 };
 
-const tsconfigTemplate = (): string => {
-    return `{
-		"compilerOptions": {
-			"target": "ES6",
-			"lib": ["ES2019"],
-			"module": "CommonJS",
-			"allowJs": true,
-			"outDir": "./dist",
-			"declaration": true,
-			"rootDir": "./src",
-			"sourceMap": true,
-			"esModuleInterop": true,
-			"skipLibCheck": true,
-			"experimentalDecorators": true,
-			"emitDecoratorMetadata": true
-		},
-		"include": ["src"],
-		"exclude": ["node_modules"]
-	}`;
+export const tsconfigTemplate = (): string => {
+    return format.json(
+        `{
+				"compilerOptions": {
+					"target": "ES6",
+					"lib": ["ES2019"],
+					"module": "CommonJS",
+					"allowJs": true,
+					"outDir": "./dist",
+					"declaration": true,
+					"rootDir": "./src",
+					"sourceMap": true,
+					"esModuleInterop": true,
+					"skipLibCheck": true,
+					"experimentalDecorators": true,
+					"emitDecoratorMetadata": true
+				},
+				"include": ["src"],
+				"exclude": ["node_modules"]
+			}`
+    );
 };
 
-interface LanguageTemplate {
-    default: string;
-    [key: string]: string;
-}
+const JavaScriptTemplates = {
+    default: format.javascript(
+        `
+			/**
+				* @type {import("@algotia/types").Strategy}
+			*/
+			const strategy = async ({ exchange, constants }) => {
 
-const JavaScriptTemplates: LanguageTemplate = {
-    default: `const strategy = async ({ exchange, constants }) => {
-		
-	};
+			};
 
-	export default strategy;
-	`,
-};
+			export default strategy;
+			`
+    ),
+} as const;
 
-const TypeScriptTemplates: LanguageTemplate = {
-    default: `import { Strategy } from "@algotia/types";
-const strategy: Strategy = ({ exchange, constants }) => {
+const TypeScriptTemplates = {
+    default: format.typescript(
+        `import { Strategy } from "@algotia/types";
+			const strategy: Strategy = ({ exchange, constants }) => {
 
-};
+			};
 
-export default strategy;`,
-};
+			export default strategy;`
+    ),
+} as const;
 
-const js = StrategyLanguages.JavaScript;
-const ts = StrategyLanguages.TypeScript;
-
-const strategyTemplates: Record<StrategyLanguages, LanguageTemplate> = {
-    [ts]: TypeScriptTemplates,
-    [js]: JavaScriptTemplates,
-};
-
-export {
-    packageJsonTemplate,
-    rootPackageJsonTemplate,
-    tsconfigTemplate,
-    strategyTemplates,
+export const strategyTemplates = {
+    [StrategyLanguages.TypeScript]: TypeScriptTemplates,
+    [StrategyLanguages.JavaScript]: JavaScriptTemplates,
 };

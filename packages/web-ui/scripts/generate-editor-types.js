@@ -22,9 +22,14 @@ const nodeDeps = nodeTypeFiles.map((fileName) => {
 const deps = [
     {
         name: "@algotia/types",
-        label: "algotia",
-        path: path.join(node_modules, "@algotia/types/types.d.ts"),
+        label: "algotia_types",
+        path: path.join(node_modules, "@algotia/types/dist/index.d.ts"),
     },
+	{
+		name: "@algotia/ccxt",
+		label: "algotia_ccxt",
+		path: path.join(node_modules, "@algotia/ccxt/node_modules/ccxt/ccxt.d.ts")
+	},
     ...nodeDeps,
 ];
 

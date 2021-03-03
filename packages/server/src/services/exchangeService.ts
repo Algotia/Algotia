@@ -1,5 +1,5 @@
 import { createExchange } from "@algotia/core";
-import { Exchange, ExchangeIDs } from "@algotia/types";
+import { ExchangeIDs, Exchange } from "@algotia/types";
 import { exchangeCache } from "../utils";
 
 export class ExchangeService {

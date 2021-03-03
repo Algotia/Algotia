@@ -1,6 +1,6 @@
-import { OHLCV } from "../../../src/types";
+import { OHLCV_Candle } from "@algotia/types";
 
-const candles: OHLCV[] = [
+const candles: OHLCV_Candle[] = [
 	{
 		timestamp: 1000,
 		open: 1,

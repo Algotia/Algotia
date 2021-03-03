@@ -1,8 +1,8 @@
 import { FC, useContext } from "react";
 import { BacktestContext } from "../context";
-import { ColDef, DataGrid } from "@material-ui/data-grid";
+import { GridColDef, DataGrid } from "@material-ui/data-grid";
 
-const columns: ColDef[] = [
+const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "side", headerName: "Side", width: 85 },
     { field: "amount", headerName: "Amount", flex: 0.7 },

@@ -323,14 +323,33 @@ export interface FileStructure {
 export interface InlineObject {
     /**
      * 
+     * @type {StrategyLanguages}
+     * @memberof InlineObject
+     */
+    language: StrategyLanguages;
+    /**
+     * 
      * @type {string}
      * @memberof InlineObject
+     */
+    name: string;
+}
+/**
+ * 
+ * @export
+ * @interface InlineObject1
+ */
+export interface InlineObject1 {
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject1
      */
     path: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineObject
+     * @memberof InlineObject1
      */
     contents: string;
 }
@@ -984,6 +1003,56 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @param {InlineObject} inlineObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createNewStrategy: async (inlineObject: InlineObject, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inlineObject' is not null or undefined
+            if (inlineObject === null || inlineObject === undefined) {
+                throw new RequiredError('inlineObject','Required parameter inlineObject was null or undefined when calling createNewStrategy.');
+            }
+            const localVarPath = `/strategy/create`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const nonString = typeof inlineObject !== 'string';
+            const needsSerialization = nonString && configuration && configuration.isJsonMime
+                ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
+                : nonString;
+            localVarRequestOptions.data =  needsSerialization
+                ? JSON.stringify(inlineObject !== undefined ? inlineObject : {})
+                : (inlineObject || "");
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1024,7 +1093,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         getAllStrategies: async (options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/strategy`;
+            const localVarPath = `/strategy/all`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -1431,14 +1500,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {InlineObject} inlineObject 
+         * @param {InlineObject1} inlineObject1 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        writeStrategyFile: async (inlineObject: InlineObject, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'inlineObject' is not null or undefined
-            if (inlineObject === null || inlineObject === undefined) {
-                throw new RequiredError('inlineObject','Required parameter inlineObject was null or undefined when calling writeStrategyFile.');
+        writeStrategyFile: async (inlineObject1: InlineObject1, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inlineObject1' is not null or undefined
+            if (inlineObject1 === null || inlineObject1 === undefined) {
+                throw new RequiredError('inlineObject1','Required parameter inlineObject1 was null or undefined when calling writeStrategyFile.');
             }
             const localVarPath = `/strategy/file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1466,13 +1535,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            const nonString = typeof inlineObject !== 'string';
+            const nonString = typeof inlineObject1 !== 'string';
             const needsSerialization = nonString && configuration && configuration.isJsonMime
                 ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
                 : nonString;
             localVarRequestOptions.data =  needsSerialization
-                ? JSON.stringify(inlineObject !== undefined ? inlineObject : {})
-                : (inlineObject || "");
+                ? JSON.stringify(inlineObject1 !== undefined ? inlineObject1 : {})
+                : (inlineObject1 || "");
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -1496,6 +1565,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async createBacktest(createBacktestOptions: CreateBacktestOptions, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateBacktestResult>> {
             const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).createBacktest(createBacktestOptions, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {InlineObject} inlineObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createNewStrategy(inlineObject: InlineObject, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).createNewStrategy(inlineObject, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -1643,12 +1725,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {InlineObject} inlineObject 
+         * @param {InlineObject1} inlineObject1 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async writeStrategyFile(inlineObject: InlineObject, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).writeStrategyFile(inlineObject, options);
+        async writeStrategyFile(inlineObject1: InlineObject1, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).writeStrategyFile(inlineObject1, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -1671,6 +1753,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         createBacktest(createBacktestOptions: CreateBacktestOptions, options?: any): AxiosPromise<CreateBacktestResult> {
             return DefaultApiFp(configuration).createBacktest(createBacktestOptions, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {InlineObject} inlineObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createNewStrategy(inlineObject: InlineObject, options?: any): AxiosPromise<void> {
+            return DefaultApiFp(configuration).createNewStrategy(inlineObject, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1770,12 +1861,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {InlineObject} inlineObject 
+         * @param {InlineObject1} inlineObject1 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        writeStrategyFile(inlineObject: InlineObject, options?: any): AxiosPromise<void> {
-            return DefaultApiFp(configuration).writeStrategyFile(inlineObject, options).then((request) => request(axios, basePath));
+        writeStrategyFile(inlineObject1: InlineObject1, options?: any): AxiosPromise<void> {
+            return DefaultApiFp(configuration).writeStrategyFile(inlineObject1, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1796,6 +1887,17 @@ export class DefaultApi extends BaseAPI {
      */
     public createBacktest(createBacktestOptions: CreateBacktestOptions, options?: any) {
         return DefaultApiFp(this.configuration).createBacktest(createBacktestOptions, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {InlineObject} inlineObject 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public createNewStrategy(inlineObject: InlineObject, options?: any) {
+        return DefaultApiFp(this.configuration).createNewStrategy(inlineObject, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1918,13 +2020,13 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @param {InlineObject} inlineObject 
+     * @param {InlineObject1} inlineObject1 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public writeStrategyFile(inlineObject: InlineObject, options?: any) {
-        return DefaultApiFp(this.configuration).writeStrategyFile(inlineObject, options).then((request) => request(this.axios, this.basePath));
+    public writeStrategyFile(inlineObject1: InlineObject1, options?: any) {
+        return DefaultApiFp(this.configuration).writeStrategyFile(inlineObject1, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -1,7 +1,7 @@
 import { parsePeriod } from "../../src/utils";
 import { backfill } from "../../src/exchange/helpers";
 import { initialBalanceSymbol, simulatedExchanges } from "../test-utils";
-import { OHLCV } from "@algotia/ccxt";
+import { OHLCV } from "@algotia/types";
 
 jest.mock("../../src/exchange/helpers/fillEmptyCandles", () => {
 	const actual = jest.requireActual(

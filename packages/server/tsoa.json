@@ -12,5 +12,6 @@
     "routes": {
         "routesDir": "src",
         "basePath": "api"
-    }
+    },
+    "ignore": ["/**/ccxt/**"]
 }

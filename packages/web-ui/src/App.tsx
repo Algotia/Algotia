@@ -3,8 +3,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { AllThemes, themes } from "./assets/styles/";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import { BacktestPage } from "./pages";
-import Docs from "./pages/docs";
+import { Backtest, Docs, Strategies } from "./pages";
 import { CircularProgress, CssBaseline, Typography } from "@material-ui/core";
 import { getCachedTheme } from "./utils";
 import styled from "styled-components";
@@ -21,7 +20,7 @@ const LoadingWrapper = styled.div`
     height: 100%;
     background-color: #fff;
     display: flex;
-	flex-direction: column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 `;
@@ -66,10 +65,13 @@ function App() {
                         <Layout>
                             <Switch>
                                 <Route path="/backtest">
-                                    <BacktestPage />
+                                    <Backtest />
                                 </Route>
                                 <Route path="/docs">
                                     <Docs />
+                                </Route>
+                                <Route path="/strategies">
+                                    <Strategies />
                                 </Route>
                                 <Route path="/">
                                     <Home />

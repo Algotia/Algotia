@@ -28,7 +28,7 @@ const TableBody = styled(Column)`
 `;
 
 const CustomTab = muiStyled(Tab)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: "#444"
 }));
 
 const Panel = muiStyled(TabPanel)(({ theme }) => ({

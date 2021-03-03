@@ -960,7 +960,7 @@
 				]
 			}
 		},
-		"/strategy": {
+		"/strategy/all": {
 			"get": {
 				"operationId": "GetAllStrategies",
 				"responses": {
@@ -1036,6 +1036,40 @@
 						}
 					}
 				]
+			}
+		},
+		"/strategy/create": {
+			"post": {
+				"operationId": "CreateNewStrategy",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"language": {
+										"$ref": "#/components/schemas/StrategyLanguages"
+									},
+									"name": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"language",
+									"name"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/strategy/file": {

@@ -1,1 +1,3 @@
-export { default as BacktestPage } from "./backtest";
+import Backtest from "./backtest";
+
+export default Backtest;

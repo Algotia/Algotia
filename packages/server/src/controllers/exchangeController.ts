@@ -1,5 +1,4 @@
-import { Exchange, ExchangeIDs } from "@algotia/types";
-import { Market } from "@algotia/ccxt";
+import { Market, Exchange, ExchangeIDs } from "@algotia/types";
 import { Controller, Get, Path, Query, Route } from "tsoa";
 import { ExchangeService } from "../services";
 

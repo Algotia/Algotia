@@ -1,27 +1,44 @@
 const fs = require("fs");
 const path = require("path");
-const execa = require("execa");
 const prettier = require("prettier");
+const execa = require("execa");
 
-const srcContents = fs.readFileSync(
-    path.resolve(__dirname, "../src/index.ts"),
-    {
-        encoding: "utf-8",
-    }
+const getPath = (str) => path.resolve(__dirname, str);
+
+execa.commandSync("tsc", {
+    cwd: getPath("../"),
+});
+
+const distPath = getPath("../dist");
+const srcPath = getPath("../src");
+const node_modules = getPath("../node_modules");
+
+if (!fs.existsSync(distPath)) fs.mkdirSync(distPath);
+
+const readFile = (path) => fs.readFileSync(path, "utf8");
+
+const srcFile = readFile(path.join(srcPath, "index.ts"));
+const ccxtContents = readFile(
+    path.join(node_modules, "@algotia/ccxt/node_modules/ccxt/ccxt.d.ts")
 );
 
-const targetContents = `
+const srcContentsSplit = srcFile.split("\n");
+
+const reducer = (a, b) => a + b + " \n"
+
+const srcContents = srcContentsSplit.reduce(reducer);
+
+const bundleContents = `
+	${ccxtContents}
 declare module "@algotia/types" {
 	${srcContents}
 }
 `;
 
 fs.writeFileSync(
-    path.resolve(__dirname, "../types.d.ts"),
-    prettier.format(targetContents, { parser: "babel-ts" }),
+    path.resolve(__dirname, "../dist/index.d.ts"),
+    prettier.format(bundleContents, { parser: "babel-ts" }),
     {
         encoding: "utf-8",
     }
 );
-
-execa.commandSync("tsc");

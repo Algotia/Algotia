@@ -1,7 +1,11 @@
-import { Exchange as CCXT_Exchange, Order, Params } from "@algotia/ccxt";
-import { SimulatedExchangeStore } from "@algotia/types";
+import {
+	Exchange,
+	Order,
+	Params,
+	SimulatedExchangeStore,
+} from "@algotia/types";
 
-type FetchOrders = CCXT_Exchange["fetchOrders"];
+type FetchOrders = Exchange["fetchOrders"];
 
 const createFetchOrders = (store: SimulatedExchangeStore): FetchOrders => {
 	return async (

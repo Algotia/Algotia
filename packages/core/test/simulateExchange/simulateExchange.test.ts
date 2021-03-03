@@ -1,22 +1,20 @@
-import { Exchange as CCXT_Exchange, IDictionary, Market } from "@algotia/ccxt";
+import { simulateExchange, createExchange } from "../../src/algotia";
 import {
-	simulateExchange,
-	createExchange,
-} from "../../src/algotia";
-import {
-
-	AllowedExchangeIDs,
-	ExchangeID,
+	ExchangeIDs,
 	SimulatedExchange,
-} from "@algotia/types"
+	Exchange,
+	Market,
+	IDictionary,
+} from "@algotia/types";
 
 interface ExchangeObj {
-	originalExchange: CCXT_Exchange;
+	originalExchange: Exchange;
 	derivedExchange: SimulatedExchange;
-	exchangeId: ExchangeID;
+	exchangeId: ExchangeIDs;
 }
 
-describe.each(AllowedExchangeIDs)("simulateExchange", (exchangeId) => {
+describe("simulateExchange", () => {
+	const exchangeId = ExchangeIDs.binance;
 	it(`should be instance of Exchange`, () => {
 		const realExchange = createExchange(exchangeId);
 
@@ -32,8 +30,8 @@ describe.each(AllowedExchangeIDs)("simulateExchange", (exchangeId) => {
 	});
 
 	it("should have populated properties if dervies from real exchange", async () => {
-		for (const exchangeId of AllowedExchangeIDs) {
-			const realExchange = createExchange(exchangeId);
+		for (const exchangeId in ExchangeIDs) {
+			const realExchange = createExchange(ExchangeIDs[exchangeId]);
 
 			const markets: any = {
 				"BTC/ETH": {},

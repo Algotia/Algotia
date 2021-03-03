@@ -1,7 +1,5 @@
 import { StrategyManager } from "@algotia/strategy-manager";
-import node_path from "path";
 import os from "os";
+import path from "path";
 
-export const strategyManager = new StrategyManager(
-    node_path.join(os.homedir(), "algotia/")
-);
+export const strategyManager = new StrategyManager(path.join(os.homedir(), "algotia/"));

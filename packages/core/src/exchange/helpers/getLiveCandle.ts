@@ -1,4 +1,4 @@
-import { Exchange, OHLCV_Candle, SimulatedExchange } from "@algotia/types";
+import { OHLCV_Candle, SimulatedExchange, Exchange } from "@algotia/types";
 import { parsePeriod, reshapeOHLCV, roundTime } from "../../utils";
 
 /** Get the last full live candle from the exchange.

@@ -1,5 +1,5 @@
-import Ccxt, { Exchange } from "@algotia/ccxt";
-import { ExchangeIDs } from "@algotia/types";
+import Ccxt from "@algotia/ccxt";
+import { ExchangeIDs, Exchange } from "@algotia/types";
 
 const createExchange = (
 	id: ExchangeIDs,

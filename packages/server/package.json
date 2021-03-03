@@ -40,7 +40,6 @@
         "unexpected-express": "^13.0.1"
     },
     "dependencies": {
-        "@algotia/ccxt": "^1.0.0-alpha.0",
         "@algotia/client": "^1.0.0-alpha.0",
         "@algotia/core": "^1.0.0-alpha.0",
         "@algotia/strategy-manager": "^0.1.0",

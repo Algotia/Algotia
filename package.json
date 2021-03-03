@@ -4,7 +4,7 @@
     "scripts": {
         "clean": "node ./scripts/clean.js",
         "build": "node ./scripts/build.js",
-        "bootstrap": "npx lerna bootstrap --hoist"
+        "bootstrap": "lerna bootstrap && npm run build"
     },
     "devDependencies": {
         "execa": "^5.0.0",

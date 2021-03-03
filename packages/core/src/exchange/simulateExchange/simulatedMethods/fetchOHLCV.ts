@@ -1,7 +1,6 @@
-import { Exchange as CCXT_Exchange, OHLCV } from "@algotia/ccxt";
-import { Exchange } from "@algotia/types";
+import { Exchange, OHLCV } from "@algotia/types";
 
-type FetchOHLCV = CCXT_Exchange["fetchOHLCV"];
+type FetchOHLCV = Exchange["fetchOHLCV"];
 
 const createFetchOHLCV = (derviedExchange?: Exchange): FetchOHLCV => {
 	if (derviedExchange) {

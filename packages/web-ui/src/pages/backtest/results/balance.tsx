@@ -3,7 +3,7 @@ import { FC, useContext } from "react";
 import { BacktestContext, RequestResult } from "../context";
 import styled from "styled-components";
 import { Grid } from "../../../components";
-import {ColDef} from "@material-ui/data-grid";
+import { GridColDef } from "@material-ui/data-grid";
 
 const getPercentage = (
     initial: number,
@@ -101,7 +101,7 @@ const getRows = (requestResult: RequestResult) => {
     return [...getCurrencyRows(requestResult), getTotalRow(requestResult)];
 };
 
-const columns: ColDef[] = [
+const columns: GridColDef[] = [
     { field: "currency", headerName: "Currency", flex: 1 },
     { field: "initial", headerName: "Initial", flex: 1 },
     {

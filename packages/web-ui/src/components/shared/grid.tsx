@@ -1,10 +1,10 @@
-import { DataGrid, Columns, RowsProp } from "@material-ui/data-grid";
+import { DataGrid, GridColumns, GridRowsProp } from "@material-ui/data-grid";
 import { FC } from "react";
 
-export const Grid: FC<{ columns: Columns; rows: RowsProp | undefined }> = ({
-    columns,
-    rows,
-}) => {
+export const Grid: FC<{
+    columns: GridColumns;
+    rows: GridRowsProp | undefined;
+}> = ({ columns, rows }) => {
     return (
         <DataGrid
             columns={columns}

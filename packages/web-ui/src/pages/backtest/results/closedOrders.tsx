@@ -1,9 +1,9 @@
 import { FC, useContext } from "react";
-import { ColDef, DataGrid } from "@material-ui/data-grid";
+import { GridColDef, DataGrid } from "@material-ui/data-grid";
 import { BacktestContext } from "../context";
 import styled from "styled-components";
 
-const columns: ColDef[] = [
+const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "side", headerName: "Side", width: 85 },
     { field: "amount", headerName: "Amount", flex: 0.7 },
@@ -39,11 +39,11 @@ const ClosedOrders: FC = () => {
                 rows={rows || []}
                 columns={columns}
                 density="compact"
-				hideFooter={true}
+                hideFooter={true}
                 rowsPerPageOptions={[100]}
-				onRowClick={(param) => {
-					alert(JSON.stringify(param.row))
-				}}
+                onRowClick={(param) => {
+                    alert(JSON.stringify(param.row));
+                }}
             />
         </Wrapper>
     );

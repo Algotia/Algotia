@@ -1,5 +1,7 @@
 import { Exchange, Order, Balances } from "@algotia/ccxt";
 
+export * from "@algotia/ccxt"
+
 export enum ExchangeIDs {
     binance = "binance",
     kucoin = "kucoin",
@@ -88,8 +90,6 @@ export interface OHLCV_Candle {
     volume: number;
 }
 
-export { Exchange };
-
 export interface SimulatedExchange extends Exchange {
     simulated: true;
     derviesFrom?: ExchangeIDs;
@@ -154,3 +154,4 @@ export interface ConfigOptions {
 // util
 
 export type LooseDate = Date | string | number;
+

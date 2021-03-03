@@ -1,9 +1,8 @@
-import { Exchange as CCXT_Exchange, Order } from "@algotia/ccxt";
-import Decimal from "decimal.js";
-import { Exchange, SimulatedExchangeStore } from "@algotia/types";
+import { Exchange, SimulatedExchangeStore, Order } from "@algotia/types";
 import { parsePair } from "../../../utils";
+import Decimal from "decimal.js";
 
-type EditOrder = CCXT_Exchange["editOrder"];
+type EditOrder = Exchange["editOrder"];
 type Fees = Exchange["fees"];
 
 const createEditOrder = (

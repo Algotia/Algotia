@@ -90,6 +90,7 @@ export const parseLanguageFromExt = (extension: string): EditorLanguages => {
     }
 };
 
+
 export const getLocalDependencyPath = (depName: string) => {
     const node_modules = node_path.resolve(__dirname, "../node_modules/");
 

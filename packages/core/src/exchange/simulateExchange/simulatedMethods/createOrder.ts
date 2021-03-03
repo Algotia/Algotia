@@ -1,7 +1,13 @@
-import { BadRequest, BadSymbol, InsufficientFunds, Order } from "@algotia/ccxt";
-import { Exchange, SimulatedExchangeStore } from "@algotia/types";
+import {
+	SimulatedExchangeStore,
+	BadSymbol,
+	BadRequest,
+	Order,
+	InsufficientFunds,
+} from "@algotia/types";
 import { parsePair, uuid } from "../../../utils";
 import Decimal from "decimal.js";
+import { Exchange } from "@algotia/ccxt";
 
 type CreateOrder = Exchange["createOrder"];
 type Fees = Exchange["fees"];

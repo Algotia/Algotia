@@ -1,5 +1,5 @@
 import { createExchange, simulateExchange } from "../../src/algotia";
-import { AllowedExchangeIDs } from "@algotia/types";
+import { ExchangeIDs, SimulatedExchangeResult } from "@algotia/types";
 
 export const initialBalance = {
 	BTC: 100,
@@ -8,10 +8,18 @@ export const initialBalance = {
 
 export const initialBalanceSymbol = "BTC/ETH";
 
-export const simulatedExchanges = AllowedExchangeIDs.map((exchangeId) => {
-	const realExchange = createExchange(exchangeId);
-	return simulateExchange({ initialBalance, derivesFrom: realExchange });
-});
+export const simulatedExchanges = (() => {
+	let exchanges: SimulatedExchangeResult[] = [];
+	for (const key in ExchangeIDs) {
+		exchanges.push(
+			simulateExchange({
+				initialBalance,
+				derivesFrom: createExchange(ExchangeIDs[key]),
+			})
+		);
+	}
+	return exchanges;
+})();
 
 export const reset = () =>
 	simulatedExchanges.forEach((exchange) => {

@@ -2,7 +2,7 @@
     "name": "@algotia/types",
     "version": "1.0.0",
     "description": "",
-    "types": "types.d.ts",
+    "types": "dist/index.d.ts",
     "main": "dist/index.js",
     "keywords": [],
     "author": "",

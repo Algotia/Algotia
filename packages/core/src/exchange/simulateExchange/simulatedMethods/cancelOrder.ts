@@ -1,9 +1,13 @@
-import { Exchange as CCXT_Exchange, Params, Order } from "@algotia/ccxt";
-import { SimulatedExchangeStore } from "@algotia/types";
+import {
+	SimulatedExchangeStore,
+	Exchange,
+	Params,
+	Order,
+} from "@algotia/types";
 import { parsePair } from "../../../utils";
 import Decimal from "decimal.js";
 
-type CancelOrder = CCXT_Exchange["cancelOrder"];
+type CancelOrder = Exchange["cancelOrder"];
 
 const createCancelOrder = (store: SimulatedExchangeStore): CancelOrder => {
 	return async (

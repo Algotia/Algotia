@@ -4,17 +4,17 @@ const muiTheme = createTheme({
     palette: {
         type: "dark",
         primary: {
-            main: "#33658A",
-			light: "#A8D3ED",
-			dark: "#093957"
+            main: "#2A3C48",
+            light: "#A8D3ED",
+            dark: "#093957",
         },
         background: {
-            default: "#1C2931",
-            paper: "#2F4858",
+            default: "#080C0E",
+            paper: "#1e1e1e",
         },
-		success: {
-			main: "#60A660"
-		}
+        success: {
+            main: "#60A660",
+        },
     },
 });
 

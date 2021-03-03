@@ -4,8 +4,8 @@ import {
 	SimulatedExchangeResult,
 	SimulatedExchange,
 	ExchangeIDs,
-	Exchange,
 	InitialBalance,
+	Exchange,
 } from "@algotia/types";
 import {
 	createCancelOrder,
@@ -17,14 +17,14 @@ import {
 	createFetchOpenOrders,
 	createFetchOrder,
 	createFetchOrders,
+	createFetchOHLCV,
+	createFetchOrderBook,
 } from "./simulatedMethods";
 import {
 	createFillOrders,
 	createFlushStore,
 	createUpdateContext,
 } from "./controlMethods";
-import createFetchOHLCV from "./simulatedMethods/fetchOHLCV";
-import createFetchOrderBook from "./simulatedMethods/fetchOrderBook";
 
 interface SimulatedExchangeOptions {
 	initialBalance: InitialBalance;

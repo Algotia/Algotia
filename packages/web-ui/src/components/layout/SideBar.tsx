@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { IconType } from "react-icons";
 import { FaHome, FaBook } from "react-icons/fa";
 import { RiTestTubeFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
-import { Paper, Typography, Divider, makeStyles } from "@material-ui/core";
+import {
+    Paper,
+    Typography,
+    Divider,
+    makeStyles,
+    Grow,
+    Zoom,
+} from "@material-ui/core";
 import Settings from "./Settings";
+import { VscCode } from "react-icons/vsc";
 
 const useBarStyles = makeStyles((theme) => ({
     root: {
@@ -48,6 +56,11 @@ const navItems: NavItemObj[] = [
         Icon: FaHome,
     },
     {
+        path: "/strategies",
+        label: "Strategies",
+        Icon: VscCode,
+    },
+    {
         path: "/backtest",
         label: "Backtest",
         Icon: RiTestTubeFill,
@@ -61,10 +74,13 @@ const navItems: NavItemObj[] = [
 
 const SideBar = () => {
     const barStyles = useBarStyles();
+    const [hoveredItem, setHoveredItem] = useState("");
+
     return (
         <Paper classes={barStyles} elevation={3} square>
             <AlgotiaLogo />
             {navItems.map(({ path, label, Icon }, i) => {
+                const isHovered = hoveredItem === label;
                 return (
                     <div key={"to-" + path}>
                         <Divider />
@@ -79,9 +95,24 @@ const SideBar = () => {
                                 color: "#fff",
                             }}
                         >
-                            <NavItem>
-                                <Icon />
-                                <Typography>{label}</Typography>
+                            <NavItem
+                                onMouseEnter={() => {
+                                    setHoveredItem(label);
+                                }}
+                                onMouseLeave={() => {
+                                    setHoveredItem("");
+                                }}
+                            >
+                                <Icon
+                                    size={isHovered ? 20 : 30}
+                                    style={{
+                                        transition:
+                                            "width 300ms ease-in-out, height 100ms ease-in-out",
+                                    }}
+                                />
+                                <Zoom in={hoveredItem === label}>
+                                    <Typography>{label}</Typography>
+                                </Zoom>
                             </NavItem>
                         </NavLink>
                         {i === navItems.length - 1 && (

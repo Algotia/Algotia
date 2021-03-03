@@ -12,9 +12,10 @@ describe.each(simulatedExchanges)("backtest", (simulatedExchange) => {
 		const result = await backtest({
 			simulatedExchange,
 			data: candles,
-			strategy: async (exchange) => {
-				await exchange.createOrder("ETH/BTC", "market", "buy", 1);
+			strategy: async ({ exchange, constants }) => {
+				await exchange.createOrder(constants.pair, "market", "buy", 1);
 			},
+			backtestConstants: { pair: "ETH/BTC", period: "1h" },
 		});
 
 		expect(result.openOrders.length).toStrictEqual(0);
@@ -56,8 +57,17 @@ describe.each(simulatedExchanges)("backtest", (simulatedExchange) => {
 		const result = await backtest({
 			simulatedExchange,
 			data: candles,
-			strategy: async (exchange) => {
-				await exchange.createOrder("ETH/BTC", "market", "buy", 1000);
+			strategy: async ({ exchange, constants }) => {
+				await exchange.createOrder(
+					constants.pair,
+					"market",
+					"buy",
+					1000
+				);
+			},
+			backtestConstants: {
+				pair: "ETH/BTC",
+				period: "1h",
 			},
 		});
 
