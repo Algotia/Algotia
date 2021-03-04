@@ -1,7 +1,5 @@
 import { Exchange, Order, Balances } from "@algotia/ccxt";
 
-export * from "@algotia/ccxt"
-
 export enum ExchangeIDs {
     binance = "binance",
     kucoin = "kucoin",
