@@ -13,7 +13,7 @@ export class StrategyController extends Controller {
 
     @Get("all")
     public getAllStrategies(): StrategyMetaData[] {
-        return this.strategyManager.getAllStrategies()
+        return this.strategyManager.getAllStrategies();
     }
 
     @Get("file/{fileName}")
@@ -38,7 +38,6 @@ export class StrategyController extends Controller {
             packageName: body.name,
             language: body.language,
         });
-        return;
     }
 
     @Post("file")

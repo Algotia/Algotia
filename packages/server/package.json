@@ -1,49 +1,35 @@
 {
     "name": "@algotia/server",
+    "description": "",
     "version": "1.0.0-alpha.0",
-    "main": "dist/server.js",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "test": "jest",
-        "dev": "npm run build && node dist/server.js",
+        "start": "node ./scripts/start.js",
+        "stop": "node ./scripts/stop.js",
+        "dev": "node ./scripts/dev.js",
+        "restart": "node ./scripts/restart.js",
+        "delete": "node ./scripts/delete.js",
         "build": "node ./scripts/build.js",
         "preview-docs": "node ./scripts/preview-swagger.js",
-        "generate-client": "openapi-generator-cli generate -i ./spec/swagger.json -o ../client/src -g typescript-axios",
-        "install-openapi-generator": "node ./scripts/install-openapi-generator.js"
+        "generate-client": "node ./scripts/generate-client.js",
+        "monitor": "pm2 monit algotia-server",
+        "print-logs": "pm2 logs algotia-server --nostream --lines 1000",
+        "test": "jest"
     },
     "files": [
-        "dist/",
-        "./swagger.json"
+        "dist/"
     ],
     "keywords": [],
     "author": "",
     "license": "AGPL-3.0",
-    "devDependencies": {
-        "@babel/preset-env": "^7.12.11",
-        "@babel/preset-typescript": "^7.12.7",
-        "@openapitools/openapi-generator-cli": "^2.1.19",
-        "@types/express": "^4.17.9",
-        "@types/isomorphic-fetch": "^0.0.35",
-        "@types/jest": "^26.0.20",
-        "@types/mock-fs": "^4.13.0",
-        "@types/node": "^14.14.19",
-        "@types/supertest": "^2.0.10",
-        "autorest": "^3.0.6335",
-        "babel-jest": "^26.6.3",
-        "got": "^9.6.0",
-        "jest": "^26.6.3",
-        "npm": "^6.14.11",
-        "prettier": "^2.2.1",
-        "supertest": "^6.0.1",
-        "swagger-ui-express": "^4.1.6",
-        "ts-jest": "^26.4.4",
-        "unexpected": "^12.0.0",
-        "unexpected-express": "^13.0.1"
-    },
     "dependencies": {
         "@algotia/client": "^1.0.0-alpha.0",
         "@algotia/core": "^1.0.0-alpha.0",
-        "@algotia/strategy-manager": "^0.1.0",
-        "@algotia/types": "^1.0.0",
+        "@algotia/strategy-manager": "^1.0.0-alpha.0",
+        "@algotia/types": "^1.0.0-alpha.0",
+        "@algotia/utils": "^1.0.0-alpha.0",
+        "@algotia/web-ui": "^1.0.0-alpha.0",
         "@babel/core": "^7.12.10",
         "@babel/polyfill": "^7.12.1",
         "@babel/register": "^7.12.10",
@@ -62,11 +48,11 @@
         "mock-fs": "^4.13.0",
         "node-graceful": "^3.0.1",
         "node-graceful-shutdown": "^1.1.0",
-        "nodemon": "^2.0.7",
         "op-cache": "^1.0.1",
         "open": "^7.3.1",
         "patch-package": "^6.2.2",
         "pkg-dir": "^5.0.0",
+        "pm2": "^4.5.5",
         "snake-case": "^3.0.4",
         "socket.io": "^3.0.4",
         "swagger-jsdoc": "^6.0.1",
@@ -76,5 +62,11 @@
         "winston": "^3.3.3",
         "yaml": "^1.10.0"
     },
-    "description": ""
+    "devDependencies": {
+        "@types/express": "^4.17.11",
+        "nodemon": "^2.0.7",
+        "prettier": "^2.2.1",
+        "tsc-watch": "^4.2.9",
+        "typescript": "^4.2.3"
+    }
 }

@@ -1,7 +1,7 @@
-import fs from "fs";
-import node_path from "path";
 import { FileStructure, EditorLanguages } from "@algotia/types";
 import tildify from "tildify";
+import node_path from "path";
+import fs from "fs";
 
 export const mkDirIfNotExist = (path: string | string[]) => {
     const mkDir = (p: string) => {
@@ -89,7 +89,6 @@ export const parseLanguageFromExt = (extension: string): EditorLanguages => {
             return EditorLanguages.Text;
     }
 };
-
 
 export const getLocalDependencyPath = (depName: string) => {
     const node_modules = node_path.resolve(__dirname, "../node_modules/");

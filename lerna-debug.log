@@ -1,12 +1,12 @@
 0 silly argv {
-0 silly argv   _: [ 'add' ],
-0 silly argv   scope: '@algotia/server-2',
-0 silly argv   globs: [],
+0 silly argv   _: [ 'bootstrap' ],
+0 silly argv   'force-local': true,
+0 silly argv   forceLocal: true,
 0 silly argv   lernaVersion: '3.22.1',
-0 silly argv   '$0': '/home/jake/Documents/Code/algotia-mono/node_modules/.bin/lerna',
-0 silly argv   pkg: '@algotia/client'
+0 silly argv   '$0': '/home/jake/Documents/Code/algotia/node_modules/.bin/lerna'
 0 silly argv }
 1 notice cli v3.22.1
-2 verbose rootPath /home/jake/Documents/Code/algotia-mono
-3 error Error: 404 Not Found - GET https://registry.npmjs.org/@algotia%2fclient - Not found
-3 error     at /home/jake/Documents/Code/algotia-mono/node_modules/@evocateur/npm-registry-fetch/check-response.js:104:15
+2 verbose rootPath /home/jake/Documents/Code/algotia
+3 error JSONError: Unexpected token p in JSON at position 1283 while parsing near '... "algotia",        plugins": [        ...' in packages/cli/package.json
+3 error     at module.exports (/home/jake/Documents/Code/algotia/node_modules/parse-json/index.js:26:19)
+3 error     at parse (/home/jake/Documents/Code/algotia/node_modules/load-json-file/index.js:15:9)

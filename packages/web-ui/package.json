@@ -7,23 +7,16 @@
         "@algotia/ccxt": "^1.0.0-alpha.0",
         "@algotia/client": "^1.0.0-alpha.0",
         "@algotia/core": "^1.0.0-alpha.0",
-        "@algotia/server": "^1.0.0-alpha.0",
-        "@algotia/strategy-manager": "^0.1.0",
-        "@algotia/types": "^1.0.0",
+        "@algotia/strategy-manager": "^1.0.0-alpha.0",
+        "@algotia/types": "^1.0.0-alpha.0",
         "@date-io/date-fns": "^1.3.13",
         "@fontsource/open-sans": "^4.1.0",
-        "@material-ui/core": "^4.11.2",
+        "@material-ui/core": "^4.11.3",
         "@material-ui/data-grid": "^4.0.0-alpha.17",
         "@material-ui/icons": "^4.11.2",
         "@material-ui/lab": "^4.0.0-alpha.57",
         "@material-ui/pickers": "^3.2.10",
         "@monaco-editor/react": "^3.8.3",
-        "@syncfusion/ej2": "^18.4.34",
-        "@syncfusion/ej2-base": "^18.4.34",
-        "@syncfusion/ej2-react-charts": "^18.4.34",
-        "@testing-library/jest-dom": "^5.11.9",
-        "@testing-library/react": "^11.2.3",
-        "@testing-library/user-event": "^12.6.0",
         "@types/jest": "^26.0.20",
         "@types/node": "^12.19.13",
         "@types/react": "^16.14.2",
@@ -45,11 +38,8 @@
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.1",
         "react-svg": "^11.2.3",
-        "redoc": "^2.0.0-rc.48",
         "styled-components": "^5.2.1",
         "swagger-ui-react": "^3.40.0",
-        "trading-vue-js": "^1.0.1",
-        "typescript": "^4.1.3",
         "web-vitals": "^0.2.4"
     },
     "scripts": {
@@ -78,12 +68,13 @@
         ]
     },
     "devDependencies": {
-        "@types/d3-array": "^2.8.0",
+        "@testing-library/jest-dom": "^5.11.9",
+        "@testing-library/react": "^11.2.3",
+        "@testing-library/user-event": "^12.6.0",
         "@types/react-router-dom": "^5.1.7",
         "@types/styled-components": "^5.1.7",
         "@types/swagger-ui-react": "^3.35.0",
         "prettier": "^2.2.1",
-        "puppeteer-core": "^6.0.0",
-        "which": "^2.0.2"
+        "typescript": "^4.2.3"
     }
 }

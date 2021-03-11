@@ -28,7 +28,7 @@ const deps = [
 	{
 		name: "@algotia/ccxt",
 		label: "algotia_ccxt",
-		path: path.join(node_modules, "@algotia/ccxt/node_modules/ccxt/ccxt.d.ts")
+		path: path.join(node_modules, "@algotia/ccxt/dist/ccxt.d.ts")
 	},
     ...nodeDeps,
 ];

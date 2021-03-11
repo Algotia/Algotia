@@ -1,5 +1,7 @@
 import { Exchange, Order, Balances } from "@algotia/ccxt";
 
+export * from "@algotia/ccxt";
+
 export enum ExchangeIDs {
     binance = "binance",
     kucoin = "kucoin",
@@ -142,14 +144,13 @@ export interface PaperTradeOptions {
     strategy: Strategy;
 }
 
-// Server
-
-export interface ConfigOptions {
-    port: number;
-    appDir?: string;
-}
-
 // util
 
-export type LooseDate = Date | string | number;
+export interface ConfigOptions {
+    appDir: string;
+    server: {
+        port: number;
+    };
+}
 
+export type LooseDate = Date | string | number;

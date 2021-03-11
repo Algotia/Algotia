@@ -21,7 +21,7 @@ export const rootPackageJsonTemplate = format.json(
 			"name": "algotia-strategies",
 			"workspaces": ["strategies/*"],
 			"private": true
-		}`
+	}`
 );
 
 export const packageJsonTemplate = ({

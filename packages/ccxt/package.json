@@ -6,7 +6,7 @@
     "types": "dist/ccxt.d.ts",
     "scripts": {
         "patch": "patch-package && patch-package",
-        "build": "npm run patch && tsc"
+        "build": "node ./scripts/build.js"
     },
     "keywords": [],
     "author": "",
@@ -16,6 +16,7 @@
         "patch-package": "^6.2.2"
     },
     "devDependencies": {
-        "prettier": "^2.2.1"
+        "prettier": "^2.2.1",
+        "typescript": "^4.2.3"
     }
 }

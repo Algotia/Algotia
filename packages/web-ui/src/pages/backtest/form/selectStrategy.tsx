@@ -92,6 +92,11 @@ const SelectStrategy: FC<{
             <NewStrategyModal
                 open={newStrategyModalOpen}
                 setOpen={setNewStrategyModalOpen}
+                onSubmit={() => {
+                    client.getAllStrategies().then(({ data }) => {
+                        setAllStrategies(data);
+                    });
+                }}
             />
         </>
     );

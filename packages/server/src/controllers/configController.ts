@@ -1,18 +1,16 @@
 import { Controller, Get, Path, Route } from "tsoa";
-import { ConfigService } from "../services";
 import { ConfigOptions } from "@algotia/types";
+import { config } from "@algotia/utils";
 
 @Route("config")
 export class ConfigController extends Controller {
-    configService = new ConfigService();
-
     @Get()
     public getAllConfigOptions() {
-        return Object.fromEntries(this.configService);
+        return config.store;
     }
 
     @Get("{key}")
     public getConfigOptionByKey(@Path() key: keyof ConfigOptions) {
-        return this.configService.get(key);
+        return config.get(key);
     }
 }

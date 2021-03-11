@@ -1,6 +1,6 @@
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
-import Spec from "@algotia/server/spec/swagger.json";
+import Spec from "@algotia/client/swagger.json";
 import { Paper, styled } from "@material-ui/core";
 
 const Wrapper = styled(Paper)({

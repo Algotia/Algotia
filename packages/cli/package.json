@@ -1,0 +1,67 @@
+{
+    "name": "@algotia/cli",
+    "version": "1.0.0-alpha.0",
+    "author": "JakeAdler",
+    "bin": {
+        "algotia": "./bin/run"
+    },
+    "bugs": {
+        "url": "https://github.com/Algotia/algotia/issues"
+    },
+    "dependencies": {
+        "@algotia/client": "^1.0.0-alpha.0",
+        "@algotia/server": "^1.0.0-alpha.0",
+        "@algotia/strategy-manager": "^1.0.0-alpha.0",
+        "@algotia/types": "^1.0.0-alpha.0",
+        "@algotia/utils": "^1.0.0-alpha.0",
+        "@oclif/command": "^1",
+        "@oclif/config": "^1",
+        "@oclif/plugin-help": "^3",
+        "cli-ux": "^5.5.1",
+        "inquirer": "^8.0.0",
+        "op-cache": "^1.0.1",
+        "prompts": "^2.4.0",
+        "tslib": "^1",
+        "untildify": "^4.0.0"
+    },
+    "devDependencies": {
+        "@oclif/dev-cli": "^1",
+        "@types/prompts": "^2.0.9",
+        "prettier": "^2.2.1",
+        "typescript": "^4.2.3"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "files": [
+        "/bin",
+        "/lib",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json"
+    ],
+    "homepage": "https://github.com/Algotia/algotia#readme",
+    "keywords": [
+        "oclif"
+    ],
+    "license": "ISC",
+    "main": "dist/cli.js",
+    "types": "dist/index.d.ts",
+    "oclif": {
+        "commands": "./src/commands",
+        "bin": "algotia",
+        "plugins": [
+            "@oclif/plugin-help"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Algotia/algotia.git"
+    },
+    "scripts": {
+        "postpack": "rm -f oclif.manifest.json",
+        "posttest": "eslint . --ext .ts --config .eslintrc",
+        "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "test": "echo NO TESTS",
+        "version": "oclif-dev readme && git add README.md"
+    }
+}

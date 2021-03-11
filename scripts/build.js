@@ -6,6 +6,7 @@ const packages = [
     "ccxt",
     "types",
     "core",
+    "utils",
     "strategy-manager",
     "server",
     "client",
@@ -20,12 +21,17 @@ const runBuild = async (packageName) => {
     }]`;
     packageName = node_path.resolve(__dirname, "../packages", packageName);
     try {
-        await execa.command(`npm run build --prefix ${packageName}`, {
-            stdout: "ignore",
-        });
+        const childProcess = await execa.command(
+            `npm run build --prefix ${packageName}`
+        );
+
+        if (childProcess.failed) {
+            throw new Error(childProcess.stderr);
+        }
     } catch (err) {
         console.log(`Error building ${packageName}`);
         console.error(err);
+        process.exit(0);
     }
 };
 

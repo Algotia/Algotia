@@ -1,4 +1,4 @@
-import { CreateBacktestOptions, ExchangeID } from "@algotia/client";
+import { CreateBacktestOptions, ExchangeIDs } from "@algotia/client";
 import node_path from "path";
 import { client } from "../test-utils";
 
@@ -9,7 +9,7 @@ jest.mock("@algotia/core", () => {
         __esModule: true, // Use it when dealing with esModules ...algotia,
         createExchange: jest
             .fn()
-            .mockImplementation((exchangeId: ExchangeID) => {
+            .mockImplementation((exchangeId: ExchangeIDs) => {
                 let exchange: any = {};
                 let anyObj: any = {};
                 const markets = {
@@ -51,7 +51,7 @@ jest.mock("@algotia/core", () => {
 const validBody: CreateBacktestOptions = {
     to: 1606867200000,
     from: 1606780800000,
-    exchange: "binance" as ExchangeID,
+    exchange: ExchangeIDs.Binance,
     pair: "ETH/BTC",
     period: "1h",
     strategyPath: node_path.join(__dirname, "./__fixtures__/strategy.js"),
@@ -99,7 +99,7 @@ describe("POST backtest", () => {
         try {
             const res = await client.createBacktest({
                 ...validBody,
-                exchange: "binance" as ExchangeID,
+                exchange: ExchangeIDs.Binance,
                 initialBalance: {
                     ETH: 100,
                     BTC: 100,

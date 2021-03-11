@@ -3,7 +3,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { AllThemes, themes } from "./assets/styles/";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import { Backtest, Docs, Strategies } from "./pages";
+import { Backtest, Docs } from "./pages";
 import { CircularProgress, CssBaseline, Typography } from "@material-ui/core";
 import { getCachedTheme } from "./utils";
 import styled from "styled-components";
@@ -69,9 +69,6 @@ function App() {
                                 </Route>
                                 <Route path="/docs">
                                     <Docs />
-                                </Route>
-                                <Route path="/strategies">
-                                    <Strategies />
                                 </Route>
                                 <Route path="/">
                                     <Home />

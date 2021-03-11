@@ -7,11 +7,11 @@
         "basePath": "api",
         "host": "localhost:2008",
         "outputDirectory": "spec",
-        "specVersion": 3
+        "specVersion": 3,
+		"name": "Algotia-Server"
     },
     "routes": {
         "routesDir": "src",
         "basePath": "api"
-    },
-    "ignore": ["/**/ccxt/**"]
+    }
 }

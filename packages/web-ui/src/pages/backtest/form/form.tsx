@@ -1,7 +1,13 @@
 import { useEffect, useState, FC, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { parsePair } from "@algotia/core";
-import { Box, Button, Fab, styled as muiStyled } from "@material-ui/core";
+import {
+    Box,
+    Button,
+    createStyles,
+    makeStyles,
+    styled as muiStyled,
+} from "@material-ui/core";
 import { Row } from "../../../components/shared";
 import SelectExchange from "./selectExchange";
 import SelectDate from "./selectDates";
@@ -11,15 +17,19 @@ import SelectPeriod from "./selectPeriod";
 import { DefaultApi, ExchangeIDs, StrategyMetaData } from "@algotia/client";
 import SelectStrategy from "./selectStrategy";
 
-const FormWrapper = muiStyled(Box)(({ theme }) => ({
-    width: "100%",
-    height: "60%",
-    padding: theme.spacing(1),
-    position: "relative",
-}));
-
-const RunBtn = muiStyled(Fab)(({ theme }) => ({
-    backgroundColor: theme.palette.success.main,
+const useMuiStyles = makeStyles((theme) => ({
+    wrapper: {
+        width: "100%",
+        height: "60%",
+        padding: theme.spacing(1),
+        position: "relative",
+    },
+    button: {
+        backgroundColor: theme.palette.success.main,
+		"&:disabled": {
+			backgroundColor: "#444"
+		}
+    },
 }));
 
 const FormBody = styled.div`
@@ -66,7 +76,9 @@ const Form: FC<{
 
     const initialFrom = new Date(now);
 
-    const [exchangeId, setExchangeId] = useState<ExchangeIDs>("" as ExchangeIDs);
+    const [exchangeId, setExchangeId] = useState<ExchangeIDs>(
+        "" as ExchangeIDs
+    );
     const [pair, setPair] = useState("");
     const [period, setPeriod] = useState<string>("");
     const [to, setTo] = useState<Date>(initialTo);
@@ -131,8 +143,10 @@ const Form: FC<{
         }
     };
 
+    const muiClasses = useMuiStyles();
+
     return (
-        <FormWrapper>
+        <Box className={muiClasses.wrapper}>
             <FormBody>
                 <RowItem>
                     <FormItem>
@@ -215,12 +229,16 @@ const Form: FC<{
                     />
                 </RowItem>
                 <FormItem>
-                    <RunBtn disabled={!canRun} onClick={run}>
+                    <Button
+                        disabled={!canRun}
+                        onClick={run}
+                        className={muiClasses.button}
+                    >
                         Run
-                    </RunBtn>
+                    </Button>
                 </FormItem>
             </FormBody>
-        </FormWrapper>
+        </Box>
     );
 };
 

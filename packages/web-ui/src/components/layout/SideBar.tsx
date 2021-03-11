@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { IconType } from "react-icons";
 import { FaHome, FaBook } from "react-icons/fa";
@@ -9,11 +9,9 @@ import {
     Typography,
     Divider,
     makeStyles,
-    Grow,
     Zoom,
 } from "@material-ui/core";
 import Settings from "./Settings";
-import { VscCode } from "react-icons/vsc";
 
 const useBarStyles = makeStyles((theme) => ({
     root: {
@@ -54,11 +52,6 @@ const navItems: NavItemObj[] = [
         path: "/",
         label: "Home",
         Icon: FaHome,
-    },
-    {
-        path: "/strategies",
-        label: "Strategies",
-        Icon: VscCode,
     },
     {
         path: "/backtest",
@@ -115,9 +108,7 @@ const SideBar = () => {
                                 </Zoom>
                             </NavItem>
                         </NavLink>
-                        {i === navItems.length - 1 && (
-                            <Divider variant="middle" light />
-                        )}
+                        {i === navItems.length - 1 && <Divider />}
                     </div>
                 );
             })}

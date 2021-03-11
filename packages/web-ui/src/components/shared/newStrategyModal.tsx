@@ -42,7 +42,8 @@ const Row = styled(BaseRow)`
 export const NewStrategyModal: FC<{
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
-}> = ({ open, setOpen }) => {
+    onSubmit?: () => void;
+}> = ({ open, setOpen, onSubmit }) => {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
 
@@ -59,6 +60,9 @@ export const NewStrategyModal: FC<{
                 .createNewStrategy({
                     name,
                     language,
+                })
+                .then(() => {
+                    onSubmit && onSubmit();
                 })
                 .catch((err) => {
                     alert(err);

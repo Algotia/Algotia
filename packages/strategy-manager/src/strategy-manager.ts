@@ -24,7 +24,7 @@ export class StrategyManager {
         }
     }
 
-    bootstrap = () => {
+    bootstrap = async () => {
         mkDirIfNotExist(this.rootDir);
         mkDirIfNotExist(this.strategyRoot);
 
@@ -33,6 +33,8 @@ export class StrategyManager {
         fs.writeFileSync(packageJsonPath, rootPackageJsonTemplate, {
             encoding: "utf8",
         });
+
+        await this.installDeps();
     };
 
     createStrategy = async <Lang extends StrategyLanguages>({

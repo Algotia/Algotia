@@ -9,7 +9,7 @@ import {
 export class BacktestController extends Controller {
     private backtestService = new BacktestService();
 
-    @Post()
+    @Post("create")
     public async createBacktest(
         @Body() reqBody: CreateBacktestOptions
     ): Promise<CreateBacktestResult> {

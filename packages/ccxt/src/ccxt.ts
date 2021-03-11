@@ -1,4 +1,4 @@
-import ccxt from "ccxt";
+import ccxt from "ccxt"
 
 export default ccxt;
-export * from "ccxt";
+

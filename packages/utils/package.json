@@ -1,0 +1,28 @@
+{
+    "name": "@algotia/utils",
+    "version": "1.0.0-alpha.0",
+    "description": "> TODO: description",
+    "author": "JakeAdler <jamtheproducer@gmail.com>",
+    "homepage": "https://github.com/Algotia/algotia#readme",
+    "license": "AGPL-3.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Algotia/algotia.git"
+    },
+    "scripts": {
+        "build": "tsc"
+    },
+    "bugs": {
+        "url": "https://github.com/Algotia/algotia/issues"
+    },
+    "dependencies": {
+        "@algotia/types": "1.0.0-alpha.0",
+        "conf": "^9.0.2"
+    },
+    "devDependencies": {
+        "prettier": "^2.2.1",
+        "typescript": "^4.2.3"
+    }
+}
