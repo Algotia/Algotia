@@ -1,6 +1,6 @@
 {
     "name": "@algotia/types",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "description": "",
     "types": "dist/index.d.ts",
     "main": "dist/index.js",
@@ -11,7 +11,7 @@
         "build": "node ./scripts/build.js"
     },
     "dependencies": {
-        "@algotia/ccxt": "^1.0.0-alpha.0"
+        "@algotia/ccxt": "^1.0.0-alpha.1"
     },
     "devDependencies": {
         "prettier": "^2.2.1",

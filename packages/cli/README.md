@@ -19,7 +19,7 @@ $ npm install -g @algotia/cli
 $ algotia COMMAND
 running command...
 $ algotia (-v|--version|version)
-@algotia/cli/1.0.0-alpha.0 linux-x64 node-v15.3.0
+@algotia/cli/1.0.0-alpha.1 linux-x64 node-v15.3.0
 $ algotia --help [COMMAND]
 USAGE
   $ algotia COMMAND
@@ -28,28 +28,7 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`algotia hello [FILE]`](#algotia-hello-file)
 * [`algotia help [COMMAND]`](#algotia-help-command)
-
-## `algotia hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ algotia hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ algotia hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/Algotia/algotia/blob/v1.0.0-alpha.0/src/commands/hello.ts)_
 
 ## `algotia help [COMMAND]`
 

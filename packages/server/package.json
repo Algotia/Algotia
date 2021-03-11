@@ -1,7 +1,7 @@
 {
     "name": "@algotia/server",
     "description": "",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
@@ -24,12 +24,12 @@
     "author": "",
     "license": "AGPL-3.0",
     "dependencies": {
-        "@algotia/client": "^1.0.0-alpha.0",
-        "@algotia/core": "^1.0.0-alpha.0",
+        "@algotia/client": "^1.0.0-alpha.1",
+        "@algotia/core": "^1.0.0-alpha.1",
         "@algotia/strategy-manager": "^1.0.0-alpha.0",
-        "@algotia/types": "^1.0.0-alpha.0",
-        "@algotia/utils": "^1.0.0-alpha.0",
-        "@algotia/web-ui": "^1.0.0-alpha.0",
+        "@algotia/types": "^1.0.0-alpha.1",
+        "@algotia/utils": "^1.0.0-alpha.1",
+        "@algotia/web-ui": "^1.0.0-alpha.1",
         "@babel/core": "^7.12.10",
         "@babel/polyfill": "^7.12.1",
         "@babel/register": "^7.12.10",

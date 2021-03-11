@@ -1,6 +1,6 @@
 {
     "name": "@algotia/utils",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "description": "> TODO: description",
     "author": "JakeAdler <jamtheproducer@gmail.com>",
     "homepage": "https://github.com/Algotia/algotia#readme",
@@ -18,7 +18,7 @@
         "url": "https://github.com/Algotia/algotia/issues"
     },
     "dependencies": {
-        "@algotia/types": "1.0.0-alpha.0",
+        "@algotia/types": "^1.0.0-alpha.1",
         "conf": "^9.0.2"
     },
     "devDependencies": {

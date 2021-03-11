@@ -1,6 +1,6 @@
 {
     "name": "@algotia/cli",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "author": "JakeAdler",
     "bin": {
         "algotia": "./bin/run"
@@ -9,11 +9,11 @@
         "url": "https://github.com/Algotia/algotia/issues"
     },
     "dependencies": {
-        "@algotia/client": "^1.0.0-alpha.0",
-        "@algotia/server": "^1.0.0-alpha.0",
+        "@algotia/client": "^1.0.0-alpha.1",
+        "@algotia/server": "^1.0.0-alpha.1",
         "@algotia/strategy-manager": "^1.0.0-alpha.0",
-        "@algotia/types": "^1.0.0-alpha.0",
-        "@algotia/utils": "^1.0.0-alpha.0",
+        "@algotia/types": "^1.0.0-alpha.1",
+        "@algotia/utils": "^1.0.0-alpha.1",
         "@oclif/command": "^1",
         "@oclif/config": "^1",
         "@oclif/plugin-help": "^3",

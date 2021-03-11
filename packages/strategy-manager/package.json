@@ -1,6 +1,6 @@
 {
     "name": "@algotia/strategy-manager",
-    "version": "0.1.0",
+    "version": "1.0.0-alpha.1",
     "description": "Manages local Algotia strategies.",
     "main": "dist/strategy-manager.js",
     "scripts": {
@@ -11,7 +11,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@algotia/types": "^1.0.0-alpha.0",
+        "@algotia/types": "^1.0.0-alpha.1",
         "dashify": "^2.0.0",
         "execa": "^5.0.0",
         "gulp": "^4.0.2",

@@ -1,6 +1,6 @@
 {
 	"name": "@algotia/core",
-	"version": "1.0.0-alpha.0",
+	"version": "1.0.0-alpha.1",
 	"author": "",
 	"license": "AGPL-3.0",
 	"description": "A technical analysis driven cryptocurrency trading and back-testing platform.",
@@ -20,8 +20,8 @@
 		"semantic-release": "semantic-release"
 	},
 	"dependencies": {
-		"@algotia/ccxt": "^1.0.0-alpha.0",
-		"@algotia/types": "^1.0.0-alpha.0",
+		"@algotia/ccxt": "^1.0.0-alpha.1",
+		"@algotia/types": "^1.0.0-alpha.1",
 		"decimal.js": "^10.2.1"
 	},
 	"devDependencies": {
